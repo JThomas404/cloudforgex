@@ -1,7 +1,7 @@
-// Smart FAQ Assistant - Minimalistic
-class SmartFAQAssistant {
+// EVE AI Assistant
+class EVEAssistant {
     constructor() {
-        this.isExpanded = false;
+        this.isExpanded = true; // Start expanded
         this.knowledgeBase = {
             "services": "Jarred offers cloud engineering services including AWS architecture, Terraform infrastructure as code, Kubernetes orchestration, DevOps automation, and cloud security consulting.",
             "experience": "Jarred is an AWS Certified Solutions Architect with CCNA certification, specializing in cloud infrastructure, automation, and security. He has successfully completed projects including SQL Server migrations and cloud architecture implementations.",
@@ -15,8 +15,12 @@ class SmartFAQAssistant {
 
     init() {
         this.bindEvents();
-        // Start in collapsed state
-        this.setCollapsedState();
+        // Start in expanded state
+        this.setExpandedState();
+        // Show EVE's welcome message immediately
+        setTimeout(() => {
+            this.typeEVEWelcomeMessage();
+        }, 500);
     }
 
     bindEvents() {
@@ -24,7 +28,18 @@ class SmartFAQAssistant {
         const input = document.getElementById('faq-input');
         const sendBtn = document.getElementById('faq-send');
 
-        header.addEventListener('click', () => this.toggleChat());
+        header.addEventListener('click', (e) => {
+            // Check if clicked on mobile close area (right side of header on mobile)
+            if (window.innerWidth <= 768) {
+                const rect = header.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                if (clickX > rect.width - 100) {
+                    this.setCollapsedState();
+                    return;
+                }
+            }
+            this.toggleChat();
+        });
         
         if (input) {
             input.addEventListener('keypress', (e) => {
@@ -49,14 +64,6 @@ class SmartFAQAssistant {
         assistant.classList.remove('collapsed');
         assistant.classList.add('expanded');
         this.isExpanded = true;
-        
-        // Type welcome message when first expanded
-        if (!this.hasWelcomed) {
-            setTimeout(() => {
-                this.typeWelcomeMessage();
-                this.hasWelcomed = true;
-            }, 300);
-        }
     }
 
     toggleChat() {
@@ -67,11 +74,11 @@ class SmartFAQAssistant {
         }
     }
 
-    typeWelcomeMessage() {
-        const welcomeText = "Hi! I'm your Smart FAQ Assistant. Ask me anything about Jarred's work, skills, or services!";
+    typeEVEWelcomeMessage() {
+        const welcomeText = "Hi! I'm EVE, an AI chatbot powered by Claude Instant via Amazon Bedrock. Ask me anything about Jarred's work, projects, or certifications. Not sure what to ask? Try the @suggestedquestions below";
         const element = document.getElementById('welcome-text');
         if (element) {
-            this.typeWriter(element, welcomeText, 50);
+            this.typeWriterWithClickable(element, welcomeText, 50);
         }
     }
 
@@ -91,6 +98,55 @@ class SmartFAQAssistant {
                 }, 500);
             }
         }, speed);
+    }
+
+    typeWriterWithClickable(element, text, speed = 50) {
+        element.innerHTML = '';
+        element.classList.add('typewriter-cursor');
+        let i = 0;
+        
+        const timer = setInterval(() => {
+            if (i < text.length) {
+                element.innerHTML += text.charAt(i);
+                i++;
+            } else {
+                clearInterval(timer);
+                setTimeout(() => {
+                    element.classList.remove('typewriter-cursor');
+                    // Make @suggestedquestions clickable
+                    this.makeClickableSuggestedQuestions(element);
+                }, 500);
+            }
+        }, speed);
+    }
+
+    makeClickableSuggestedQuestions(element) {
+        const html = element.innerHTML;
+        const clickableHtml = html.replace(
+            '@suggestedquestions',
+            '<span class="suggested-questions-trigger">@suggestedquestions</span>'
+        );
+        element.innerHTML = clickableHtml;
+        
+        // Add click event
+        const trigger = element.querySelector('.suggested-questions-trigger');
+        if (trigger) {
+            trigger.addEventListener('click', () => {
+                this.triggerSuggestedQuestions();
+            });
+        }
+    }
+
+    triggerSuggestedQuestions() {
+        const input = document.getElementById('faq-input');
+        if (input) {
+            input.value = '@suggestedquestions';
+            input.focus();
+            // Auto-send the message
+            setTimeout(() => {
+                this.sendMessage();
+            }, 100);
+        }
     }
 
     sendMessage() {
@@ -158,7 +214,7 @@ class SmartFAQAssistant {
     }
 }
 
-// Initialize the FAQ Assistant when DOM is loaded
+// Initialize EVE Assistant when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    new SmartFAQAssistant();
+    new EVEAssistant();
 });
