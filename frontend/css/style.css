@@ -45,7 +45,6 @@ section:not(#hero) {
     margin: 0 auto;
     max-width: 1000px;
     padding: 60px 20px;
-    overflow: clip;
 }
 
 /* 3. Hero Section */
@@ -343,11 +342,6 @@ section:not(#hero) {
     width: 64px;
     height: 64px;
     margin-bottom: 15px;
-    transition: transform 0.3s ease;
-}
-
-.skill-item img:hover {
-    transform: scale(1.1);
 }
 
 .skill-item i {
@@ -355,11 +349,6 @@ section:not(#hero) {
     margin-bottom: 15px;
     color: var(--accent-color);
     display: block;
-    transition: transform 0.3s ease;
-}
-
-.skill-item i:hover {
-    transform: scale(1.1);
 }
 
 .skill-item h4 {
