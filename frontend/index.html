@@ -2,29 +2,461 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Jarred Thomas | Cloud Engineer</title>
-    <link rel="stylesheet" href="css/style.css" />
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Jarred Thomas | Cloud Engineer Portfolio</title>
+    <meta name="description" content="Cloud Engineer specialising in AWS, Terraform, Kubernetes, and Infrastructure as Code. Designing, automating, and securing cloud solutions.">
+    <meta name="keywords" content="Cloud Engineer, AWS, Terraform, Kubernetes, DevOps, Infrastructure as Code, South Africa">
+
+    <!-- Favicons -->
+    <link href="assets/images/favicon.png" rel="icon">
+    <link href="assets/images/favicon.png" rel="apple-touch-icon">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- AOS Animation CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Enhanced CSS -->
+    <link href="css/style.css?v=19" rel="stylesheet">
+    <link href="css/faq-assistant.css" rel="stylesheet">
 </head>
 
-<body>
-    <main class="container">
-        <header>
-            <h1>Hi, I'm Jarred Thomas</h1>
-            <p>Aspiring Cloud Engineer building scalable and intelligent infrastructure.</p>
-            <a href="resume.html" class="button">View Résumé</a>
-        </header>
+<body class="index-page">
 
-        <!-- Smart FAQ Chatbot will be embedded here later -->
-        <div id="chatbot-widget"></div>
+    <!-- Smart FAQ Assistant -->
+    <div id="faq-assistant" class="faq-assistant">
+        <div class="faq-header">
+            <i class="fas fa-robot"></i>
+            <span>Smart FAQ Assistant</span>
+            <button id="faq-toggle" class="faq-toggle">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </div>
+        <div id="faq-content" class="faq-content">
+            <div id="faq-messages" class="faq-messages">
+                <div class="faq-message bot-message">
+                    <div class="message-content">
+                        <span id="welcome-text"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="faq-input-container">
+                <input type="text" id="faq-input" placeholder="Ask me about Jarred's work or services..." />
+                <button id="faq-send" class="faq-send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <header id="header" class="header d-flex flex-column justify-content-center">
+        <i class="header-toggle d-xl-none fas fa-bars"></i>
+        <nav id="navmenu" class="navmenu">
+            <ul>
+                <li><a href="#hero" class="active"><i class="fas fa-home navicon"></i><span>Home</span></a></li>
+                <li><a href="#about"><i class="fas fa-user navicon"></i><span>About</span></a></li>
+                <li><a href="#skills"><i class="fas fa-cogs navicon"></i><span>Skills</span></a></li>
+                <li><a href="#certifications"><i class="fas fa-certificate navicon"></i><span>Certifications</span></a></li>
+                <li><a href="#projects"><i class="fas fa-images navicon"></i><span>Projects</span></a></li>
+                <li><a href="#experience"><i class="fas fa-briefcase navicon"></i><span>Experience</span></a></li>
+                <li><a href="resume.html"><i class="fas fa-file-alt navicon"></i><span>Resume</span></a></li>
+                <li><a href="#contact"><i class="fas fa-envelope navicon"></i><span>Contact</span></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main">
+
+        <!-- Hero Section -->
+        <section id="hero" class="hero section dark-background">
+            <div class="container" data-aos="zoom-out" data-aos-delay="100">
+                <div class="row justify-content-center">
+                    <div class="col-lg-9">
+                        <h1>Hi, I'm <span>Jarred Thomas</span></h1>
+                        <h2 class="typing" id="typed-text"></h2>
+                        <a href="assets/documents/resume.pdf" class="btn" download>Download Resume</a>
+                        <div class="social-links">
+                            <a href="https://github.com/JThomas404" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+                            <a href="https://www.linkedin.com/in/jarred-thomas" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
+                            <a href="mailto:jarredthomas101@gmail.com"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+<!-- About Section -->
+<section id="about" class="about section">
+    <div class="container section-title" data-aos="fade-up">
+        <h2>About Me</h2>
+        <p>From Terraform to Kubernetes — I Design, Automate, and Secure the Cloud</p>
+    </div>
+
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row gy-4 justify-content-center">
+            <div class="col-lg-8">
+                <div class="about-card">
+                <h3>Cloud Engineer | AWS Solutions & Infrastructure Automation</h3>
+
+                <p class="fst-italic py-3">
+                    My passion for technology began at a young age, as the family's go-to problem solver. From fixing
+                    the television to optimising the home Wi-Fi, I was always drawn to understanding how things worked
+                    and how to improve them.
+                </p>
+
+                <p>
+                    At the age of 18, fresh out of high school and with no formal IT experience, I entered a hands-on
+                    internship at Lorge Consulting Services. I configured servers, set up VoIP phones and personal
+                    computers, and resolved issues on Cisco routers, switches, and access points. That experience
+                    propelled me into network engineering, where I became fascinated by how mere light pulses and data
+                    packets shape the digital world.
+                </p>
+
+                <p>
+                    Later, I discovered the cloud — a turning point in my career. The elegance of replacing rigid,
+                    on-premises infrastructure with <strong>elastic</strong>, on-demand systems captivated me. The
+                    ability to provision secure, scalable environments instantly to meet individual business needs was
+                    nothing short of <strong>monumental</strong>.
+                </p>
+
+                <p>
+                    That spark evolved into a mission.
+                </p>
+
+                <p>
+                    Today, I design and deploy resilient, secure, and <strong>orchestrated</strong> cloud infrastructure
+                    using tools such as AWS, Terraform, Docker, and CI/CD pipelines. In one memorable project, whilst
+                    working at SEIDOR Networks as a Cloud Engineer, I prevented a critical system failure for the client
+                    <a href="https://www.linkedin.com/company/butternut-box/about/" target="_blank"
+                        rel="noopener noreferrer nofollow">Butternut Box</a> by leading a root cause investigation and
+                    executing a strategic SQL Server migration. I rearchitected the solution for high availability,
+                    disaster recovery, and modernised maintenance. <a
+                        href="https://github.com/JThomas404/SQL-Maintenance-Plan-Project" target="_blank"
+                        rel="noopener noreferrer nofollow">View the project →</a>
+                </p>
+
+                <p>
+                    Whether through hands-on home labs, real-world solution builds, or continuous learning via platforms
+                    such as Udemy and LinkedIn Learning, I remain committed to continuous improvement, driven by a
+                    lifelong passion for solving complex problems and building cloud systems that perform in production
+                    environments.
+                </p>
+
+                    <p class="fw-semibold">
+                        From Wi-Fi tweaks to stratospheric, production-grade cloud deployments — I am still
+                        solving problems. Just on a bigger stage.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="skills section">
+            <div class="container section-title" data-aos="fade-up">
+                <h2>Skills</h2>
+                <p>Technologies I use to build scalable cloud infrastructure</p>
+            </div>
+
+            <div class="container" data-aos="fade-up" data-aos-delay="100">
+                <div class="skills-grid">
+                    <div class="skill-item" data-aos="zoom-in" data-aos-delay="100">
+                        <img src="assets/images/aws.svg" alt="AWS" loading="lazy">
+                        <h4>AWS</h4>
+                        <p>AWS Cloud Foundations</p>
+                    </div>
+                    <div class="skill-item" data-aos="zoom-in" data-aos-delay="200">
+                        <img src="assets/images/azure.svg" alt="Azure" loading="lazy">
+                        <h4>Azure</h4>
+                        <p>Microsoft Cloud</p>
+                    </div>
+                    <div class="skill-item" data-aos="zoom-in" data-aos-delay="300">
+                        <img src="assets/images/Terraform-LogoMark_onLight.svg" alt="Terraform" loading="lazy">
+                        <h4>Terraform</h4>
+                        <p>Infrastructure as Code</p>
+                    </div>
+                    <div class="skill-item" data-aos="zoom-in" data-aos-delay="400">
+                        <img src="assets/images/github-mark-white.svg" alt="Git & GitHub" loading="lazy">
+                        <h4>Git & GitHub</h4>
+                        <p>Version Control</p>
+                    </div>
+                    <div class="skill-item" data-aos="zoom-in" data-aos-delay="500">
+                        <img src="assets/images/GitHub Actions.svg" alt="GitHub Actions" loading="lazy">
+                        <h4>GitHub Actions</h4>
+                        <p>DevOps Workflows & CI/CD Automation</p>
+                    </div>
+                    <div class="skill-item" data-aos="zoom-in" data-aos-delay="600">
+                        <img src="assets/images/bash-logo.svg" alt="Linux & Bash" loading="lazy">
+                        <h4>Linux & Bash</h4>
+                        <p>Shell Scripting</p>
+                    </div>
+                    <div class="skill-item" data-aos="zoom-in" data-aos-delay="700">
+                        <img src="assets/images/powershell.svg" alt="PowerShell" loading="lazy">
+                        <h4>PowerShell</h4>
+                        <p>Windows Automation & Scripting</p>
+                    </div>
+                    <div class="skill-item" data-aos="zoom-in" data-aos-delay="800">
+                        <img src="assets/images/python-logo.svg" alt="Python & Boto3" loading="lazy">
+                        <h4>Python & Boto3</h4>
+                        <p>Cloud Automation & APIs</p>
+                    </div>
+                    <div class="skill-item" data-aos="zoom-in" data-aos-delay="900">
+                        <img src="assets/images/docker-mark-blue.svg" alt="Docker" loading="lazy">
+                        <h4>Docker</h4>
+                        <p>Containerisation</p>
+                    </div>
+                    <div class="skill-item" data-aos="zoom-in" data-aos-delay="1000">
+                        <img src="assets/images/kubernetes-logo.svg" alt="Kubernetes" loading="lazy">
+                        <h4>Kubernetes</h4>
+                        <p>Container Orchestration</p>
+                    </div>
+                    <div class="skill-item" data-aos="zoom-in" data-aos-delay="1100">
+                        <i class="fas fa-shield-alt"></i>
+                        <h4>Cloud Security</h4>
+                        <p>Identity & Access Management</p>
+                    </div>
+                    <div class="skill-item" data-aos="zoom-in" data-aos-delay="1200">
+                        <img src="assets/images/ccna_med.gif" alt="Cloud Networking" loading="lazy">
+                        <h4>Cloud Networking</h4>
+                        <p>Networking & VPCs</p>
+                    </div>
+                    <div class="skill-item" data-aos="zoom-in" data-aos-delay="1300">
+                        <img src="assets/images/CloudWatch.svg" alt="CloudWatch" loading="lazy">
+                        <h4>CloudWatch</h4>
+                        <p>Monitoring & Logging</p>
+                    </div>
+                    <div class="skill-item" data-aos="zoom-in" data-aos-delay="1400">
+                        <img src="assets/images/DynamoDB.svg" alt="Database Management" loading="lazy">
+                        <h4>Database Management</h4>
+                        <p>Cloud Databases & Querying</p>
+                    </div>
+                    <div class="skill-item" data-aos="zoom-in" data-aos-delay="1500">
+                        <img src="assets/images/ai-v1.svg" alt="AI & Prompt Engineering" loading="lazy">
+                        <h4>AI & Prompt Engineering</h4>
+                        <p>AI Integration</p>
+                    </div>
+                    <div class="skill-item" data-aos="zoom-in" data-aos-delay="1600">
+                        <img src="assets/images/vs-code.svg" alt="Visual Studio Code" loading="lazy">
+                        <h4>Visual Studio Code</h4>
+                        <p>Development Environment</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Certifications Section -->
+        <section id="certifications" class="certifications section">
+            <div class="container section-title" data-aos="fade-up">
+                <h2>Certifications</h2>
+                <p>Professional certifications and training achievements</p>
+            </div>
+
+            <div class="container" data-aos="fade-up" data-aos-delay="100">
+                <div class="certifications-grid">
+                    <div class="cert-item" data-aos="fade-up" data-aos-delay="100">
+                        <h4>AWS Certified Solutions Architect - Associate</h4>
+                        <p><em>Amazon Web Services - 2024</em></p>
+                        <p>Professional certification in AWS cloud architecture and solutions design</p>
+                        <a href="assets/documents/AWS Certified Solutions Architect - Associate certificate.pdf" target="_blank" class="btn-project">View Certificate</a>
+                    </div>
+                    <div class="cert-item" data-aos="fade-up" data-aos-delay="200">
+                        <h4>CCNA Cisco Certified Network Associate</h4>
+                        <p><em>Cisco - 2023</em></p>
+                        <p>Comprehensive networking fundamentals and Cisco technologies certification</p>
+                        <a href="assets/documents/Cisco Certified Network Associate certificate.pdf" target="_blank" class="btn-project">View Certificate</a>
+                    </div>
+                    <div class="cert-item" data-aos="fade-up" data-aos-delay="300">
+                        <h4>Linux Foundation Certified Systems Administrator - LFCS</h4>
+                        <p><em>Linux Foundation - In Progress</em></p>
+                        <p>Advanced Linux system administration and troubleshooting skills</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="projects section">
+            <div class="container section-title" data-aos="fade-up">
+                <h2>Featured Projects</h2>
+                <p>Real-world cloud engineering implementations</p>
+            </div>
+
+            <div class="container" data-aos="fade-up" data-aos-delay="100">
+                <div class="certifications-grid">
+                    <div class="cert-item" data-aos="fade-up" data-aos-delay="100">
+                        <h4>CloudForgeX</h4>
+                        <p>Developed an advanced cloud engineering portfolio that integrates real-time AWS solutions, CI/CD pipelines, and infrastructure as code to demonstrate a comprehensive understanding of the cloud engineering lifecycle.</p>
+                        <a href="https://github.com/JThomas404/cloudforgex" target="_blank" rel="noopener noreferrer nofollow" class="btn-project">View on GitHub</a>
+                    </div>
+                    
+                    <div class="cert-item" data-aos="fade-up" data-aos-delay="200">
+                        <h4>SAP HANA Professional Portfolio</h4>
+                        <p>Showcases real-world SAP HANA projects undertaken at SEIDOR Networks, including SAP HANA database management, optimisation, and migration.</p>
+                        <a href="https://github.com/JThomas404/SAP-HANA-Professional-Portfolio" target="_blank" rel="noopener noreferrer nofollow" class="btn-project">View on GitHub</a>
+                    </div>
+                    
+                    <div class="cert-item" data-aos="fade-up" data-aos-delay="300">
+                        <h4>SQL Server Backup & Maintenance Automation</h4>
+                        <p>Automated SQL Server backup management for a large enterprise, resolving critical disk issues and achieving 100% backup reliability. Focussed on optimising SQL backups, reducing downtime, and ensuring business continuity.</p>
+                        <a href="https://github.com/JThomas404/SQL-Maintenance-Plan-Project" target="_blank" rel="noopener noreferrer nofollow" class="btn-project">View on GitHub</a>
+                    </div>
+                    
+                    <div class="cert-item" data-aos="fade-up" data-aos-delay="400">
+                        <h4>AWS Cost Monitoring Script</h4>
+                        <p>Bash script that automates the monitoring of AWS resources to identify potential cost-saving opportunities. Generates reports on underutilised EC2 instances and unattached EBS volumes for optimisation.</p>
+                        <a href="https://github.com/JThomas404/AWS-Cost-Monitoring-Script" target="_blank" rel="noopener noreferrer nofollow" class="btn-project">View on GitHub</a>
+                    </div>
+                    
+                    <div class="cert-item" data-aos="fade-up" data-aos-delay="500">
+                        <h4>Albion University Network Design</h4>
+                        <p>Designed a secure, scalable, and efficient network architecture for Albion University using advanced routing protocols, VLAN segmentation, and Cisco best practices.</p>
+                        <a href="https://github.com/JThomas404/Albion-University-s-Digital-Infrastructure-A-Network-Design-" target="_blank" rel="noopener noreferrer nofollow" class="btn-project">View on GitHub</a>
+                    </div>
+                    
+                    <div class="cert-item" data-aos="fade-up" data-aos-delay="600">
+                        <h4>Serverless Web Application Project</h4>
+                        <p>Created a serverless landing page for Connecting The Dots Inc., hosted on S3 with HTTPS via CloudFront. Includes a contact form that stores user data in DynamoDB using a Python Lambda function triggered via API Gateway.</p>
+                        <a href="https://github.com/JThomas404/AWS-Automation-with-Python-Boto3-and-Lambda-Projects" target="_blank" rel="noopener noreferrer nofollow" class="btn-project">View on GitHub</a>
+                    </div>
+                    
+                    <div class="cert-item" data-aos="fade-up" data-aos-delay="700">
+                        <h4>Docker Container Security Falcon</h4>
+                        <p>Developed a secure, production-ready FastAPI microservice containerised with Docker, deployed using Kubernetes, and scanned for vulnerabilities with Trivy. Emphasises container security, RBAC, and automated CI/CD with GitHub Actions.</p>
+                        <a href="https://github.com/JThomas404/docker-security-falcon-k8s" target="_blank" rel="noopener noreferrer nofollow" class="btn-project">View on GitHub</a>
+                    </div>
+                    
+                    <div class="cert-item" data-aos="fade-up" data-aos-delay="800">
+                        <h4>Automating EC2 Snapshots with Lambda and EventBridge</h4>
+                        <p>Built a serverless automation pipeline using AWS Lambda and EventBridge to create daily snapshots of EC2 volumes. Enhances disaster recovery and ensures consistent backups with minimal human intervention.</p>
+                        <a href="https://github.com/JThomas404/python-boto3-aws-automation-scripts" target="_blank" rel="noopener noreferrer nofollow" class="btn-project">View on GitHub</a>
+                    </div>
+                    
+                    <div class="cert-item" data-aos="fade-up" data-aos-delay="900">
+                        <h4>Automated Billing CSV to Aurora Serverless</h4>
+                        <p>Implements a serverless ETL pipeline using AWS Lambda, S3, Secrets Manager, and Aurora Serverless. On CSV upload, Lambda reads and normalises billing data before inserting into Aurora MySQL for analysis and reporting.</p>
+                        <a href="https://github.com/JThomas404/automated-billing-csv-to-aurora-serverless" target="_blank" rel="noopener noreferrer nofollow" class="btn-project">View on GitHub</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Experience Section -->
+        <section id="experience" class="experience section">
+            <div class="container section-title" data-aos="fade-up">
+                <h2>Experience & Education</h2>
+                <p>Professional development and continuous learning</p>
+            </div>
+
+            <div class="container" data-aos="fade-up" data-aos-delay="100">
+                <div class="experience-timeline">
+                    <div class="timeline-item" data-aos="fade-up" data-aos-delay="100">
+                        <div class="timeline-date">2024</div>
+                        <h4>Master DevOps with Terraform on AWS</h4>
+                        <p><em>Udemy</em></p>
+                        <p>Advanced training in infrastructure automation and cloud architecture</p>
+                    </div>
+                    <div class="timeline-item" data-aos="fade-up" data-aos-delay="200">
+                        <div class="timeline-date">2024</div>
+                        <h4>Docker & Kubernetes – Practical Guide</h4>
+                        <p><em>Udemy</em></p>
+                        <p>Comprehensive containerization and orchestration training</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="contact section">
+            <div class="container section-title" data-aos="fade-up">
+                <h2>Contact Me</h2>
+                <p>Let's discuss your cloud infrastructure needs</p>
+            </div>
+
+            <div class="container" data-aos="fade-up" data-aos-delay="100">
+                <div class="contact-info">
+                    <div class="contact-item" data-aos="fade-up" data-aos-delay="100">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Location</h4>
+                            <p>South Africa</p>
+                        </div>
+                    </div>
+                    <div class="contact-item" data-aos="fade-up" data-aos-delay="200">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>jarredthomas101@gmail.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item" data-aos="fade-up" data-aos-delay="300">
+                        <i class="fab fa-linkedin"></i>
+                        <div>
+                            <h4>LinkedIn</h4>
+                            <p>linkedin.com/in/jarred-thomas</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="social-links" data-aos="fade-up" data-aos-delay="400">
+                    <a href="mailto:jarredthomas101@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+                    <a href="https://www.linkedin.com/in/jarred-thomas" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://github.com/JThomas404" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </section>
+
     </main>
 
-    <footer>
-        <p>&copy; 2025 Jarred Thomas. All rights reserved.</p>
+    <!-- Footer -->
+    <footer id="footer" class="footer position-relative">
+        <div class="container">
+            <h3 class="sitename">Jarred Thomas</h3>
+            <p>Cloud Engineer specialising in AWS, Terraform, and Kubernetes. Building scalable, secure infrastructure solutions.</p>
+            <div class="social-links d-flex justify-content-center">
+                <a href="https://github.com/JThomas404" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/jarred-thomas" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
+                <a href="mailto:jarredthomas101@gmail.com"><i class="fas fa-envelope"></i></a>
+            </div>
+            <div class="container">
+                <div class="copyright">
+                    <span>Copyright</span> <strong class="px-1 sitename">Jarred Thomas</strong> <span>All Rights Reserved</span>
+                </div>
+            </div>
+        </div>
     </footer>
 
-    <script src="js/script.js"></script>
+    <!-- Scroll Top -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="fas fa-arrow-up"></i></a>
+
+    <!-- Preloader -->
+    <div id="preloader"></div>
+
+
+
+    <!-- Enhanced JS -->
+    <script src="js/main.js"></script>
+    <script src="js/faq-assistant.js"></script>
+    
+    <!-- AOS Animation Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 600,
+            easing: 'ease-in-out',
+            once: true,
+            mirror: false
+        });
+    </script>
+
 </body>
 
 </html>

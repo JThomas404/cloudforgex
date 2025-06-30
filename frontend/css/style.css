@@ -1,55 +1,796 @@
-/* Dark Theme Base */
-body {
-    margin: 0;
-    padding: 0;
-    font-family: "Segoe UI", sans-serif;
-    background-color: #0f0f0f;
-    color: #f0f0f0;
+/* 1. Global Styles & Template Variables */
+:root {
+    --default-font: "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --heading-font: "Raleway", sans-serif;
+    --nav-font: "Poppins", sans-serif;
+    --background-color: #121212;
+    --default-color: #f1f1f1;
+    --heading-color: #ffffff;
+    --accent-color: #1fa2ff;
+    --surface-color: #1a1a1a;
+    --contrast-color: #ffffff;
 }
 
-/* Container */
-.container {
+body,
+html {
+    margin: 0;
+    padding: 0;
+    font-family: var(--default-font);
+    background-color: var(--background-color);
+    color: var(--default-color);
+    line-height: 1.6;
+    scroll-behavior: smooth;
+}
+
+a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+a:hover {
+    color: color-mix(in srgb, var(--accent-color), transparent 25%);
+    text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--heading-color);
+    font-family: var(--heading-font);
+}
+
+/* 2. Container utilities handled by Bootstrap grid system */
+
+/* 2.1. Section Spacing */
+section:not(#hero) {
+    margin: 0 auto;
+    max-width: 1000px;
+    padding: 60px 20px;
+    overflow: clip;
+}
+
+/* 3. Hero Section */
+.hero {
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    padding: 80px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.hero.dark-background {
+    background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 100%);
+}
+
+.hero h1 {
+    margin: 0;
+    font-size: 64px;
+    font-weight: 700;
+    color: var(--heading-color);
+}
+
+.hero h1 span {
+    color: var(--accent-color);
+}
+
+.hero h2 {
+    margin: 5px 0 20px 0;
+    font-size: 26px;
+    color: var(--default-color);
+}
+
+.hero .social-links {
+    margin-top: 25px;
+}
+
+.hero .social-links a {
+    font-size: 32px;
+    display: inline-block;
+    color: color-mix(in srgb, var(--default-color), transparent 10%);
+    line-height: 1;
+    margin-right: 20px;
+    transition: 0.3s;
+}
+
+.hero .social-links a:hover {
+    color: var(--accent-color);
+}
+
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 32px;
+    }
+    .hero h2 {
+        font-size: 20px;
+    }
+}
+
+/* 3.1. Button Styles */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background: var(--accent-color);
+    color: var(--contrast-color);
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background 0.3s;
+    margin-top: 20px;
+}
+
+.btn:hover {
+    background: color-mix(in srgb, var(--accent-color), transparent 20%);
+}
+
+/* 4. Header & Navigation */
+.header {
+    color: var(--default-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    padding: 0 15px;
+    transition: all ease-in-out 0.3s;
+    overflow-y: auto;
+    z-index: 1000;
+    min-width: 200px;
+    background-color: var(--surface-color);
+}
+
+@media (max-width: 1199px) {
+    .header {
+        background-color: var(--background-color);
+        border-right: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+        width: 300px;
+        left: -100%;
+    }
+}
+
+@media (min-width: 1200px) {
+    .header ~ main {
+        margin-left: 200px;
+    }
+}
+
+.header.header-show {
+    left: 0;
+}
+
+.header .header-toggle {
+    color: var(--contrast-color);
+    background-color: var(--accent-color);
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 1002;
+    transition: background-color 0.3s;
+    border: none;
+}
+
+.header .header-toggle:hover {
+    background-color: color-mix(in srgb, var(--accent-color) 90%, white 15%);
+}
+
+.navmenu {
+    padding: 20px 0;
+    z-index: 1001;
+}
+
+.navmenu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 140px;
+}
+
+.navmenu a {
+    color: var(--default-color);
+    font-family: var(--nav-font);
+    display: flex;
+    align-items: center;
+    padding: 10px 18px;
+    margin-bottom: 8px;
+    font-size: 15px;
+    border-radius: 50px;
+    background: color-mix(in srgb, var(--default-color), transparent 85%);
+    height: 56px;
+    width: 100%;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.navmenu a i {
+    font-size: 20px;
+    margin-right: 8px;
+}
+
+.navmenu a span {
+    padding: 0 5px 0 7px;
+}
+
+@media (min-width: 992px) {
+    .navmenu a {
+        max-width: 56px;
+    }
+    .navmenu a span {
+        display: none;
+    }
+}
+
+.navmenu a:hover,
+.navmenu .active {
+    color: var(--contrast-color);
+    background: var(--accent-color);
+    max-width: 100%;
+}
+
+.navmenu a:hover span {
+    display: block;
+}
+
+/* 5. Sections & Titles */
+
+.section-title {
+    text-align: center;
+    padding-bottom: 60px;
+    position: relative;
+}
+
+.section-title h2 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    position: relative;
+    color: var(--heading-color);
+}
+
+.section-title h2:before {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 160px;
+    height: 1px;
+    background: color-mix(in srgb, var(--default-color), transparent 60%);
+    left: 0;
+    right: 0;
+    bottom: 1px;
+    margin: auto;
+}
+
+.section-title h2::after {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: var(--accent-color);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+.section-title p {
+    margin-bottom: 0;
+    color: color-mix(in srgb, var(--default-color), transparent 20%);
+}
+
+/* 5.1. About Me Card - Frontend-v2 Style */
+.about-card {
+    background: var(--surface-color);
+    padding: 25px;
+    border-radius: 10px;
+    border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+    transition: transform 0.3s;
+    margin: 40px 0;
+}
+
+.about-card:hover {
+    transform: scale(1.05);
+}
+
+.about-card h3 {
+    color: var(--accent-color);
+    margin-bottom: 10px;
+}
+
+.about-card p {
+    color: var(--default-color);
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.about-card .text-purple {
+    color: var(--accent-color);
+}
+
+/* 6. Skills Grid - Frontend-v2 Style */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin: 40px 0;
+}
+
+/* Skill Item Styles for Skills Grid */
+.skill-item {
+    background: var(--surface-color);
+    padding: 25px 20px;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.3s ease;
+    border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 2rem;
-    text-align: center;
 }
 
-/* Header */
-header h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
+.skill-item:hover {
+    transform: scale(1.05);
 }
 
-header p {
-    font-size: 1.2rem;
-    max-width: 600px;
+.skill-item img {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease;
 }
 
-/* Button */
-.button {
+.skill-item img:hover {
+    transform: scale(1.1);
+}
+
+.skill-item i {
+    font-size: 64px;
+    margin-bottom: 15px;
+    color: var(--accent-color);
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.skill-item i:hover {
+    transform: scale(1.1);
+}
+
+.skill-item h4 {
+    color: var(--accent-color);
+    margin: 10px 0 5px 0;
+    font-size: 18px;
+}
+
+.skill-item p {
+    color: color-mix(in srgb, var(--default-color), transparent 30%);
+    font-size: 14px;
+    margin: 0;
+}
+
+/* 6.1. Certifications & Projects Grid - Frontend-v2 Style */
+.certifications-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-auto-rows: 1fr;
+    gap: 30px;
+    margin: 40px 0;
+    align-items: stretch;
+}
+
+.cert-item {
+    background: var(--surface-color);
+    padding: 25px;
+    border-radius: 10px;
+    border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+    transition: transform 0.3s;
+    display: flex;
+    flex-direction: column;
+    height: 380px;
+}
+
+.cert-item:hover {
+    transform: scale(1.05);
+}
+
+.cert-item h4 {
+    color: var(--accent-color);
+    margin-bottom: 15px;
+    font-size: 20px;
+    line-height: 1.3;
+}
+
+.cert-item p {
+    color: var(--default-color);
+    line-height: 1.6;
+    margin-bottom: 15px;
+    flex: 1;
+}
+
+.cert-item .btn-project {
+    margin-top: auto;
+    align-self: flex-start;
+}
+
+/* 6.2. Button Project Styles */
+.btn-project {
     display: inline-block;
-    margin-top: 1.5rem;
-    padding: 0.75rem 1.5rem;
-    background-color: #1e90ff;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
+    padding: 10px 20px;
+    background: var(--accent-color);
+    color: var(--contrast-color);
+    border-radius: 25px;
     text-decoration: none;
-    transition: background 0.3s ease;
+    transition: 0.3s;
+    font-weight: 500;
 }
 
-.button:hover {
-    background-color: #0077cc;
+.btn-project:hover {
+    background: color-mix(in srgb, var(--accent-color), transparent 20%);
+    transform: translateY(-2px);
 }
 
-/* Footer */
-footer {
+/* 7. Experience Timeline */
+.experience-timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline-item {
+    position: relative;
+    padding: 20px 0;
+    border-left: 2px solid var(--accent-color);
+    padding-left: 30px;
+    margin-bottom: 30px;
+}
+
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    left: -9px;
+    top: 25px;
+    background: var(--accent-color);
+    border: 3px solid var(--background-color);
+}
+
+.timeline-date {
+    color: var(--accent-color);
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* 8. Contact Section */
+.contact-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    background: var(--surface-color);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+}
+
+.contact-item i {
+    font-size: 24px;
+    color: var(--accent-color);
+    margin-right: 15px;
+    width: 40px;
     text-align: center;
-    padding: 1rem 0;
-    font-size: 0.9rem;
-    opacity: 0.6;
+}
+
+.contact-item h4 {
+    margin: 0 0 5px 0;
+    color: var(--heading-color);
+}
+
+.contact-item p {
+    margin: 0;
+    color: var(--default-color);
+}
+
+/* 9. Social Links */
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+}
+
+.social-links a {
+    color: var(--default-color);
+    font-size: 24px;
+    transition: color 0.3s;
+}
+
+.social-links a:hover {
+    color: var(--accent-color);
+}
+
+/* 10. Footer */
+.footer {
+    color: var(--default-color);
+    background-color: var(--surface-color);
+    font-size: 14px;
+    text-align: center;
+    padding: 40px 0;
+    position: relative;
+    margin-top: 60px;
+}
+
+.footer h3 {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 15px 0;
+}
+
+.footer p {
+    font-size: 15px;
+    font-style: italic;
+    padding: 0;
+    margin: 0 0 30px 0;
+}
+
+.footer .social-links {
+    margin: 0 0 30px 0;
+}
+
+.footer .social-links a {
+    font-size: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-color);
+    color: var(--contrast-color);
+    line-height: 1;
+    margin: 0 4px;
+    border-radius: 50%;
+    text-align: center;
+    width: 40px;
+    height: 40px;
+    transition: 0.3s;
+}
+
+.footer .social-links a:hover {
+    background: color-mix(in srgb, var(--accent-color), transparent 20%);
+    transform: translateY(-2px);
+}
+
+.footer .copyright {
+    padding-top: 25px;
+    border-top: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+}
+
+/* 11. Preloader */
+#preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    overflow: hidden;
+    background: var(--background-color);
+    transition: all 0.6s ease-out;
+}
+
+#preloader:before {
+    content: "";
+    position: fixed;
+    top: calc(50% - 30px);
+    left: calc(50% - 30px);
+    border: 6px solid var(--accent-color);
+    border-color: var(--accent-color) transparent var(--accent-color) transparent;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: animate-preloader 1.5s linear infinite;
+}
+
+@keyframes animate-preloader {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 12. Scroll Top */
+.scroll-top {
+    position: fixed;
+    visibility: hidden;
+    opacity: 0;
+    right: 15px;
+    bottom: 15px;
+    z-index: 1003;
+    background: var(--accent-color);
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    transition: all 0.4s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.scroll-top i {
+    font-size: 24px;
+    color: var(--contrast-color);
+    line-height: 0;
+}
+
+.scroll-top:hover {
+    background: color-mix(in srgb, var(--accent-color), transparent 20%);
+    color: var(--contrast-color);
+}
+
+.scroll-top.active {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* 13. Accessibility & Focus States */
+a:focus, button:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* 14. Media Queries for Responsive Layout */
+@media (max-width: 1199px) {
+    .header ~ main {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .skills-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .certifications-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .contact-info {
+        grid-template-columns: 1fr;
+    }
+    
+    section:not(#hero) {
+        padding: 40px 20px;
+    }
+    
+    .section-title {
+        padding-bottom: 40px;
+    }
+    
+    .section-title h2 {
+        font-size: 28px;
+    }
+}
+
+/* 15. Disable AOS animation delay on mobile */
+@media screen and (max-width: 768px) {
+    [data-aos-delay] {
+        transition-delay: 0 !important;
+    }
+}
+
+/* 16. Typing Animation */
+.typing::after {
+    content: '|';
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* 17. Bootstrap Grid System */
+.container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+@media (min-width: 576px) {
+    .container { max-width: 540px; }
+}
+
+@media (min-width: 768px) {
+    .container { max-width: 720px; }
+}
+
+@media (min-width: 992px) {
+    .container { max-width: 960px; }
+}
+
+@media (min-width: 1200px) {
+    .container { max-width: 1140px; }
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+.col-lg-8, .col-lg-9 {
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+@media (min-width: 992px) {
+    .col-lg-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
+    .col-lg-9 { flex: 0 0 75%; max-width: 75%; }
+}
+
+.justify-content-center {
+    justify-content: center !important;
+}
+
+.d-flex {
+    display: flex !important;
+}
+
+.flex-column {
+    flex-direction: column !important;
+}
+
+.align-items-center {
+    align-items: center !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.d-xl-none {
+    display: none !important;
+}
+
+@media (max-width: 1199.98px) {
+    .d-xl-none {
+        display: block !important;
+    }
+}
+
+.gy-4 > * {
+    margin-top: 1.5rem;
+}
+
+.py-3 {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+}
+
+.fst-italic {
+    font-style: italic !important;
+}
+
+.position-relative {
+    position: relative !important;
+}
+
+.px-1 {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+}
+
+.fw-semibold {
+    font-weight: 600 !important;
 }
