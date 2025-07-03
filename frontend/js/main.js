@@ -1,34 +1,57 @@
-// Header toggle functionality
+/**
+ * Initialize header toggle functionality for mobile navigation
+ * Handles opening/closing mobile menu and auto-close on navigation
+ */
 function initHeaderToggle() {
-    const headerToggleBtn = document.querySelector('.header-toggle');
-    const header = document.querySelector('#header');
-    
-    if (headerToggleBtn && header) {
+    try {
+        const headerToggleBtn = document.querySelector('.header-toggle');
+        const header = document.querySelector('#header');
+        
+        if (!headerToggleBtn || !header) {
+            console.warn('Header toggle elements not found');
+            return;
+        }
+        
         function headerToggle() {
             header.classList.toggle('header-show');
             headerToggleBtn.classList.toggle('fa-bars');
             headerToggleBtn.classList.toggle('fa-times');
         }
+        
         headerToggleBtn.addEventListener('click', headerToggle);
         
         // Hide mobile nav on same-page/hash links
-        document.querySelectorAll('#navmenu a').forEach(navmenu => {
-            navmenu.addEventListener('click', () => {
+        const navLinks = document.querySelectorAll('#navmenu a');
+        navLinks.forEach(navLink => {
+            navLink.addEventListener('click', () => {
                 if (header.classList.contains('header-show')) {
                     headerToggle();
                 }
             });
         });
+    } catch (error) {
+        console.error('Error initializing header toggle:', error);
     }
 }
 
-// Scroll top button
+/**
+ * Initialize scroll to top button functionality
+ * Shows/hides button based on scroll position and handles smooth scrolling
+ */
 function initScrollTop() {
-    let scrollTop = document.querySelector('.scroll-top');
-    
-    if (scrollTop) {
+    try {
+        const scrollTop = document.querySelector('.scroll-top');
+        
+        if (!scrollTop) {
+            console.warn('Scroll top button not found');
+            return;
+        }
+        
+        const SCROLL_THRESHOLD = 100;
+        
         function toggleScrollTop() {
-            window.scrollY > 100 ? scrollTop.classList.add('active') : scrollTop.classList.remove('active');
+            const shouldShow = window.scrollY > SCROLL_THRESHOLD;
+            scrollTop.classList.toggle('active', shouldShow);
         }
         
         scrollTop.addEventListener('click', (e) => {
@@ -41,33 +64,60 @@ function initScrollTop() {
         
         window.addEventListener('load', toggleScrollTop);
         document.addEventListener('scroll', toggleScrollTop);
+    } catch (error) {
+        console.error('Error initializing scroll top:', error);
     }
 }
 
-// Navmenu Scrollspy
+/**
+ * Initialize navigation menu scrollspy functionality
+ * Highlights active navigation links based on scroll position
+ */
 function initNavmenuScrollspy() {
-    let navmenulinks = document.querySelectorAll('.navmenu a');
-    
-    function navmenuScrollspy() {
-        navmenulinks.forEach(navmenulink => {
-            if (!navmenulink.hash) return;
-            let section = document.querySelector(navmenulink.hash);
-            if (!section) return;
-            let position = window.scrollY + 200;
-            if (position >= section.offsetTop && position <= (section.offsetTop + section.offsetHeight)) {
-                document.querySelectorAll('.navmenu a.active').forEach(link => link.classList.remove('active'));
-                navmenulink.classList.add('active');
-            } else {
-                navmenulink.classList.remove('active');
+    try {
+        const navmenulinks = document.querySelectorAll('.navmenu a');
+        
+        if (navmenulinks.length === 0) {
+            console.warn('No navigation menu links found for scrollspy');
+            return;
+        }
+        
+        const SCROLL_OFFSET = 200;
+        
+        function navmenuScrollspy() {
+            try {
+                navmenulinks.forEach(navmenulink => {
+                    if (!navmenulink.hash) return;
+                    const section = document.querySelector(navmenulink.hash);
+                    if (!section) return;
+                    
+                    const position = window.scrollY + SCROLL_OFFSET;
+                    const sectionTop = section.offsetTop;
+                    const sectionBottom = sectionTop + section.offsetHeight;
+                    
+                    if (position >= sectionTop && position <= sectionBottom) {
+                        document.querySelectorAll('.navmenu a.active').forEach(link => link.classList.remove('active'));
+                        navmenulink.classList.add('active');
+                    } else {
+                        navmenulink.classList.remove('active');
+                    }
+                });
+            } catch (error) {
+                console.warn('Error in scrollspy update:', error);
             }
-        });
+        }
+        
+        window.addEventListener('load', navmenuScrollspy);
+        document.addEventListener('scroll', navmenuScrollspy);
+    } catch (error) {
+        console.error('Error initializing navigation scrollspy:', error);
     }
-    
-    window.addEventListener('load', navmenuScrollspy);
-    document.addEventListener('scroll', navmenuScrollspy);
 }
 
-// Preloader
+/**
+ * Initialize preloader functionality
+ * Removes preloader element when page is fully loaded
+ */
 function initPreloader() {
     const preloader = document.querySelector('#preloader');
     if (preloader) {
@@ -77,64 +127,46 @@ function initPreloader() {
     }
 }
 
-  const text = "From Terraform to Kubernetes — I Design, Automate, and Secure the Cloud.";
-  const speed = 50;
-  let index = 0;
-  
-  function typeWriter() {
-    if (index < text.length) {
-      document.getElementById("typed-text").innerHTML += text.charAt(index);
-      index++;
-      setTimeout(typeWriter, speed);
-    }
-  }
-  
-  window.onload = typeWriter;
-  
-  // Chatbot functionality
-function initChatbot() {
-    const chatbotToggle = document.getElementById("chatbot-toggle");
-    const chatbotWindow = document.getElementById("chatbot-window");
-    const chatbotClose = document.getElementById("chatbot-close");
-    const chatbotForm = document.getElementById("chatbot-form");
-    const chatbotInput = document.getElementById("chatbot-input");
-    const chatbotMessages = document.getElementById("chatbot-messages");
+/**
+ * Typewriter effect for hero section
+ */
+function initTypewriter() {
+    const TYPEWRITER_CONFIG = {
+        text: "From Terraform to Kubernetes — I Design, Automate, and Secure the Cloud.",
+        speed: 50
+    };
     
-    if (chatbotToggle && chatbotWindow && chatbotClose) {
-        chatbotToggle.onclick = () => chatbotWindow.classList.toggle("hidden");
-        chatbotClose.onclick = () => chatbotWindow.classList.add("hidden");
-        
-        if (chatbotForm) {
-            chatbotForm.onsubmit = function(e) {
-                e.preventDefault();
-                if (chatbotInput.value.trim() === '') return;
-                
-                // Add user message
-                const userMsg = document.createElement('div');
-                userMsg.className = 'message user';
-                userMsg.innerText = chatbotInput.value;
-                chatbotMessages.appendChild(userMsg);
-                
-                // Add bot response
-                const botMsg = document.createElement('div');
-                botMsg.className = 'message bot';
-                botMsg.innerText = '🤖 Claude integration coming soon! For now, check out the GitHub projects or contact Jarred directly.';
-                chatbotMessages.appendChild(botMsg);
-                
-                chatbotInput.value = '';
-                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-            };
+    const element = document.getElementById('typed-text');
+    if (!element) return;
+    
+    let index = 0;
+    
+    function typeWriter() {
+        if (index < TYPEWRITER_CONFIG.text.length) {
+            element.innerHTML += TYPEWRITER_CONFIG.text.charAt(index);
+            index++;
+            setTimeout(typeWriter, TYPEWRITER_CONFIG.speed);
         }
     }
+    
+    typeWriter();
 }
+  
 
-// Initialize all functionality
+
+/**
+ * Initialize all functionality when DOM is loaded
+ */
 document.addEventListener('DOMContentLoaded', function() {
-    initHeaderToggle();
-    initScrollTop();
-    initNavmenuScrollspy();
-    initPreloader();
-    initChatbot();
+    try {
+        initHeaderToggle();
+        initScrollTop();
+        initNavmenuScrollspy();
+        initPreloader();
+        initTypewriter();
+    } catch (error) {
+        console.error('Error during initialization:', error);
+    }
 });
 
 

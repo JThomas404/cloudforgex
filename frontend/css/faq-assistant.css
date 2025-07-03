@@ -1,5 +1,4 @@
-
-/* EVE Assistant Styles */
+/* EVE Assistant - Clean Implementation */
 .faq-assistant {
   position: fixed;
   bottom: 30px;
@@ -7,7 +6,7 @@
   z-index: 1004;
   font-family: var(--nav-font, 'Poppins', sans-serif);
   width: 380px;
-  transition: all 0.1s ease;
+  transition: all 0.3s ease;
 }
 
 .faq-header {
@@ -18,7 +17,7 @@
   display: flex;
   align-items: center;
   cursor: pointer;
-  transition: background 0.1s;
+  transition: background 0.3s;
 }
 
 .faq-header:hover {
@@ -29,13 +28,12 @@
   margin-right: 8px;
 }
 
-/* Complete FAQ Assistant Styles */
 .faq-content {
   background: var(--surface-color, #1a1a1a);
   border-radius: 0 0 12px 12px;
   min-height: 350px;
   overflow: hidden;
-  transition: all 0.1s ease;
+  transition: all 0.3s ease;
 }
 
 .faq-messages {
@@ -57,6 +55,16 @@
   border-radius: 12px;
   font-size: 14px;
   line-height: 1.5;
+  transition: opacity 0.1s ease;
+}
+
+.message-content.typewriter-cursor {
+  transition: min-height 0.1s ease;
+}
+
+.message-content.typewriter-cursor a {
+  pointer-events: none;
+  cursor: text;
 }
 
 .faq-input-container {
@@ -76,10 +84,12 @@
   color: var(--default-color, #f1f1f1);
   font-size: 14px;
   outline: none;
+  transition: all 0.2s ease;
 }
 
 #faq-input:focus {
   border-color: var(--accent-color, #1fa2ff);
+  box-shadow: 0 0 0 3px rgba(31, 162, 255, 0.1);
 }
 
 .faq-send-btn {
@@ -93,11 +103,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.1s;
+  transition: all 0.2s ease;
 }
 
 .faq-send-btn:hover {
   background: #0d8ce8;
+  transform: translateY(-2px);
 }
 
 .faq-toggle {
@@ -108,7 +119,7 @@
   padding: 4px;
 }
 
-/* Expanded/Collapsed States */
+/* States */
 .faq-assistant.collapsed {
   width: auto;
 }
@@ -125,16 +136,7 @@
   display: block;
 }
 
-.faq-assistant.expanded .faq-toggle i {
-  transform: rotate(180deg);
-  transition: transform 0.1s ease;
-}
-
-.faq-toggle i {
-  transition: transform 0.1s ease;
-}
-
-/* Clickable Suggested Questions */
+/* Clickable Trigger */
 .suggested-questions-trigger {
   color: var(--accent-color, #1fa2ff);
   cursor: pointer;
@@ -146,18 +148,7 @@
   color: #0d8ce8;
 }
 
-/* Typewriter Cursor */
-.typewriter-cursor::after {
-  content: '|';
-  animation: blink 1s infinite;
-}
-
-@keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
-
-/* User Message Styling */
+/* User Messages */
 .user-message {
   display: flex;
   justify-content: flex-end;
@@ -169,33 +160,32 @@
   max-width: 80%;
 }
 
-/* Suggested Questions Styling */
-.suggested-questions-list {
-  margin: 15px 0;
+/* Question Buttons */
+.eve-questions {
+  margin: 16px 0 0 0;
   padding: 0;
-  list-style: none;
 }
 
-.suggested-question-item {
+.eve-question {
+  display: block;
+  width: 100%;
   margin: 8px 0;
   padding: 12px 16px;
   background: rgba(31, 162, 255, 0.1);
+  color: var(--default-color, #f1f1f1);
   border: 1px solid rgba(31, 162, 255, 0.3);
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.1s ease;
   font-size: 14px;
-  line-height: 1.4;
+  text-align: left;
+  transition: all 0.2s ease;
+  font-family: inherit;
 }
 
-.suggested-question-item:hover {
+.eve-question:hover {
   background: rgba(31, 162, 255, 0.2);
   border-color: var(--accent-color, #1fa2ff);
-  transform: translateX(4px);
-}
-
-.suggested-question-item:active {
-  transform: translateX(2px);
+  transform: translateY(-1px);
 }
 
 /* Thinking Indicator */
@@ -205,6 +195,10 @@
   gap: 8px;
   font-style: italic;
   opacity: 0.7;
+  background: rgba(31, 162, 255, 0.05);
+  border-left: 3px solid var(--accent-color, #1fa2ff);
+  padding: 12px 16px;
+  border-radius: 8px;
 }
 
 .thinking-dots {
@@ -229,68 +223,45 @@
   40% { transform: scale(1); opacity: 1; }
 }
 
-/* Mobile Full-Screen */
-@media (max-width: 768px) {
-  .faq-assistant {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100vh;
-    border-radius: 0;
-  }
-  
-  .faq-header {
-    border-radius: 0;
-    position: relative;
-  }
-  
-  .faq-content {
-    border-radius: 0;
-    height: calc(100vh - 60px);
-    min-height: calc(100vh - 60px);
-    max-height: calc(100vh - 60px);
-  }
-  
-  .faq-messages {
-    height: calc(100vh - 140px);
-    max-height: calc(100vh - 140px);
-  }
-  
-  /* Add close button for mobile */
-  .faq-assistant.expanded .faq-header::after {
-    content: '×';
-    position: absolute;
-    right: 60px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 24px;
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    pointer-events: all;
-  }
-  
-  .faq-assistant.expanded .faq-header::after:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
-  
-  /* Mobile suggested questions optimization */
-  .suggested-question-item {
-    padding: 16px;
-    font-size: 15px;
-    margin: 10px 0;
-  }
-  
-  .suggested-question-item:hover {
-    transform: none; /* Remove slide effect on mobile */
-    background: rgba(31, 162, 255, 0.25);
-  }
+/* Typewriter Cursor */
+.typewriter-cursor::after {
+  content: '|';
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* HTML Content Styling */
+.message-content a {
+  color: var(--accent-color, #1fa2ff);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.message-content a:hover {
+  color: #0d8ce8;
+  border-bottom-color: #0d8ce8;
+}
+
+.message-content strong {
+  color: var(--accent-color, #1fa2ff);
+  font-weight: 600;
+}
+
+.message-content em {
+  color: rgba(241, 241, 241, 0.9);
+  font-style: italic;
+}
+
+.message-content blockquote {
+  margin: 12px 0;
+  padding: 8px 12px;
+  border-left: 3px solid var(--accent-color, #1fa2ff);
+  background: rgba(31, 162, 255, 0.05);
+  font-style: italic;
+  border-radius: 0 6px 6px 0;
 }

@@ -1,102 +1,114 @@
-// EVE AI Assistant
+// EVE AI Assistant - Clean Implementation
 class EVEAssistant {
+    static TIMING = {
+        WELCOME_DELAY: 500,
+        TYPEWRITER_SPEED: 50,
+        THINKING_DURATION: 800,
+        QUESTION_CLICK_DELAY: 600
+    };
+    
     constructor() {
-        this.isExpanded = true; // Start expanded
-        this.suggestedQuestionsShown = false; // Track if suggested questions were shown
-        this.suggestedQuestions = [
-            "How was the chatbot built?",
-            "What are Jarred's future plans and aspirations?",
-            "What's Jarred's approach to problem-solving?",
-            "What tools and technologies does Jarred use most?",
-            "What certifications does Jarred hold?",
-            "What's Jarred's most impactful project?"
-        ];
+        this.isExpanded = true;
+        this.elements = {};
+        this.suggestedQuestions = [];
+        this.questionMapping = {
+            "How was the chatbot built?": "chatbot_built",
+            "What are Jarred's future plans and aspirations?": "future_plans",
+            "What's Jarred's approach to problem-solving?": "problem_solving",
+            "What tools and technologies does Jarred use most?": "tools_technologies",
+            "What certifications does Jarred hold?": "certifications",
+            "What's Jarred's most impactful project?": "most_impactful"
+        };
         this.knowledgeBase = {
-            "services": "Jarred offers cloud engineering services including AWS architecture, Terraform infrastructure as code, Kubernetes orchestration, DevOps automation, and cloud security consulting.",
-            "experience": "Jarred is an AWS Certified Solutions Architect with CCNA certification, specializing in cloud infrastructure, automation, and security. He has successfully completed projects including SQL Server migrations and cloud architecture implementations.",
-            "skills": "Jarred's technical skills include AWS, Azure, Terraform, Docker, Kubernetes, Python, Bash, PowerShell, GitHub Actions, and cloud security practices.",
-            "contact": "You can contact Jarred via email at jarredthomas101@gmail.com, connect on LinkedIn, or view his work on GitHub at JThomas404.",
-            "projects": "Jarred's notable projects include CloudForgeX (a complete AWS infrastructure portfolio) and SQL Server Migration with enhanced disaster recovery. All projects showcase real-world cloud engineering implementations.",
-            "certifications": "Jarred holds AWS Certified Solutions Architect - Associate (2024) and CCNA Cisco Certified Network Associate (2023) certifications, with Linux Foundation LFCS in progress.",
-            "chatbot_built": "You're actually speaking to me through a serverless architecture built on AWS! I'm powered by Claude Instant via Amazon Bedrock, with a modern JavaScript frontend using ES6 classes. The entire system runs on AWS infrastructure with Terraform IaC, featuring real-time message handling, typewriter animations, and responsive design. It's a perfect example of Jarred's cloud engineering expertise in action.",
-            "future_plans": "Jarred's vision is one of continuous evolution in cloud engineering. He's focused on mastering advanced AWS services, expanding into multi-cloud architectures, and developing expertise in AI/ML integration with cloud infrastructure. His goal is to become a recognized thought leader in cloud automation and help organizations transform their infrastructure for the modern digital landscape.",
-            "problem_solving": "Jarred approaches every problem with a mindset rooted in clarity, systematic analysis, and scalable solutions. He starts by understanding the root cause, evaluates multiple approaches, and implements solutions that not only fix immediate issues but prevent future problems. His methodology combines technical expertise with strategic thinking to deliver robust, maintainable infrastructure.",
-            "tools_technologies": "Jarred works with a modern, cloud-native toolset including AWS (his primary cloud platform), Terraform for Infrastructure as Code, Docker and Kubernetes for containerization, Python and Bash for automation, GitHub Actions for CI/CD, and PowerShell for Windows environments. He's constantly expanding his toolkit to stay current with emerging technologies.",
-            "most_impactful": "That would be Jarred's SQL Server Migration and Modernization project at SEIDOR Networks for Butternut Box. He prevented a critical system failure by leading a comprehensive root cause investigation, then architected and executed a strategic migration that included high availability setup, disaster recovery implementation, and modernized maintenance procedures. This project showcased his ability to work under pressure while delivering enterprise-grade solutions."
+            "chatbot_built": `You're actually speaking to me through a fully <a href="https://aws.amazon.com/serverless/" target="_blank">serverless architecture</a> built on AWS — and I think it's pretty elegant.<br><br>Here's how it works behind the scenes:<br><br>• When you send a message, it's routed through <a href="https://docs.aws.amazon.com/apigateway/" target="_blank">API Gateway</a><br>• That request triggers an <a href="https://docs.aws.amazon.com/lambda/" target="_blank">AWS Lambda</a> function, written in <a href="https://www.python.org/" target="_blank">Python</a><br>• I generate a response using <a href="https://www.anthropic.com/news/introducing-claude" target="_blank">Claude Instant</a> via <a href="https://aws.amazon.com/bedrock/" target="_blank">Amazon Bedrock</a><br>• The reply is returned and stored in <a href="https://docs.aws.amazon.com/dynamodb/" target="_blank">Amazon DynamoDB</a> to track context<br><br>Jarred also uses <a href="https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html" target="_blank">SSM Parameter Store</a> for secret management and strict <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS" target="_blank">CORS policies</a> to secure communication.<br><br><blockquote>This setup is cloud-native, efficient, and ready to scale.</blockquote>`,
+            "future_plans": `I love this question... Jarred's vision is one of continuous evolution.<br><br> He's focused on staying ahead in both <a href="https://aws.amazon.com/what-is-cloud-computing/" target="_blank">cloud computing</a> and artificial intelligence, where <a href="https://en.wikipedia.org/wiki/Automation" target="_blank">automation</a>, scalability, and smart design converge. One area he's especially excited about is the <em><a href="https://aws.amazon.com/blogs/machine-learning/unlocking-the-power-of-model-context-protocol-mcp-on-aws/" target="_blank">Model Context Protocol (MCP)</a></em> — a framework that brings AI agents into cloud environments to make decisions more intelligently, efficiently, and securely.<br><br>Behind the scenes, Jarred is sharpening his skills in <a href="https://www.python.org/" target="_blank">Python</a> and <a href="https://www.json.org/" target="_blank">JSON</a> — the core languages that power cloud automation and AI integration. These tools help him build systems that aren't just functional… they're adaptive, resilient, and ready for what's next.<br><br><blockquote>In short: Jarred's goal is to architect platforms that are not only scalable and secure — but intelligent, self-evolving, and built for the future.</blockquote>`,
+            "problem_solving": `Jarred approaches every problem like a system designer — grounded in fundamentals and focused on long-term clarity, not just quick fixes.<br><br> He believes that the key to effective problem-solving lies in asking the <em>right questions</em>, not jumping straight to implementation. His method balances strategic thinking with hands-on technical depth.<br><br>Here's how he works:<br><br>• <strong>Clarifies the fundamentals</strong> — before touching any tools, he ensures he understands <em>why</em> the problem exists and what the <em>ideal outcome</em> looks like<br>• <strong>Breaks the problem into layers</strong> — infrastructure, logic, automation, and user outcomes are treated as distinct components that must align<br>• <strong>Avoids over-engineering</strong> — he keeps solutions lean, elegant, and easy to maintain, choosing simplicity over complexity<br>• <strong>Validates through iteration</strong> — rather than assuming, he tests early and often, adapting based on real-world feedback<br>• <strong>Builds for maintainability</strong> — every solution is designed with the next engineer in mind: clear structure, smart defaults, and minimal surprises<br><br><blockquote>Jarred doesn't just fix things — he <em>understands</em>, <em>simplifies</em>, and <em>builds to last</em>. That's what sets his approach apart.</blockquote>`,
+            "tools_technologies": `Jarred works with a toolset designed for <strong>automation</strong>, <strong>security</strong>, and <strong>cloud scalability</strong>. His strength lies in how he connects and automates across platforms.<br><br>• <strong>Cloud & Infrastructure:</strong> AWS, Azure, Terraform, Docker, GitHub Actions, CI/CD<br>• <strong>Scripting & Automation:</strong> Python, Boto3, Bash, PowerShell, JSON, YAML<br>• <strong>Key AWS Services:</strong> Lambda, API Gateway, DynamoDB, Bedrock, S3, Route 53, CloudFront, IAM, SSM, CloudWatch<br>• <strong>Developer Tools:</strong> VS Code, Git, Postman, Notion, Nginx<br><br><blockquote>He doesn't just use tools — he <em>orchestrates</em> them to build resilient, modular, and intelligent cloud-native systems.</blockquote>`,
+            "certifications": `Jarred's certifications reflect his commitment to real-world expertise and platform fluency:<br><br>• <a href="https://cloudforgex-certs.s3.us-east-1.amazonaws.com/certificates/AWS%20Certified%20Solutions%20Architect%20-%20Associate%20certificate.pdf" target="_blank">AWS Certified Solutions Architect – Associate (SAA-C03)</a><br>• <a href="https://cloudforgex-certs.s3.us-east-1.amazonaws.com/certificates/AWS%20Certified%20Cloud%20Practitioner%20certificate.pdf" target="_blank">AWS Certified Cloud Practitioner (CLF-C02)</a><br>• <a href="https://cloudforgex-certs.s3.us-east-1.amazonaws.com/certificates/CCNA%20Cisco%20Certified%20Network%20Associate%20certificate.pdf" target="_blank">Cisco Certified Network Associate (CCNA)</a><br>• <a href="https://cloudforgex-certs.s3.us-east-1.amazonaws.com/certificates/Microsoft%20Certified-%20Azure%20Fundamentals%20(AZ-900).pdf" target="_blank">Microsoft Certified: Azure Fundamentals (AZ-900)</a><br>• <a href="https://cloudforgex-certs.s3.us-east-1.amazonaws.com/certificates/Power%20Platform%20Fundamentals%20(PL-900).pdf" target="_blank">Power Platform Fundamentals (PL-900)</a><br>• <a href="https://cloudforgex-certs.s3.us-east-1.amazonaws.com/certificates/Mimecast%20Email%20Security%20Cloud%20Gateway%20Fundamentals%20Certification.pdf" target="_blank">Mimecast Cloud Gateway Fundamentals</a><br>• <a href="https://cloudforgex-certs.s3.us-east-1.amazonaws.com/certificates/Python%20Programming%20for%20AWS%20(Boto3).pdf" target="_blank">Python Programming for AWS (Boto3)</a><br>• <a href="https://cloudforgex-certs.s3.us-east-1.amazonaws.com/certificates/Docker%20Mastery%20%2B%20Adrian%20Cantrill's%20Docker%20Fundamentals.pdf" target="_blank">Docker Mastery + Adrian Cantrill's Docker Fundamentals</a><br>• <a href="https://cloudforgex-certs.s3.us-east-1.amazonaws.com/certificates/Terraform%20Associate%20Hands-On%20Labs.pdf" target="_blank">Terraform Associate Hands-On Labs</a><br>• Linux Foundation Certified Systems Administrator <em>(in progress)</em><br><br>These show not just study — but <em>depth, breadth, and applied competence</em>.`,
+            "most_impactful": `<strong>Jarred's most defining project is his <a href="https://github.com/JThomas404/AWS-Automation-with-Python-Boto3-and-Lambda-Projects" target="_blank">Serverless Web Application Project</a></strong> — but what made it truly impactful wasn't just what he built, but how he rebuilt it.<br><br>The first two launches failed — not because the system didn't work, but because Jarred was focused on what worked... not on what worked best. That setback forced him to think like a real cloud engineer to build not just functional architecture, but resilient, scalable, and maintainable systems that would stand up in production environments.<br><br>He took on multiple roles:<br><br>• <strong>DevOps Engineer</strong> – wrote the backend and deployed the frontend<br>• <strong>Solutions Architect</strong> – designed the infrastructure using <a href="https://www.terraform.io/" target="_blank">Terraform</a> and <a href="https://docs.github.com/en/actions" target="_blank">GitHub Actions</a><br>• <strong>Cloud Engineer</strong> – automated and secured the full deployment in AWS<br><br>That failure taught Jarred how to rebuild with clarity, humility, and discipline — and it became the project that shaped his mindset more than any certification ever could.`
         };
         this.init();
     }
 
-    init() {
+    async init() {
+        await this.loadQuestions();
+        this.cacheElements();
         this.bindEvents();
-        // Start in expanded state
         this.setExpandedState();
-        // Show EVE's welcome message immediately
-        setTimeout(() => {
-            this.typeEVEWelcomeMessage();
-        }, 500);
+        setTimeout(() => this.showWelcome(), EVEAssistant.TIMING.WELCOME_DELAY);
+    }
+    
+    async loadQuestions() {
+        try {
+            const response = await fetch('/data/suggested-questions.json');
+            this.suggestedQuestions = await response.json();
+        } catch (error) {
+            this.suggestedQuestions = [
+                "How was the chatbot built?",
+                "What are Jarred's future plans and aspirations?",
+                "What's Jarred's approach to problem-solving?",
+                "What tools and technologies does Jarred use most?",
+                "What certifications does Jarred hold?",
+                "What's Jarred's most impactful project?"
+            ];
+        }
+    }
+    
+    cacheElements() {
+        this.elements = {
+            assistant: document.getElementById('faq-assistant'),
+            header: document.querySelector('.faq-header'),
+            input: document.getElementById('faq-input'),
+            sendBtn: document.getElementById('faq-send'),
+            messagesContainer: document.getElementById('faq-messages'),
+            welcomeText: document.getElementById('welcome-text')
+        };
     }
 
     bindEvents() {
-        const header = document.querySelector('.faq-header');
-        const input = document.getElementById('faq-input');
-        const sendBtn = document.getElementById('faq-send');
-
-        header.addEventListener('click', (e) => {
-            // Check if clicked on mobile close area (right side of header on mobile)
-            if (window.innerWidth <= 768) {
-                const rect = header.getBoundingClientRect();
-                const clickX = e.clientX - rect.left;
-                if (clickX > rect.width - 100) {
-                    this.setCollapsedState();
-                    return;
-                }
-            }
-            this.toggleChat();
-        });
+        if (this.elements.header) {
+            this.elements.header.addEventListener('click', () => this.toggleChat());
+        }
         
-        if (input) {
-            input.addEventListener('keypress', (e) => {
+        if (this.elements.input) {
+            this.elements.input.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') this.sendMessage();
             });
         }
         
-        if (sendBtn) {
-            sendBtn.addEventListener('click', () => this.sendMessage());
+        if (this.elements.sendBtn) {
+            this.elements.sendBtn.addEventListener('click', () => this.sendMessage());
         }
     }
 
-    setCollapsedState() {
-        const assistant = document.getElementById('faq-assistant');
-        assistant.classList.add('collapsed');
-        assistant.classList.remove('expanded');
-        this.isExpanded = false;
-    }
-
     setExpandedState() {
-        const assistant = document.getElementById('faq-assistant');
-        assistant.classList.remove('collapsed');
-        assistant.classList.add('expanded');
-        this.isExpanded = true;
+        if (this.elements.assistant) {
+            this.elements.assistant.classList.remove('collapsed');
+            this.elements.assistant.classList.add('expanded');
+            this.isExpanded = true;
+        }
     }
 
     toggleChat() {
         if (this.isExpanded) {
-            this.setCollapsedState();
+            this.elements.assistant.classList.add('collapsed');
+            this.elements.assistant.classList.remove('expanded');
+            this.isExpanded = false;
         } else {
             this.setExpandedState();
         }
     }
 
-    typeEVEWelcomeMessage() {
-        const welcomeText = "Hi! I'm EVE, an AI chatbot powered by Claude Instant via Amazon Bedrock. Ask me anything about Jarred's work, projects, or certifications. Not sure what to ask? Try the @suggestedquestions below";
-        const element = document.getElementById('welcome-text');
-        if (element) {
-            this.typeWriterWithClickable(element, welcomeText, 50);
+    showWelcome() {
+        const welcomeText = "Hi! I'm EVE, your AI assistant. Ask me about Jarred's work, projects, or certifications. Try @suggestedquestions for ideas.";
+        if (this.elements.welcomeText) {
+            this.typeText(this.elements.welcomeText, welcomeText, () => {
+                this.makeClickable(this.elements.welcomeText);
+            });
         }
     }
 
-    typeWriter(element, text, speed = 50, callback = null) {
+    typeText(element, text, callback) {
         element.innerHTML = '';
         element.classList.add('typewriter-cursor');
         let i = 0;
@@ -107,37 +119,92 @@ class EVEAssistant {
                 i++;
             } else {
                 clearInterval(timer);
-                setTimeout(() => {
-                    element.classList.remove('typewriter-cursor');
-                    if (callback) callback();
-                }, 500);
+                element.classList.remove('typewriter-cursor');
+                if (callback) callback();
             }
-        }, speed);
+        }, EVEAssistant.TIMING.TYPEWRITER_SPEED);
     }
 
-    typeWriterWithClickable(element, text, speed = 50) {
-        element.innerHTML = '';
+    typeHTML(element, html, callback) {
+        // Set complete HTML structure with formatting
+        element.innerHTML = html;
         element.classList.add('typewriter-cursor');
-        let i = 0;
+        
+        // Get full height for animation target
+        const fullHeight = element.scrollHeight;
+        
+        // Setup overflow masking for growing bubble
+        element.style.maxHeight = '1.5em';
+        element.style.overflow = 'hidden';
+        element.style.transition = 'max-height 0.15s ease-out';
+        
+        // Get all text nodes for progressive reveal
+        const textNodes = this.getTextNodes(element);
+        const allText = textNodes.map(node => node.textContent).join('');
+        
+        // Store original text and clear all text nodes
+        const originalTexts = textNodes.map(node => node.textContent);
+        textNodes.forEach(node => node.textContent = '');
+        
+        // Progressive character reveal with live formatting and growing bubble
+        let charIndex = 0;
+        let nodeIndex = 0;
+        let nodeCharIndex = 0;
         
         const timer = setInterval(() => {
-            if (i < text.length) {
-                element.innerHTML += text.charAt(i);
-                i++;
+            if (charIndex < allText.length && nodeIndex < textNodes.length) {
+                const currentNode = textNodes[nodeIndex];
+                const originalText = originalTexts[nodeIndex];
+                
+                if (nodeCharIndex < originalText.length) {
+                    // Type character into formatted text node
+                    currentNode.textContent = originalText.substring(0, nodeCharIndex + 1);
+                    nodeCharIndex++;
+                    charIndex++;
+                    
+                    // Conservative bubble growth - only grow when needed
+                    const progress = charIndex / allText.length;
+                    const targetHeight = Math.min(fullHeight, element.scrollHeight);
+                    const currentHeight = 24 + (targetHeight - 24) * Math.pow(progress, 0.8); // Slower growth curve
+                    element.style.maxHeight = Math.ceil(currentHeight) + 'px';
+                } else {
+                    // Move to next text node
+                    nodeIndex++;
+                    nodeCharIndex = 0;
+                }
             } else {
                 clearInterval(timer);
-                setTimeout(() => {
-                    element.classList.remove('typewriter-cursor');
-                    // Make @suggestedquestions clickable
-                    this.makeClickableSuggestedQuestions(element);
-                }, 500);
+                element.classList.remove('typewriter-cursor');
+                element.style.maxHeight = '';
+                element.style.overflow = '';
+                element.style.transition = '';
+                if (callback) callback();
             }
-        }, speed);
+        }, EVEAssistant.TIMING.TYPEWRITER_SPEED);
+    }
+    
+    getTextNodes(element) {
+        const textNodes = [];
+        const walker = document.createTreeWalker(
+            element,
+            NodeFilter.SHOW_TEXT,
+            {
+                acceptNode: (node) => {
+                    // Only accept text nodes with actual content
+                    return node.textContent.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+                }
+            }
+        );
+        
+        let node;
+        while (node = walker.nextNode()) {
+            textNodes.push(node);
+        }
+        
+        return textNodes;
     }
 
-
-
-    makeClickableSuggestedQuestions(element) {
+    makeClickable(element) {
         const html = element.innerHTML;
         const clickableHtml = html.replace(
             '@suggestedquestions',
@@ -145,144 +212,55 @@ class EVEAssistant {
         );
         element.innerHTML = clickableHtml;
         
-        // Add click event
         const trigger = element.querySelector('.suggested-questions-trigger');
         if (trigger) {
             trigger.addEventListener('click', () => {
-                this.triggerSuggestedQuestions();
+                this.elements.input.value = '@suggestedquestions';
+                this.sendMessage();
             });
         }
     }
 
-    triggerSuggestedQuestions() {
-        const input = document.getElementById('faq-input');
-        if (input) {
-            input.value = '@suggestedquestions';
-            input.focus();
-            // Auto-send the message
-            setTimeout(() => {
-                this.sendMessage();
-            }, 100);
-        }
-    }
-
     sendMessage() {
-        const input = document.getElementById('faq-input');
-        const message = input.value.trim();
+        if (!this.elements.input) return;
         
+        const message = this.elements.input.value.trim();
         if (!message) return;
         
-        this.addMessage(message, 'user');
-        input.value = '';
+        this.addUserMessage(message);
+        this.elements.input.value = '';
         
-        // Show thinking indicator
-        this.showThinkingIndicator();
+        this.showThinking();
         
         setTimeout(() => {
-            this.hideThinkingIndicator();
+            this.hideThinking();
             const response = this.generateResponse(message);
             this.addBotMessage(response);
-        }, 800);
+        }, EVEAssistant.TIMING.THINKING_DURATION);
     }
 
-    addMessage(message, type) {
-        const messagesContainer = document.getElementById('faq-messages');
-        if (!messagesContainer || !message) return;
+    addUserMessage(message) {
+        if (!this.elements.messagesContainer) return;
         
-        try {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `faq-message ${type}-message`;
-            
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'message-content';
-            contentDiv.textContent = message; // Secure text rendering
-            messageDiv.appendChild(contentDiv);
-            
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        } catch (error) {
-            console.warn('Error adding message:', error);
-        }
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'faq-message user-message';
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        contentDiv.textContent = message;
+        messageDiv.appendChild(contentDiv);
+        
+        this.elements.messagesContainer.appendChild(messageDiv);
+        this.scrollToBottom();
     }
 
     addBotMessage(message) {
-        const messagesContainer = document.getElementById('faq-messages');
-        if (!messagesContainer || !message) return;
+        if (!this.elements.messagesContainer) return;
         
-        try {
-            // Check if this is a suggested questions response
-            if (message === "Here are some questions you can ask me:") {
-                this.addBotMessageWithQuestions(message);
-                return;
-            }
-            
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'faq-message bot-message';
-            
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'message-content';
-            messageDiv.appendChild(contentDiv);
-            
-            messagesContainer.appendChild(messageDiv);
-            
-            this.typeWriter(contentDiv, message, 50);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        } catch (error) {
-            console.warn('Error adding bot message:', error);
+        if (message === "Here are some questions you can ask me:") {
+            this.addQuestionsMessage(message);
+            return;
         }
-    }
-
-    generateResponse(question) {
-        const lowerQuestion = question.toLowerCase();
-        
-        // Handle suggested questions trigger (only show once)
-        if (lowerQuestion.includes('@suggestedquestions')) {
-            if (this.suggestedQuestionsShown) {
-                return "I've already shown you the suggested questions above. Feel free to click on any of them or ask me something else!";
-            }
-            this.suggestedQuestionsShown = true;
-            return this.createSuggestedQuestionsResponse();
-        }
-        
-        // Enhanced keyword matching for all knowledge base entries
-        for (const [key, value] of Object.entries(this.knowledgeBase)) {
-            if (lowerQuestion.includes(key) || 
-                (key === 'services' && (lowerQuestion.includes('what') || lowerQuestion.includes('do'))) ||
-                (key === 'contact' && lowerQuestion.includes('contact')) ||
-                (key === 'skills' && (lowerQuestion.includes('skill') || lowerQuestion.includes('technology'))) ||
-                (key === 'experience' && lowerQuestion.includes('experience')) ||
-                (key === 'projects' && lowerQuestion.includes('project')) ||
-                (key === 'certifications' && (lowerQuestion.includes('cert') || lowerQuestion.includes('qualification'))) ||
-                (key === 'chatbot_built' && (lowerQuestion.includes('chatbot') || lowerQuestion.includes('built'))) ||
-                (key === 'future_plans' && (lowerQuestion.includes('future') || lowerQuestion.includes('plans') || lowerQuestion.includes('aspirations'))) ||
-                (key === 'problem_solving' && (lowerQuestion.includes('problem') || lowerQuestion.includes('approach'))) ||
-                (key === 'tools_technologies' && (lowerQuestion.includes('tools') || lowerQuestion.includes('technologies') || lowerQuestion.includes('use most'))) ||
-                (key === 'most_impactful' && (lowerQuestion.includes('impactful') || lowerQuestion.includes('most important')))) {
-                return value;
-            }
-        }
-        
-        return "I'd be happy to help! You can ask me about Jarred's services, skills, experience, projects, certifications, or how to contact him. What would you like to know?";
-    }
-
-    createSuggestedQuestionsResponse() {
-        return "Here are some questions you can ask me:";
-    }
-
-    createSuggestedQuestionsHTML() {
-        let html = "<ul class='suggested-questions-list'>";
-        
-        this.suggestedQuestions.forEach(question => {
-            html += `<li class='suggested-question-item' data-question='${question}'>${question}</li>`;
-        });
-        
-        html += "</ul>";
-        return html;
-    }
-
-    addBotMessageWithQuestions(message) {
-        const messagesContainer = document.getElementById('faq-messages');
-        if (!messagesContainer) return;
         
         const messageDiv = document.createElement('div');
         messageDiv.className = 'faq-message bot-message';
@@ -291,58 +269,77 @@ class EVEAssistant {
         contentDiv.className = 'message-content';
         messageDiv.appendChild(contentDiv);
         
-        messagesContainer.appendChild(messageDiv);
+        this.elements.messagesContainer.appendChild(messageDiv);
         
-        // Type the intro text first
-        this.typeWriter(contentDiv, message, 50, () => {
-            // After typing completes, append the HTML list
-            const questionsHTML = this.createSuggestedQuestionsHTML();
-            contentDiv.innerHTML += questionsHTML;
-            
-            // Add click handlers to the questions
-            this.addSuggestedQuestionsClickHandlers(contentDiv);
-            
-            // Scroll after content is fully rendered
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        // Use HTML rendering for formatted responses
+        if (message.includes('<')) {
+            this.typeHTML(contentDiv, message);
+        } else {
+            this.typeText(contentDiv, message);
+        }
+        this.scrollToBottom();
+    }
+
+    addQuestionsMessage(message) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'faq-message bot-message';
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        messageDiv.appendChild(contentDiv);
+        
+        this.elements.messagesContainer.appendChild(messageDiv);
+        
+        this.typeText(contentDiv, message, () => {
+            this.addQuestions(contentDiv);
         });
     }
 
-    addSuggestedQuestionsClickHandlers(container) {
-        if (!container) return;
+    addQuestions(container) {
+        const questionsDiv = document.createElement('div');
+        questionsDiv.className = 'eve-questions';
         
-        try {
-            const questionItems = container.querySelectorAll('.suggested-question-item');
-            questionItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    const question = item.getAttribute('data-question');
-                    if (question) {
-                        this.handleSuggestedQuestionClick(question);
-                    }
-                });
-            });
-        } catch (error) {
-            console.warn('Error adding suggested questions click handlers:', error);
-        }
+        this.suggestedQuestions.forEach(question => {
+            const button = document.createElement('button');
+            button.className = 'eve-question';
+            button.textContent = question;
+            button.addEventListener('click', () => this.handleQuestionClick(question));
+            questionsDiv.appendChild(button);
+        });
+        
+        container.appendChild(questionsDiv);
+        this.scrollToBottom();
     }
 
-    handleSuggestedQuestionClick(question) {
-        // Add user message
-        this.addMessage(question, 'user');
+    handleQuestionClick(question) {
+        this.addUserMessage(question);
+        this.showThinking();
         
-        // Show thinking indicator
-        this.showThinkingIndicator();
-        
-        // Generate and add bot response
         setTimeout(() => {
-            this.hideThinkingIndicator();
+            this.hideThinking();
             const response = this.generateResponse(question);
             this.addBotMessage(response);
-        }, 600);
+        }, EVEAssistant.TIMING.QUESTION_CLICK_DELAY);
     }
 
-    showThinkingIndicator() {
-        const messagesContainer = document.getElementById('faq-messages');
-        if (!messagesContainer) return;
+    generateResponse(question) {
+        const trimmed = question.trim();
+        const lower = trimmed.toLowerCase();
+        
+        if (lower.includes('@suggestedquestions')) {
+            return "Here are some questions you can ask me:";
+        }
+        
+        if (this.questionMapping[trimmed]) {
+            const key = this.questionMapping[trimmed];
+            return this.knowledgeBase[key];
+        }
+        
+        return "I'd be happy to help! You can ask me about Jarred's services, skills, experience, projects, certifications, or how to contact him.";
+    }
+
+    showThinking() {
+        if (!this.elements.messagesContainer) return;
         
         const thinkingDiv = document.createElement('div');
         thinkingDiv.className = 'faq-message bot-message thinking-message';
@@ -357,19 +354,23 @@ class EVEAssistant {
             </div>
         `;
         
-        messagesContainer.appendChild(thinkingDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        this.elements.messagesContainer.appendChild(thinkingDiv);
+        this.scrollToBottom();
     }
 
-    hideThinkingIndicator() {
-        const thinkingMessage = document.querySelector('.thinking-message');
-        if (thinkingMessage) {
-            thinkingMessage.remove();
+    hideThinking() {
+        const thinking = document.querySelector('.thinking-message');
+        if (thinking) thinking.remove();
+    }
+
+    scrollToBottom() {
+        if (this.elements.messagesContainer) {
+            this.elements.messagesContainer.scrollTop = this.elements.messagesContainer.scrollHeight;
         }
     }
 }
 
-// Initialize EVE Assistant when DOM is loaded
+// Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    new EVEAssistant();
+    window.eveAssistant = new EVEAssistant();
 });
