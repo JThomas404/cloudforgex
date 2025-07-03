@@ -265,3 +265,60 @@
   font-style: italic;
   border-radius: 0 6px 6px 0;
 }
+
+/* Certificate Buttons - Simple ChatGPT Style */
+.cert-btn {
+  display: inline-block;
+  margin: 6px 0 8px 0;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 400;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  opacity: 0;
+  animation: fadeInUp 0.3s ease-out forwards;
+}
+
+.cert-btn:nth-of-type(1) { animation-delay: 0.1s; }
+.cert-btn:nth-of-type(2) { animation-delay: 0.2s; }
+.cert-btn:nth-of-type(3) { animation-delay: 0.3s; }
+.cert-btn:nth-of-type(4) { animation-delay: 0.4s; }
+.cert-btn:nth-of-type(5) { animation-delay: 0.5s; }
+.cert-btn:nth-of-type(6) { animation-delay: 0.6s; }
+.cert-btn:nth-of-type(7) { animation-delay: 0.7s; }
+.cert-btn:nth-of-type(8) { animation-delay: 0.8s; }
+.cert-btn:nth-of-type(9) { animation-delay: 0.9s; }
+
+.cert-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+}
+
+.cert-btn:active {
+  background: rgba(255, 255, 255, 0.08);
+  transform: scale(0.98);
+}
+
+.cert-list {
+  margin: 8px 0;
+}
+
+/* Simple Fade In Animation */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
