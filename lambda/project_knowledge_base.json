@@ -1,0 +1,361 @@
+{
+  "projects": [
+    {
+      "title": "CloudForgeX",
+      "summary": "Build a smart, serverless portfolio to showcase Jarred's AWS cloud engineering skills and integrate AI using Amazon Bedrock.",
+      "tech_stack": [
+        "Terraform",
+        "AWS Lambda",
+        "API Gateway",
+        "Amazon S3",
+        "CloudFront",
+        "Route 53",
+        "Amazon Bedrock (Claude)",
+        "DynamoDB",
+        "Docker",
+        "GitHub Actions"
+      ],
+      "highlights": [
+        "End-to-end AWS deployment with cost-effective, scalable architecture",
+        "Built using professional IaC and GitOps practices",
+        "AI assistant provides natural, useful replies about the portfolio",
+        "Custom domain with HTTPS, global CDN, and S3 website hosting"
+      ],
+      "github": "https://github.com/JThomas404/cloudforgex",
+      "category": "Serverless AI Portfolio"
+    },
+    {
+      "title": "Automated SQL Backup Remediation",
+      "summary": "Resolved a critical SQL Server backup failure by combining root cause analysis, scripting, and long-term preventative controls in a live production environment.",
+      "highlights": [
+        "Diagnosed and resolved low disk space on a production SQL Server at HCE Medical Group",
+        "Created PowerShell cleanup scripts and SQL diagnostic queries to restore full backup functionality within 24 hours",
+        "Revised SQL maintenance plans to exclude offline databases and prevent future failures",
+        "Implemented automated disk space monitoring and retention policies for long-term prevention"
+      ],
+      "technologies": [
+        "PowerShell",
+        "SQL Server",
+        "Windows Server",
+        "TreeSize",
+        "WinDirStat",
+        "N-Central RMM"
+      ],
+      "github": "https://github.com/JThomas404/automated-sql-backup-remediation",
+      "category": "Production Reliability"
+    },
+    {
+      "title": "Serverless Web Application on AWS",
+      "summary": "A fully serverless web application built with AWS services including S3, Lambda, API Gateway, and DynamoDB. This was developed over multiple iterations, culminating in a secure, scalable, and production-ready solution.",
+      "highlights": [
+        "Three phased implementations: Flask localhost → Serverless Flask (WSGI) → Static S3 site + Lambda backend",
+        "Form submission flow integrated with Lambda and DynamoDB via API Gateway",
+        "Terraform-managed infrastructure with CI/CD pipelines via GitHub Actions",
+        "Final version is HTTPS-enabled, cost-efficient, scalable, and actively live under a custom domain"
+      ],
+      "technologies": [
+        "AWS Lambda",
+        "API Gateway",
+        "DynamoDB",
+        "S3",
+        "CloudFront",
+        "Route 53",
+        "Terraform",
+        "Python",
+        "GitHub Actions"
+      ],
+      "github": "https://github.com/JThomas404/AWS-Automation-with-Python-Boto3-and-Lambda-Projects",
+      "live_site": "https://www.connectingthedotscorp.com",
+      "category": "Serverless Engineering"
+    },
+    {
+      "title": "Terraform Hands-On AWS – 70+ Labs",
+      "summary": "A comprehensive collection of over 70 real-world Terraform labs aligned with the Terraform Associate 003 certification. This project demonstrates deep Infrastructure as Code (IaC) expertise using AWS, version control, remote state, and secure automation.",
+      "highlights": [
+        "Covers every major Terraform topic including modules, state, variables, lifecycle rules, and remote backends",
+        "Structured by theme for progressive skill-building",
+        "Demonstrates real-world automation patterns, multi-environment IaC, and Terraform Cloud usage",
+        "Each lab includes code, images, and documentation with rationale for architectural choices"
+      ],
+      "technologies": [
+        "Terraform",
+        "AWS",
+        "Terraform Cloud",
+        "HashiCorp Sentinel",
+        "GitHub"
+      ],
+      "github": "https://github.com/JThomas404/terraform-hands-on-aws-70-labs",
+      "category": "Infrastructure as Code"
+    },
+    {
+      "title": "Automated Security Group Audit via Lambda",
+      "summary": "A fully automated security auditing system built using AWS Lambda, SES, and Terraform. This project scans EC2 security groups for misconfigurations and sends real-time email alerts when overly permissive rules are detected.",
+      "highlights": [
+        "Lambda function scans all EC2 security groups for 0.0.0.0/0 inbound access",
+        "Violations are sent via SES email alerts to pre-verified recipients",
+        "Infrastructure is provisioned entirely with Terraform using secure IAM roles",
+        "Demonstrates secure cloud automation practices and serverless alerting systems"
+      ],
+      "technologies": [
+        "AWS Lambda",
+        "Amazon EC2",
+        "Amazon SES",
+        "Terraform",
+        "Python (Boto3)",
+        "IAM",
+        "CloudWatch Logs"
+      ],
+      "github": "https://github.com/JThomas404/automated-security-group-audit-lambda-email",
+      "category": "Cloud Security"
+    },
+    {
+      "title": "Automated Billing Retry Pipeline with Lambda, SNS, and SQS",
+      "summary": "A fault-tolerant serverless pipeline that processes billing CSVs with automatic retry logic using SNS and SQS. Failures during API calls are logged, alerted, and reprocessed without human intervention.",
+      "highlights": [
+        "Implements a Lambda → SNS → SQS → Lambda retry architecture",
+        "Handles third-party API failures gracefully with decoupled fallback logic",
+        "Uses SES-integrated SNS to notify stakeholders on failures",
+        "Infrastructure fully managed with Terraform using least-privilege IAM roles"
+      ],
+      "technologies": [
+        "AWS Lambda",
+        "Amazon SNS",
+        "Amazon SQS",
+        "Amazon S3",
+        "Terraform",
+        "Python (Boto3)",
+        "CloudWatch"
+      ],
+      "github": "https://github.com/JThomas404/automated-billing-retry-pipeline-lambda-sns-sqs",
+      "category": "Fault-Tolerant Architecture"
+    },
+    {
+      "title": "Elastic IP Cleanup Lambda",
+      "summary": "Cost-saving automation for unassociated EIPs using AWS Lambda to identify and release unused Elastic IP addresses, preventing unnecessary charges.",
+      "highlights": [
+        "Automated detection of unassociated Elastic IP addresses",
+        "Cost optimization through automated cleanup processes",
+        "Serverless architecture with scheduled execution",
+        "Comprehensive logging and error handling"
+      ],
+      "technologies": [
+        "AWS Lambda",
+        "Amazon EC2",
+        "Python (Boto3)",
+        "CloudWatch Events",
+        "IAM"
+      ],
+      "github": "https://github.com/JThomas404/elastic-ip-cleanup-lambda",
+      "category": "Cost Optimization"
+    },
+    {
+      "title": "Billing CSV to Aurora Serverless",
+      "summary": "ETL pipeline with currency conversion and secure DB insert using AWS Lambda, S3, Secrets Manager, and Aurora Serverless for automated billing data processing.",
+      "highlights": [
+        "Serverless ETL pipeline using AWS Lambda and S3 triggers",
+        "Currency conversion and data normalization",
+        "Secure database connections using AWS Secrets Manager",
+        "Aurora Serverless MySQL for scalable data storage"
+      ],
+      "technologies": [
+        "AWS Lambda",
+        "Amazon S3",
+        "Aurora Serverless",
+        "AWS Secrets Manager",
+        "Python (Boto3)",
+        "MySQL"
+      ],
+      "github": "https://github.com/JThomas404/automated-billing-csv-to-aurora-serverless",
+      "category": "Data Processing"
+    },
+    {
+      "title": "EC2 Snapshot Automation",
+      "summary": "Daily Lambda backups with Boto3 and tagging for automated EC2 volume snapshot management and retention policies.",
+      "highlights": [
+        "Automated daily snapshots of EC2 volumes",
+        "Intelligent tagging system for snapshot organization",
+        "Retention policies to manage storage costs",
+        "Error handling and notification systems"
+      ],
+      "technologies": [
+        "AWS Lambda",
+        "Amazon EC2",
+        "Python (Boto3)",
+        "CloudWatch Events",
+        "SNS"
+      ],
+      "github": "https://github.com/JThomas404/python-boto3-aws-automation-scripts",
+      "category": "Backup Automation"
+    },
+    {
+      "title": "Docker Security Falcon (Kubernetes Edition)",
+      "summary": "Secure FastAPI app with CI/CD and RBAC, containerized with Docker and deployed on Kubernetes with comprehensive security scanning.",
+      "highlights": [
+        "Production-ready FastAPI microservice with security best practices",
+        "Docker containerization with multi-stage builds",
+        "Kubernetes deployment with RBAC and security policies",
+        "CI/CD pipeline with automated security scanning using Trivy"
+      ],
+      "technologies": [
+        "FastAPI",
+        "Docker",
+        "Kubernetes",
+        "GitHub Actions",
+        "Trivy",
+        "Python"
+      ],
+      "github": "https://github.com/JThomas404/docker-security-falcon-k8s",
+      "category": "Container Security"
+    },
+    {
+      "title": "FastAPI Modular Project",
+      "summary": "Lightweight, scalable web API base for DevSecOps with modular architecture and comprehensive testing framework.",
+      "highlights": [
+        "Modular FastAPI architecture for scalability",
+        "Comprehensive testing framework with pytest",
+        "DevSecOps integration with security scanning",
+        "Docker containerization and deployment automation"
+      ],
+      "technologies": [
+        "FastAPI",
+        "Python",
+        "Docker",
+        "pytest",
+        "GitHub Actions"
+      ],
+      "github": "https://github.com/JThomas404/fastapi-modular-project",
+      "category": "API Development"
+    },
+    {
+      "title": "httpenv",
+      "summary": "Dockerized HTTP environment variable echo tool for network testing and debugging in containerized environments.",
+      "highlights": [
+        "Simple HTTP service for environment variable inspection",
+        "Docker containerization for easy deployment",
+        "Network testing and debugging capabilities",
+        "Lightweight and efficient design"
+      ],
+      "technologies": [
+        "Python",
+        "Docker",
+        "HTTP",
+        "Flask"
+      ],
+      "github": "https://github.com/JThomas404/httpenv",
+      "category": "Network Testing"
+    },
+    {
+      "title": "SAP HANA Professional Portfolio",
+      "summary": "Real-world Linux administration for SAP Basis including database management, optimization, and migration projects.",
+      "highlights": [
+        "Production SAP HANA database administration",
+        "Linux system administration and optimization",
+        "Database migration and backup strategies",
+        "Performance tuning and monitoring"
+      ],
+      "technologies": [
+        "SAP HANA",
+        "Linux",
+        "Shell Scripting",
+        "Database Administration"
+      ],
+      "github": "https://github.com/JThomas404/SAP-HANA-Professional-Portfolio",
+      "category": "Database Administration"
+    },
+    {
+      "title": "AWS Cost Monitoring Script",
+      "summary": "Bash tool for identifying unused EC2/EBS resources to optimize AWS costs and improve resource utilization.",
+      "highlights": [
+        "Automated detection of unused AWS resources",
+        "Cost optimization recommendations",
+        "Comprehensive reporting on resource utilization",
+        "Bash scripting for cross-platform compatibility"
+      ],
+      "technologies": [
+        "Bash",
+        "AWS CLI",
+        "Python",
+        "AWS SDK"
+      ],
+      "github": "https://github.com/JThomas404/AWS-Cost-Monitoring-Script",
+      "category": "Cost Optimization"
+    },
+    {
+      "title": "AWS Cloud Resume Challenge",
+      "summary": "AWS-hosted static résumé site with Terraform and CI/CD demonstrating cloud-native web hosting best practices.",
+      "highlights": [
+        "Static website hosting on AWS S3 with CloudFront CDN",
+        "Custom domain configuration with Route 53",
+        "Infrastructure as Code using Terraform",
+        "CI/CD pipeline with GitHub Actions"
+      ],
+      "technologies": [
+        "AWS S3",
+        "CloudFront",
+        "Route 53",
+        "Terraform",
+        "GitHub Actions",
+        "HTML/CSS"
+      ],
+      "github": "https://github.com/JThomas404/cloud-resume-challenge",
+      "category": "Cloud Fundamentals"
+    },
+    {
+      "title": "Static Website on AWS with Custom Domain",
+      "summary": "S3 + Route 53 setup with CloudFront for high-performance static website hosting with custom domain integration.",
+      "highlights": [
+        "S3 static website hosting configuration",
+        "Custom domain setup with Route 53 DNS",
+        "CloudFront CDN for global content delivery",
+        "SSL/TLS certificate management with ACM"
+      ],
+      "technologies": [
+        "AWS S3",
+        "Route 53",
+        "CloudFront",
+        "ACM",
+        "HTML/CSS"
+      ],
+      "github": "https://github.com/JThomas404/StaticWebsite-FirstAWSCloudProject",
+      "category": "Web Hosting"
+    },
+    {
+      "title": "Hotel Network Management (Cisco Packet Tracer)",
+      "summary": "VLANs, DHCP, OSPF and wireless network design for a multi-floor hotel environment using Cisco networking technologies.",
+      "highlights": [
+        "Multi-floor network design with VLAN segmentation",
+        "OSPF dynamic routing implementation",
+        "DHCP configuration for automated IP management",
+        "Wireless network integration with access points"
+      ],
+      "technologies": [
+        "Cisco Packet Tracer",
+        "OSPF",
+        "DHCP",
+        "VLAN",
+        "Wireless Networking"
+      ],
+      "github": "https://github.com/JThomas404/Hotel-Network-Management-A-Cisco-Packet-Tracer-Project-",
+      "category": "Network Design"
+    },
+    {
+      "title": "Albion University Network Design",
+      "summary": "Multi-campus routing and segmentation with RIPv2 for a comprehensive university network infrastructure.",
+      "highlights": [
+        "Multi-campus network architecture design",
+        "RIPv2 routing protocol implementation",
+        "Network segmentation for different departments",
+        "Scalable infrastructure for educational environment"
+      ],
+      "technologies": [
+        "Cisco Packet Tracer",
+        "RIPv2",
+        "VLAN",
+        "Network Design",
+        "Routing Protocols"
+      ],
+      "github": "https://github.com/JThomas404/Albion-University-s-Digital-Infrastructure-A-Network-Design-",
+      "category": "Network Architecture"
+    }
+  ]
+}
