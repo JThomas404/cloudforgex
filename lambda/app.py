@@ -19,7 +19,7 @@ def get_ai_response(user_message):
         return "Please keep your message under 1000 characters."
 
     try:
-        # Initialise Bedrock client
+        # Initialize Bedrock client
         bedrock = boto3.client(
             'bedrock-runtime',
             region_name=AWS_REGION,
@@ -40,9 +40,9 @@ def get_ai_response(user_message):
             modelId='anthropic.claude-instant-v1',
             body=json.dumps({
                 'prompt': full_prompt,
-                'max_tokens_to_sample': 500, # Maximum response length (500 = ~375 words)
-                'temperature': 0.7, # Creativity level (0.7 = balanced, not too random)
-                'top_p': 0.9 # Response diversity (0.9 = good variety)
+                'max_tokens_to_sample': 500,
+                'temperature': 0.7,
+                'top_p': 0.9
             })
         )
 
@@ -58,7 +58,6 @@ def get_ai_response(user_message):
         return "I'm having trouble connecting to my AI service right now. Please try again in a moment."
 
 def lambda_handler(event, context):
-    
     # Log incoming requests for monitoring
     logger.info(f"request received: {event.get('httpMethod')} from {event.get('sourceIp', 'unknown')}")
 
@@ -76,6 +75,7 @@ def lambda_handler(event, context):
             'statusCode': 200,
             'headers': headers
         }
+    
     try:
         body = event.get('body')
         if not body:
@@ -101,7 +101,7 @@ def lambda_handler(event, context):
             'body': json.dumps({'error': 'Invalid JSON format'})
         }
 
-    # Get AI response instead of echoing message
+    # Get AI response
     ai_response = get_ai_response(message)
     
     return {

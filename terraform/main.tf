@@ -34,3 +34,42 @@ module "cloudfront" {
   aliases = var.aliases
   tags    = var.tags
 }
+
+module "iam" {
+  source = "./modules/iam"
+
+  project_name = var.project_name
+  region       = var.region
+
+  tags = var.tags
+}
+
+
+module "lambda" {
+  source = "./modules/lambda"
+
+  depends_on            = [module.iam]
+  iam_role_arn          = module.iam.iam_role_arn
+  lambda_function       = var.lambda_function
+  handler               = var.handler
+  runtime               = var.runtime
+  environment_variables = var.environment_variables
+  project_name          = var.project_name
+  region                = var.region
+
+  tags = var.tags
+}
+
+module "api_gateway" {
+  source = "./modules/apigateway"
+
+  project_name         = var.project_name
+  region               = var.region
+  lambda_function_arn  = module.lambda.lambda_function_arn
+  lambda_function_name = module.lambda.lambda_function_name
+  api_name             = var.api_name
+  stage_name           = var.stage_name
+  allowed_origin       = var.allowed_origin
+
+  tags = var.tags
+}

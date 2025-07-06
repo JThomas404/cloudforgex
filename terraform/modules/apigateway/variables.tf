@@ -19,49 +19,6 @@ variable "tags" {
   }
 }
 
-variable "aliases" {
-  description = "Custom domain name(s) for the CloudFront distribution"
-  type        = list(string)
-  default     = ["www.jarredthomas.cloud", "jarredthomas.cloud"]
-}
-
-variable "domain_name" {
-  description = "Domain to request a certificate for"
-  type        = string
-}
-
-variable "sub_alt_names" {
-  description = "Subject Alternative Names (SANs) for the certificate"
-  type        = list(string)
-  default     = ["*.jarredthomas.cloud", "jarredthomas.cloud"]
-}
-
-variable "lambda_function" {
-  description = "Name of the Lambda Function"
-  type        = string
-  default     = "cfx-chatbot-lambda"
-}
-
-variable "runtime" {
-  description = "Lambda runtime version"
-  type        = string
-  default     = "python3.11"
-}
-
-variable "handler" {
-  description = "Lambda function handler"
-  type        = string
-  default     = "app.lambda_handler"
-}
-
-variable "environment_variables" {
-  description = "Environment variables for Lambda"
-  type        = map(string)
-  default = {
-    ALLOWED_ORIGIN = "https://www.jarredthomas.cloud"
-  }
-}
-
 variable "allowed_origin" {
   description = "CORS allowed origin"
   type        = string
@@ -78,6 +35,17 @@ variable "allowed_methods" {
   description = "CORS allowed methods"
   type        = string
   default     = "POST,OPTIONS"
+}
+
+variable "lambda_function_name" {
+  description = "Name of the Lambda Function"
+  type        = string
+  default     = "cfx-chatbot-lambda"
+}
+
+variable "lambda_function_arn" {
+  description = "ARN of the Lambda function to integrate"
+  type        = string
 }
 
 variable "api_name" {
