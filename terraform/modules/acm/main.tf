@@ -14,4 +14,8 @@ resource "aws_acm_certificate" "cfx_acm_certificate" {
 resource "aws_acm_certificate_validation" "cfx_cert_validation" {
   certificate_arn         = aws_acm_certificate.cfx_acm_certificate.arn
   validation_record_fqdns = var.validation_record_fqdns
+
+  timeouts {
+    create = "10m"
+  }
 }

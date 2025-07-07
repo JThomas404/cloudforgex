@@ -19,9 +19,12 @@ module "route53" {
   source = "./modules/route53"
 
   domain_name               = var.domain_name
-  domain_validation_options = module.acm_certificate.domain_validation_options
-  cloudfront_domain_name    = module.cloudfront.distribution_domain_name
-  tags                      = var.tags
+  domain_validation_options = {
+    for dvo in module.acm_certificate.domain_validation_options :
+    dvo.domain_name => dvo
+  }
+  cloudfront_domain_name = module.cloudfront.distribution_domain_name
+  tags                   = var.tags
 }
 
 module "cloudfront" {

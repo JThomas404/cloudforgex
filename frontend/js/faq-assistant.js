@@ -222,7 +222,7 @@ class EVEAssistant {
         }
     }
 
-    sendMessage() {
+    async sendMessage() {
         if (!this.elements.input) return;
         
         const message = this.elements.input.value.trim();
@@ -233,11 +233,14 @@ class EVEAssistant {
         
         this.showThinking();
         
-        setTimeout(() => {
+        try {
+            const response = await this.generateResponse(message);
             this.hideThinking();
-            const response = this.generateResponse(message);
             this.addBotMessage(response);
-        }, EVEAssistant.TIMING.THINKING_DURATION);
+        } catch (error) {
+            this.hideThinking();
+            this.addBotMessage("I'm having trouble right now. Please try again in a moment.");
+        }
     }
 
     addUserMessage(message) {
@@ -312,31 +315,58 @@ class EVEAssistant {
         this.scrollToBottom();
     }
 
-    handleQuestionClick(question) {
+    async handleQuestionClick(question) {
         this.addUserMessage(question);
         this.showThinking();
         
-        setTimeout(() => {
+        try {
+            const response = await this.generateResponse(question);
             this.hideThinking();
-            const response = this.generateResponse(question);
             this.addBotMessage(response);
-        }, EVEAssistant.TIMING.QUESTION_CLICK_DELAY);
+        } catch (error) {
+            this.hideThinking();
+            this.addBotMessage("I'm having trouble right now. Please try again in a moment.");
+        }
     }
 
-    generateResponse(question) {
+    async generateResponse(question) {
         const trimmed = question.trim();
         const lower = trimmed.toLowerCase();
-        
+
+        // Keep suggested questions functionality
         if (lower.includes('@suggestedquestions')) {
             return "Here are some questions you can ask me:";
         }
-        
-        if (this.questionMapping[trimmed]) {
-            const key = this.questionMapping[trimmed];
-            return this.knowledgeBase[key];
+
+        try {
+            // Call the AI backend
+            const response = await fetch('https://r7xn947zpk.execute-api.us-east-1.amazonaws.com/prod/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: trimmed
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.response || "I'm having trouble generating a response right now.";
+
+        } catch (error) {
+            console.error('API Error:', error);
+            
+            // Fallback to static responses for known questions
+            if (this.questionMapping[trimmed]) {
+                const key = this.questionMapping[trimmed];
+                return this.knowledgeBase[key];
+            }
+            return "I'm having trouble connecting to my AI service right now. Please try again in a moment.";
         }
-        
-        return "I'd be happy to help! You can ask me about Jarred's services, skills, experience, projects, certifications, or how to contact him.";
     }
 
     showThinking() {

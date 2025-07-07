@@ -26,6 +26,17 @@ resource "aws_api_gateway_integration" "cfx_post_integration" {
 
 }
 
+resource "aws_api_gateway_method_response" "cfx_post_response" {
+  rest_api_id = aws_api_gateway_rest_api.cfx_rest_api.id
+  resource_id = aws_api_gateway_resource.cfx_api_gw.id
+  http_method = aws_api_gateway_method.cfx_post_method.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin" = true
+  }
+}
+
 resource "aws_lambda_permission" "cfx_lambda_permission" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
@@ -39,7 +50,8 @@ resource "aws_api_gateway_deployment" "cfx_deployment" {
     aws_api_gateway_method.cfx_post_method,
     aws_api_gateway_method.cfx_options_method,
     aws_api_gateway_integration.cfx_post_integration,
-    aws_api_gateway_integration.cfx_options_integration
+    aws_api_gateway_integration.cfx_options_integration,
+    aws_api_gateway_integration_response.cfx_options_integration_response
   ]
 
   rest_api_id = aws_api_gateway_rest_api.cfx_rest_api.id
@@ -68,6 +80,10 @@ resource "aws_api_gateway_integration" "cfx_options_integration" {
   resource_id = aws_api_gateway_resource.cfx_api_gw.id
   http_method = aws_api_gateway_method.cfx_options_method.http_method
   type        = "MOCK"
+
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
 }
 
 resource "aws_api_gateway_method_response" "cfx_options_response" {
@@ -94,4 +110,6 @@ resource "aws_api_gateway_integration_response" "cfx_options_integration_respons
     "method.response.header.Access-Control-Allow-Methods" = "'${var.allowed_methods}'"
     "method.response.header.Access-Control-Allow-Origin"  = "'${var.allowed_origin}'"
   }
+
+  depends_on = [aws_api_gateway_method_response.cfx_options_response]
 }
