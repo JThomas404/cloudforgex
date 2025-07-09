@@ -1,5 +1,5 @@
 /**
- * Initialize header toggle functionality for mobile navigation
+ * Initialise header toggle functionality for mobile navigation
  * Handles opening/closing mobile menu and auto-close on navigation
  */
 function initHeaderToggle() {
@@ -30,12 +30,12 @@ function initHeaderToggle() {
             });
         });
     } catch (error) {
-        console.error('Error initializing header toggle:', error);
+        console.error('Error initialising header toggle:', error);
     }
 }
 
 /**
- * Initialize scroll to top button functionality
+ * Initialise scroll to top button functionality
  * Shows/hides button based on scroll position and handles smooth scrolling
  */
 function initScrollTop() {
@@ -65,12 +65,12 @@ function initScrollTop() {
         window.addEventListener('load', toggleScrollTop);
         document.addEventListener('scroll', toggleScrollTop);
     } catch (error) {
-        console.error('Error initializing scroll top:', error);
+        console.error('Error initialising scroll top:', error);
     }
 }
 
 /**
- * Initialize navigation menu scrollspy functionality
+ * Initialise navigation menu scrollspy functionality
  * Highlights active navigation links based on scroll position
  */
 function initNavmenuScrollspy() {
@@ -110,12 +110,12 @@ function initNavmenuScrollspy() {
         window.addEventListener('load', navmenuScrollspy);
         document.addEventListener('scroll', navmenuScrollspy);
     } catch (error) {
-        console.error('Error initializing navigation scrollspy:', error);
+        console.error('Error initialising navigation scrollspy:', error);
     }
 }
 
 /**
- * Initialize preloader functionality
+ * Initialise preloader functionality
  * Removes preloader element when page is fully loaded
  */
 function initPreloader() {
@@ -155,7 +155,7 @@ function initTypewriter() {
 
 
 /**
- * Initialize all functionality when DOM is loaded
+ * Initialise all functionality when DOM is loaded
  */
 document.addEventListener('DOMContentLoaded', function() {
     try {
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
         initPreloader();
         initTypewriter();
     } catch (error) {
-        console.error('Error during initialization:', error);
+        console.error('Error during initialisation:', error);
     }
 });
 

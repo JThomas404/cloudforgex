@@ -40,7 +40,7 @@ resource "aws_api_gateway_method_response" "cfx_post_response" {
 resource "aws_lambda_permission" "cfx_lambda_permission" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = var.lambda_function_name
+  function_name = var.lambda_function
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.cfx_rest_api.execution_arn}/*/*"
 }

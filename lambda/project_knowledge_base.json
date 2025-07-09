@@ -1,4 +1,78 @@
 {
+  "personal_profile": {
+    "name": "Jarred Thomas",
+    "location": "Johannesburg, South Africa",
+    "education": "Self-taught through certifications and practical work experience",
+    "tech_journey_start": "2022",
+    "experience_years": 3,
+    "career_timeline": [
+      {
+        "period": "2022-2023",
+        "company": "Lorge Consulting Services (Pty) Ltd",
+        "duration": "1 year 2 months",
+        "roles": [
+          "IT Helpdesk Specialist",
+          "Junior Network/System Administrator", 
+          "Junior Sage X3 Developer"
+        ]
+      },
+      {
+        "period": "2023-2024",
+        "company": "Angamma Charitable Trust",
+        "role": "Network Engineering Consultant",
+        "duration": "1 year"
+      },
+      {
+        "period": "2024-Present",
+        "company": "SEIDOR Networks",
+        "role": "Remote Tier 1 Technical Support Engineer"
+      }
+    ],
+    "certifications": [
+      {
+        "name": "CCNA",
+        "date": "February 27, 2024"
+      },
+      {
+        "name": "AWS Cloud Practitioner",
+        "date": "August 2024"
+      },
+      {
+        "name": "AWS Solutions Architect Associate",
+        "date": "January 2025"
+      },
+      {
+        "name": "Microsoft Azure Fundamentals",
+        "date": "July 2024"
+      },
+      {
+        "name": "Microsoft Power Platform Fundamentals",
+        "date": "2024"
+      },
+      {
+        "name": "Mimecast Email Security",
+        "date": "July 2024"
+      }
+    ],
+    "specializations": [
+      "Cloud Computing (AWS, Azure)",
+      "Networking and Security",
+      "DevOps and Infrastructure as Code"
+    ],
+    "preferred_technologies": [
+      "AWS services",
+      "Docker", 
+      "Terraform"
+    ],
+    "career_goals": "Aspiring Senior Cloud Engineer",
+    "currently_learning": [
+      "Bash",
+      "Python", 
+      "JavaScript",
+      "Kubernetes",
+      "Terraform"
+    ]
+  },
   "projects": [
     {
       "title": "CloudForgeX",
@@ -357,5 +431,18 @@
       "github": "https://github.com/JThomas404/Albion-University-s-Digital-Infrastructure-A-Network-Design-",
       "category": "Network Architecture"
     }
-  ]
+  ], 
+  "suggested_responses": {
+    "What are Jarred's future plans and aspirations?": "I love this question... Jarred's vision is one of continuous evolution.\n\nHe's focused on staying ahead in both cloud computing and artificial intelligence, where automation, scalability, and smart design converge. One area he's especially excited about is the Model Context Protocol (MCP) — a framework that brings AI agents into cloud environments to make decisions more intelligently, efficiently, and securely.\n\nBehind the scenes, Jarred is sharpening his skills in Python and JSON — the core languages that power cloud automation and AI integration. These tools help him build systems that aren't just functional… they're adaptive, resilient, and ready for what's next.\n\nIn short: Jarred's goal is to architect platforms that are not only scalable and secure — but intelligent, self-evolving, and built for the future.",
+    
+    "How was the chatbot built?": "You're actually speaking to me through a fully serverless architecture built on AWS — and I think it's pretty elegant.\n\nHere's how it works behind the scenes:\n\n• When you send a message, it's routed through API Gateway\n• That request triggers an AWS Lambda function, written in Python\n• I generate a response using Claude Instant via Amazon Bedrock\n• The reply is returned and stored in Amazon DynamoDB to track context\n\nJarred also uses SSM Parameter Store for secret management and strict CORS policies to secure communication.\n\nThis setup is cloud-native, efficient, and ready to scale.",
+    
+    "What's Jarred's most impactful project?": "Jarred's most defining project is his **Serverless Web Application Project** — but what made it truly impactful wasn't just what he built, but how he rebuilt it.\n\nThe first two launches failed — not because the system didn't work, but because Jarred was focused on what worked... not on what worked best. That setback forced him to think like a real cloud engineer to build not just functional architecture, but resilient, scalable, and maintainable systems that would stand up in production environments.\n\nHe took on multiple roles:\n\n• **DevOps Engineer** – wrote the backend and deployed the frontend\n• **Solutions Architect** – designed the infrastructure using Terraform and GitHub Actions\n• **Cloud Engineer** – automated and secured the full deployment in AWS\n\nThat failure taught Jarred how to rebuild with clarity, humility, and discipline — and it became the project that shaped his mindset more than any certification ever could.",
+    
+    "What certifications does Jarred hold?": "Jarred's certifications reflect his commitment to real-world expertise and platform fluency:\n\n• **AWS Certified Solutions Architect – Associate (SAA-C03)**\n• **AWS Certified Cloud Practitioner (CLF-C02)**\n• **Cisco Certified Network Associate (CCNA)**\n• **Microsoft Certified: Azure Fundamentals (AZ-900)**\n• **Power Platform Fundamentals (PL-900)**\n• **Mimecast Cloud Gateway Fundamentals**\n• **Python Programming for AWS (Boto3)**\n• **Docker Mastery + Adrian Cantrill's Docker Fundamentals**\n• **Terraform Associate Hands-On Labs**\n• **Linux Foundation Certified Systems Administrator** _(in progress)_\n\nThese show not just study — but _depth, breadth, and applied competence_.",
+    
+    "What tools and technologies does Jarred use most?": "Jarred works with a toolset designed for **automation**, **security**, and **cloud scalability**. His strength lies in how he connects and automates across platforms.\n\n• **Cloud & Infrastructure:** AWS, Azure, Terraform, Docker, GitHub Actions, CI/CD\n• **Scripting & Automation:** Python, Boto3, Bash, PowerShell, JSON, YAML\n• **Key AWS Services:** Lambda, API Gateway, DynamoDB, Bedrock, S3, Route 53, CloudFront, IAM, SSM, CloudWatch\n• **Developer Tools:** VS Code, Git, Postman, Notion, Nginx\n\nHe doesn't just use tools — he _orchestrates_ them to build resilient, modular, and intelligent cloud-native systems.",
+    
+    "What's Jarred's approach to problem-solving?": "Jarred approaches every problem like a system designer — grounded in fundamentals and focused on long-term clarity, not just quick fixes.\n\nHe believes that the key to effective problem-solving lies in asking the _right questions_, not jumping straight to implementation. His method balances strategic thinking with hands-on technical depth.\n\nHere's how he works:\n\n• **Clarifies the fundamentals** — before touching any tools, he ensures he understands _why_ the problem exists and what the _ideal outcome_ looks like\n• **Breaks the problem into layers** — infrastructure, logic, automation, and user outcomes are treated as distinct components that must align\n• **Avoids over-engineering** — he keeps solutions lean, elegant, and easy to maintain, choosing simplicity over complexity\n• **Validates through iteration** — rather than assuming, he tests early and often, adapting based on real-world feedback\n• **Builds for maintainability** — every solution is designed with the next engineer in mind: clear structure, smart defaults, and minimal surprises\n\nJarred doesn't just fix things — he _understands_, _simplifies_, and _builds to last_. That's what sets his approach apart."
+  }
 }

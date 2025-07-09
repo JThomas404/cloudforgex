@@ -28,7 +28,23 @@ output "lambda_function_arn" {
   value       = module.lambda.lambda_function_arn
 }
 
-output "api_gateway_url" {
-  description = "API Gateway endpoint URL"
-  value       = module.api_gateway.rest_api_url
+output "cloudwatch_dashboard_url" {
+  description = "Direct link to CloudWatch Dashboard"
+  value       = module.cloudwatch.dashboard_url
 }
+
+output "cloudwatch_dashboard_name" {
+  description = "Name of the CloudWatch Dashboard"
+  value       = module.cloudwatch.dashboard_name
+}
+
+output "acm_certificate_arn" {
+  description = "ARN of the SSL certificate"
+  value       = module.acm_certificate.acm_cert_arn
+}
+
+output "route53_zone_id" {
+  description = "Route53 hosted zone ID"
+  value       = module.route53.route53_zone_id
+}
+

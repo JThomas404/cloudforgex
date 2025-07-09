@@ -1,8 +1,8 @@
-// EVE AI Assistant - Clean Implementation
+// EVE AI Assistant - Complete Implementation
 class EVEAssistant {
     static TIMING = {
         WELCOME_DELAY: 500,
-        TYPEWRITER_SPEED: 35,
+        TYPEWRITER_SPEED: 25,
         THINKING_DURATION: 800,
         QUESTION_CLICK_DELAY: 600
     };
@@ -11,6 +11,14 @@ class EVEAssistant {
         this.isExpanded = true;
         this.elements = {};
         this.suggestedQuestions = [];
+        this.currentThinking = null;
+        this.activeTimers = new Set();
+        
+        // Cleanup timers on page unload
+        window.addEventListener('beforeunload', () => {
+            this.cleanup();
+        });
+        
         this.questionMapping = {
             "How was the chatbot built?": "chatbot_built",
             "What are Jarred's future plans and aspirations?": "future_plans",
@@ -27,6 +35,16 @@ class EVEAssistant {
             "certifications": `Jarred's certifications reflect his commitment to real-world expertise and platform fluency:<br><br><div class="cert-list">• <strong>AWS Certified Solutions Architect – Associate (SAA-C03)</strong><br><button class="cert-btn" data-cert="https://cloudforgex-certs.s3.us-east-1.amazonaws.com/certificates/AWS%20Certified%20Solutions%20Architect%20-%20Associate%20certificate.pdf">View Certificate</button><br><br>• <strong>AWS Certified Cloud Practitioner (CLF-C02)</strong><br><button class="cert-btn" data-cert="https://cloudforgex-certs.s3.us-east-1.amazonaws.com/certificates/AWS%20Certified%20Cloud%20Practitioner%20certificate.pdf">View Certificate</button><br><br>• <strong>Cisco Certified Network Associate (CCNA)</strong><br><button class="cert-btn" data-cert="https://cloudforgex-certs.s3.us-east-1.amazonaws.com/certificates/CCNA%20Cisco%20Certified%20Network%20Associate%20certificate.pdf">View Certificate</button><br><br>• <strong>Microsoft Certified: Azure Fundamentals (AZ-900)</strong><br><button class="cert-btn" data-cert="https://cloudforgex-certs.s3.us-east-1.amazonaws.com/certificates/Microsoft%20Certified-%20Azure%20Fundamentals%20(AZ-900).pdf">View Certificate</button><br><br>• <strong>Power Platform Fundamentals (PL-900)</strong><br><button class="cert-btn" data-cert="https://cloudforgex-certs.s3.us-east-1.amazonaws.com/certificates/Power%20Platform%20Fundamentals%20(PL-900).pdf">View Certificate</button><br><br>• <strong>Mimecast Cloud Gateway Fundamentals</strong><br><button class="cert-btn" data-cert="https://cloudforgex-certs.s3.us-east-1.amazonaws.com/certificates/Mimecast%20Email%20Security%20Cloud%20Gateway%20Fundamentals%20Certification.pdf">View Certificate</button><br><br>• <strong>Python Programming for AWS (Boto3)</strong><br><button class="cert-btn" data-cert="https://cloudforgex-certs.s3.us-east-1.amazonaws.com/certificates/Python%20Programming%20for%20AWS%20(Boto3).pdf">View Certificate</button><br><br>• <strong>Docker Mastery + Adrian Cantrill's Docker Fundamentals</strong><br><button class="cert-btn" data-cert="https://cloudforgex-certs.s3.us-east-1.amazonaws.com/certificates/Docker%20Mastery%20%2B%20Adrian%20Cantrill's%20Docker%20Fundamentals.pdf">View Certificate</button><br><br>• <strong>Terraform Associate Hands-On Labs</strong><br><button class="cert-btn" data-cert="https://cloudforgex-certs.s3.us-east-1.amazonaws.com/certificates/Terraform%20Associate%20Hands-On%20Labs.pdf">View Certificate</button><br><br>• <strong>Linux Foundation Certified Systems Administrator</strong> <em>(in progress)</em></div><br><br>These show not just study — but <em>depth, breadth, and applied competence</em>.`,
             "most_impactful": `Jarred's most defining project is his <strong>Serverless Web Application Project</strong> — but what made it truly impactful wasn't just what he built, but how he rebuilt it.<br><br>The first two launches failed — not because the system didn't work, but because Jarred was focused on what worked... not on what worked best. That setback forced him to think like a real cloud engineer to build not just functional architecture, but resilient, scalable, and maintainable systems that would stand up in production environments.<br><br>He took on multiple roles:<br><br>• <strong>DevOps Engineer</strong> – wrote the backend and deployed the frontend<br>• <strong>Solutions Architect</strong> – designed the infrastructure using <a href="https://www.terraform.io/" target="_blank">Terraform</a> and <a href="https://docs.github.com/en/actions" target="_blank">GitHub Actions</a><br>• <strong>Cloud Engineer</strong> – automated and secured the full deployment in AWS<br><br>That failure taught Jarred how to rebuild with clarity, humility, and discipline — and it became the project that shaped his mindset more than any certification ever could.<br><br><a href="https://github.com/JThomas404/AWS-Automation-with-Python-Boto3-and-Lambda-Projects" target="_blank">Serverless Web Application Project Repo</a>`
         };
+        
+        // Configure marked.js
+        if (typeof marked !== 'undefined') {
+            marked.setOptions({
+                breaks: true,
+                gfm: true,
+                sanitize: false
+            });
+        }
+
         this.init();
     }
 
@@ -108,6 +126,7 @@ class EVEAssistant {
         }
     }
 
+    // Character-by-character typing
     typeText(element, text, callback) {
         element.innerHTML = '';
         element.classList.add('typewriter-cursor');
@@ -119,71 +138,62 @@ class EVEAssistant {
                 i++;
             } else {
                 clearInterval(timer);
+                this.activeTimers.delete(timer);
                 element.classList.remove('typewriter-cursor');
                 if (callback) callback();
             }
         }, EVEAssistant.TIMING.TYPEWRITER_SPEED);
+        
+        this.activeTimers.add(timer);
     }
 
-    typeHTML(element, html, callback) {
-        // Set complete HTML structure with formatting
-        element.innerHTML = html;
-        element.classList.add('typewriter-cursor');
+    // Enhanced line-by-line with professional formatting
+    typeLineByLine(element, message, callback) {
+        // Pre-process message for better formatting
+        const processedMessage = message
+            .replace(/^- /gm, '• ')  // Convert dashes to bullets
+            .replace(/\n\n/g, '\n \n')  // Add spacing for empty lines
+            .split('\n');
         
-        // Get full height for animation target
-        const fullHeight = element.scrollHeight;
+        let lineIndex = 0;
         
-        // Setup overflow masking for growing bubble
-        element.style.maxHeight = '1.5em';
-        element.style.overflow = 'hidden';
-        element.style.transition = 'max-height 0.1s ease-out';
-        
-        // Get all text nodes for progressive reveal
-        const textNodes = this.getTextNodes(element);
-        const allText = textNodes.map(node => node.textContent).join('');
-        
-        // Store original text and clear all text nodes
-        const originalTexts = textNodes.map(node => node.textContent);
-        textNodes.forEach(node => node.textContent = '');
-        
-        // Progressive character reveal with live formatting and growing bubble
-        let charIndex = 0;
-        let nodeIndex = 0;
-        let nodeCharIndex = 0;
-        
-        const timer = setInterval(() => {
-            if (charIndex < allText.length && nodeIndex < textNodes.length) {
-                const currentNode = textNodes[nodeIndex];
-                const originalText = originalTexts[nodeIndex];
+        const typeNextLine = () => {
+            if (lineIndex < processedMessage.length) {
+                const line = processedMessage[lineIndex].trim();
                 
-                if (nodeCharIndex < originalText.length) {
-                    // Type character into formatted text node
-                    currentNode.textContent = originalText.substring(0, nodeCharIndex + 1);
-                    nodeCharIndex++;
-                    charIndex++;
+                if (line) {
+                    const lineDiv = document.createElement('div');
+                    lineDiv.style.marginBottom = line.startsWith('•') ? '8px' : '4px';
+                    element.appendChild(lineDiv);
                     
-                    // Conservative bubble growth - only grow when needed
-                    const progress = charIndex / allText.length;
-                    const targetHeight = Math.min(fullHeight, element.scrollHeight);
-                    const currentHeight = 24 + (targetHeight - 24) * Math.pow(progress, 0.8); // Slower growth curve
-                    element.style.maxHeight = Math.ceil(currentHeight) + 'px';
+                    // Type plain text first, then apply formatting
+                    this.typeText(lineDiv, line, () => {
+                        try {
+                            const formattedLine = marked.parseInline(line);
+                            lineDiv.innerHTML = formattedLine;
+                        } catch (error) {
+                            // Keep plain text if formatting fails
+                        }
+                        lineIndex++;
+                        setTimeout(typeNextLine, 100);
+                    });
                 } else {
-                    // Move to next text node
-                    nodeIndex++;
-                    nodeCharIndex = 0;
+                    // Empty line for spacing
+                    const spaceDiv = document.createElement('div');
+                    spaceDiv.innerHTML = '&nbsp;';
+                    element.appendChild(spaceDiv);
+                    lineIndex++;
+                    setTimeout(typeNextLine, 50);
                 }
             } else {
-                clearInterval(timer);
-                element.classList.remove('typewriter-cursor');
-                element.style.maxHeight = '';
-                element.style.overflow = '';
-                element.style.transition = '';
-                this.addCertificateHandlers(element);
                 if (callback) callback();
             }
-        }, EVEAssistant.TIMING.TYPEWRITER_SPEED);
+        };
+        
+        typeNextLine();
     }
-    
+
+    // Extract text nodes from HTML element
     getTextNodes(element) {
         const textNodes = [];
         const walker = document.createTreeWalker(
@@ -191,7 +201,6 @@ class EVEAssistant {
             NodeFilter.SHOW_TEXT,
             {
                 acceptNode: (node) => {
-                    // Only accept text nodes with actual content
                     return node.textContent.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
                 }
             }
@@ -205,6 +214,7 @@ class EVEAssistant {
         return textNodes;
     }
 
+    // Make @suggestedquestions clickable
     makeClickable(element) {
         const html = element.innerHTML;
         const clickableHtml = html.replace(
@@ -222,11 +232,25 @@ class EVEAssistant {
         }
     }
 
+    // Validate user input
+    validateInput(message) {
+        if (!message || message.length < 2) {
+            this.addBotMessage("Please type a proper question - at least 2 characters.", 'validation');
+            return false;
+        }
+        if (message.length > 1000) {
+            this.addBotMessage("Message too long. Please keep it under 1000 characters.", 'validation');
+            return false;
+        }
+        return true;
+    }
+
+    // Handle message sending
     async sendMessage() {
         if (!this.elements.input) return;
         
         const message = this.elements.input.value.trim();
-        if (!message) return;
+        if (!this.validateInput(message)) return;
         
         this.addUserMessage(message);
         this.elements.input.value = '';
@@ -236,13 +260,14 @@ class EVEAssistant {
         try {
             const response = await this.generateResponse(message);
             this.hideThinking();
-            this.addBotMessage(response);
+            this.addBotMessage(response.text, response.source);
         } catch (error) {
             this.hideThinking();
-            this.addBotMessage("I'm having trouble right now. Please try again in a moment.");
+            this.addBotMessage("I'm having trouble right now. Please try again in a moment.", 'error');
         }
     }
 
+    // Add user message to chat
     addUserMessage(message) {
         if (!this.elements.messagesContainer) return;
         
@@ -258,7 +283,8 @@ class EVEAssistant {
         this.scrollToBottom();
     }
 
-    addBotMessage(message) {
+    // Source-based rendering - AI and knowledge content gets formatting
+    addBotMessage(message, source = 'unknown') {
         if (!this.elements.messagesContainer) return;
         
         if (message === "Here are some questions you can ask me:") {
@@ -275,12 +301,19 @@ class EVEAssistant {
         
         this.elements.messagesContainer.appendChild(messageDiv);
         
-        // Use HTML rendering for formatted responses
-        if (message.includes('<')) {
-            this.typeHTML(contentDiv, message);
+        // Source-based detection (reliable)
+        const shouldFormat = source === 'ai' || source === 'knowledge' || message.includes('<');
+        
+        if (shouldFormat) {
+            // Progressive line-by-line typing
+            this.typeLineByLine(contentDiv, message, () => {
+                this.addCertificateHandlers(contentDiv);
+            });
         } else {
+            // Simple typing for errors and validation
             this.typeText(contentDiv, message);
         }
+        
         this.scrollToBottom();
     }
 
@@ -322,24 +355,23 @@ class EVEAssistant {
         try {
             const response = await this.generateResponse(question);
             this.hideThinking();
-            this.addBotMessage(response);
+            this.addBotMessage(response.text, response.source);
         } catch (error) {
             this.hideThinking();
-            this.addBotMessage("I'm having trouble right now. Please try again in a moment.");
+            this.addBotMessage("I'm having trouble right now. Please try again in a moment.", 'error');
         }
     }
 
+    // Generate response with source tracking
     async generateResponse(question) {
         const trimmed = question.trim();
         const lower = trimmed.toLowerCase();
 
-        // Keep suggested questions functionality
         if (lower.includes('@suggestedquestions')) {
-            return "Here are some questions you can ask me:";
+            return { text: "Here are some questions you can ask me:", source: 'system' };
         }
 
         try {
-            // Call the AI backend
             const response = await fetch('https://r7xn947zpk.execute-api.us-east-1.amazonaws.com/prod/chat', {
                 method: 'POST',
                 headers: {
@@ -355,22 +387,28 @@ class EVEAssistant {
             }
 
             const data = await response.json();
-            return data.response || "I'm having trouble generating a response right now.";
+            return { 
+                text: data.response || "I'm having trouble generating a response right now.", 
+                source: 'ai' 
+            };
 
         } catch (error) {
             console.error('API Error:', error);
             
-            // Fallback to static responses for known questions
             if (this.questionMapping[trimmed]) {
                 const key = this.questionMapping[trimmed];
-                return this.knowledgeBase[key];
+                return { text: this.knowledgeBase[key], source: 'knowledge' };
             }
-            return "I'm having trouble connecting to my AI service right now. Please try again in a moment.";
+            return { 
+                text: "I'm having trouble connecting to my AI service right now. Please try again in a moment.", 
+                source: 'error' 
+            };
         }
     }
 
+    // Display thinking animation
     showThinking() {
-        if (!this.elements.messagesContainer) return;
+        if (!this.elements.messagesContainer || this.currentThinking) return;
         
         const thinkingDiv = document.createElement('div');
         thinkingDiv.className = 'faq-message bot-message thinking-message';
@@ -385,21 +423,27 @@ class EVEAssistant {
             </div>
         `;
         
+        this.currentThinking = thinkingDiv;
         this.elements.messagesContainer.appendChild(thinkingDiv);
         this.scrollToBottom();
     }
 
+    // Remove thinking animation
     hideThinking() {
-        const thinking = document.querySelector('.thinking-message');
-        if (thinking) thinking.remove();
+        if (this.currentThinking) {
+            this.currentThinking.remove();
+            this.currentThinking = null;
+        }
     }
 
+    // Scroll chat to bottom
     scrollToBottom() {
         if (this.elements.messagesContainer) {
             this.elements.messagesContainer.scrollTop = this.elements.messagesContainer.scrollHeight;
         }
     }
 
+    // Make certificate buttons clickable
     addCertificateHandlers(element) {
         const certButtons = element.querySelectorAll('.cert-btn');
         
@@ -413,9 +457,15 @@ class EVEAssistant {
             });
         });
     }
+
+    // Cleanup resources
+    cleanup() {
+        this.activeTimers.forEach(timer => clearInterval(timer));
+        this.activeTimers.clear();
+    }
 }
 
-// Initialize
+// Initialise EVE assistant
 document.addEventListener('DOMContentLoaded', () => {
     window.eveAssistant = new EVEAssistant();
 });

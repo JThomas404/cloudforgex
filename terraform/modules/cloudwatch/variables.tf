@@ -19,32 +19,12 @@ variable "tags" {
   }
 }
 
-variable "iam_role_arn" {
-  description = "ARN of the IAM role for Lambda execution"
-  type        = string
-}
-
 variable "lambda_function" {
   description = "Name of the Lambda Function"
   type        = string
 }
 
-variable "runtime" {
-  description = "Lambda runtime version"
+variable "api_name" {
+  description = "Name of the API Gateway"
   type        = string
-  default     = "python3.11"
-}
-
-variable "handler" {
-  description = "Lambda function handler"
-  type        = string
-  default     = "app.lambda_handler"
-}
-
-variable "environment_variables" {
-  description = "Environment variables for Lambda"
-  type        = map(string)
-  default = {
-    ALLOWED_ORIGIN = "https://www.jarredthomas.cloud"
-  }
 }

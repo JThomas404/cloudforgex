@@ -37,10 +37,9 @@ variable "allowed_methods" {
   default     = "POST,OPTIONS"
 }
 
-variable "lambda_function_name" {
+variable "lambda_function" {
   description = "Name of the Lambda Function"
   type        = string
-  default     = "cfx-chatbot-lambda"
 }
 
 variable "lambda_function_arn" {
@@ -51,7 +50,6 @@ variable "lambda_function_arn" {
 variable "api_name" {
   description = "Name of the API Gateway"
   type        = string
-  default     = "cfx-chatbot-api"
 }
 
 variable "stage_name" {

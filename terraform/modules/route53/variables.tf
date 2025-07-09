@@ -1,5 +1,5 @@
 variable "domain_name" {
-  description = "Domain to request a certificate for"
+  description = "Domain to request a certificate for the CloudForgeX project"
   type        = string
 }
 

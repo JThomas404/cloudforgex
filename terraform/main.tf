@@ -18,7 +18,7 @@ module "acm_certificate" {
 module "route53" {
   source = "./modules/route53"
 
-  domain_name               = var.domain_name
+  domain_name = var.domain_name
   domain_validation_options = {
     for dvo in module.acm_certificate.domain_validation_options :
     dvo.domain_name => dvo
@@ -66,13 +66,23 @@ module "lambda" {
 module "api_gateway" {
   source = "./modules/apigateway"
 
-  project_name         = var.project_name
-  region               = var.region
-  lambda_function_arn  = module.lambda.lambda_function_arn
-  lambda_function_name = module.lambda.lambda_function_name
-  api_name             = var.api_name
-  stage_name           = var.stage_name
-  allowed_origin       = var.allowed_origin
+  project_name        = var.project_name
+  region              = var.region
+  lambda_function_arn = module.lambda.lambda_function_arn
+  lambda_function     = module.lambda.lambda_function_name
+  api_name            = var.api_name
+  stage_name          = var.stage_name
+  allowed_origin      = var.allowed_origin
 
   tags = var.tags
+}
+
+module "cloudwatch" {
+  source = "./modules/cloudwatch"
+
+  project_name    = var.project_name
+  lambda_function = var.lambda_function
+  api_name        = var.api_name
+  region          = var.region
+  tags            = var.tags
 }
