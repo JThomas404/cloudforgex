@@ -41,8 +41,12 @@ module "cloudfront" {
 module "iam" {
   source = "./modules/iam"
 
-  project_name = var.project_name
-  region       = var.region
+  depends_on = [module.dynamodb]
+
+  project_name       = var.project_name
+  region             = var.region
+  dynamodb_table_arn = module.dynamodb.dynamodb_table_arn
+
 
   tags = var.tags
 }
@@ -85,4 +89,14 @@ module "cloudwatch" {
   api_name        = var.api_name
   region          = var.region
   tags            = var.tags
+}
+
+module "dynamodb" {
+  source = "./modules/dynamodb"
+
+  project_name  = var.project_name
+  table_name    = var.table_name
+  ttl_attribute = var.ttl_attribute
+  region        = var.region
+  tags          = var.tags
 }

@@ -2,6 +2,9 @@ import json
 import boto3
 import os
 import logging
+import uuid
+import time
+from datetime import datetime
 from knowledge_base import get_enhanced_system_prompt, get_suggested_response
 
 # Configure logging
@@ -11,6 +14,7 @@ logger.setLevel(logging.INFO)
 # Environment variables with defaults (best security practices)
 ALLOWED_ORIGIN = os.environ.get('ALLOWED_ORIGIN', 'https://www.jarredthomas.cloud')
 AWS_REGION = os.environ.get('AWS_REGION', 'us-east-1')
+DYNAMODB_TABLE = os.environ.get('DYNAMODB_TABLE', 'cfx-chatbot-logs')
 
 # Cost protection implementation - prevent token waste
 BANNED_PATTERNS = {
@@ -35,23 +39,44 @@ def contains_wasteful_patterns(message: str) -> bool:
     
     return False
 
+def log_chat_interaction(user_input, ai_response, response_source, processing_time_ms):
+    """Log chat interaction to DynamoDB"""
+    try:
+        dynamodb = boto3.client('dynamodb', region_name=AWS_REGION)
+        
+        item = {
+            'chat_id': {'S': str(uuid.uuid4())},
+            'timestamp': {'S': datetime.utcnow().isoformat() + 'Z'},
+            'user_input': {'S': user_input},
+            'ai_response': {'S': ai_response},
+            'response_source': {'S': response_source},
+            'processing_time_ms': {'N': str(processing_time_ms)},
+            'ttl': {'N': str(int(time.time()) + (30 * 24 * 60 * 60))}  # 30 days
+        }
+        
+        dynamodb.put_item(TableName=DYNAMODB_TABLE, Item=item)
+        logger.info(f"Chat logged successfully: {response_source}")
+        
+    except Exception as e:
+        logger.error(f"Failed to log chat: {str(e)}")
+
 def get_ai_response(user_message):
     """Generate AI response using AWS Bedrock Claude Instant"""
     # Rate limit for user inputs 
     if len(user_message) > 1000:
-        return "Sorry, that message is too long. Please keep it under 1000 characters."
+        return "Sorry, that message is too long. Please keep it under 1000 characters.", "error"
     if len(user_message) < 5:
-        return "Hmm, that message is a bit too short. Try asking something specific about Jarred so I can help you better."
+        return "Hmm, that message is a bit too short. Try asking something specific about Jarred so I can help you better.", "error"
     
     # Check for wasteful patterns
     if contains_wasteful_patterns(user_message):
-        return "I'd love to help! Try asking something specific about Jarred's projects, skills, or experience."
+        return "I'd love to help! Try asking something specific about Jarred's projects, skills, or experience.", "error"
     
     # Check for predefined suggested responses first
     suggested_response = get_suggested_response(user_message)
     if suggested_response:
         logger.info(f"Returning predefined response for: {user_message[:50]}...")
-        return suggested_response
+        return suggested_response, "suggested"
     
     logger.info(f"Processing legitimate request: {len(user_message)} chars")
 
@@ -88,12 +113,12 @@ def get_ai_response(user_message):
         response_body = json.loads(response['body'].read())
         ai_response = response_body.get('completion', '').strip()
 
-        return ai_response
+        return ai_response, "ai"
 
     except Exception as e:
         # Log error and return a fallback message
         logger.error(f"AI response error: {str(e)}")
-        return "I'm having trouble connecting to my AI service right now. Please try again in a moment."
+        return "I'm having trouble connecting to my AI service right now. Please try again in a moment.", "error"
 
 def lambda_handler(event, context):
     # Log incoming requests for monitoring
@@ -141,7 +166,12 @@ def lambda_handler(event, context):
         }
 
     # Get AI response
-    ai_response = get_ai_response(message)
+    start_time = time.time()
+    ai_response, response_source = get_ai_response(message)
+    processing_time = int((time.time() - start_time) * 1000)
+
+    # Log the interaction
+    log_chat_interaction(message, ai_response, response_source, processing_time)
     
     return {
         'statusCode': 200,

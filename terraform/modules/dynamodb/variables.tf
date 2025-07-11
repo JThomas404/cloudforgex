@@ -19,7 +19,12 @@ variable "tags" {
   }
 }
 
-variable "dynamodb_table_arn" {
-  description = "ARN of the DynamoDB table for Lambda permissions"
+variable "table_name" {
+  description = "Name for the DynamoDB table for the project"
+  type        = string
+}
+
+variable "ttl_attribute" {
+  description = "Name of the attribute that automatically deletes old records in the table"
   type        = string
 }

@@ -91,3 +91,15 @@ variable "stage_name" {
   type        = string
   default     = "prod"
 }
+
+variable "table_name" {
+  description = "Name for the DynamoDB table for the project"
+  type        = string
+  default     = "cfx-chatbot-logs"
+}
+
+variable "ttl_attribute" {
+  description = "Name of the attribute that automatically deletes old records in the table"
+  type        = string
+  default     = "ttl"
+}

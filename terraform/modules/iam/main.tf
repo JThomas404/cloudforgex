@@ -37,6 +37,11 @@ resource "aws_iam_role_policy" "cfx_lambda_inline_policy" {
         "logs:PutLogEvents"],
         "Effect" : "Allow",
         "Resource" : "*"
+      },
+      {
+        "Action" : ["dynamodb:PutItem"],
+        "Effect" : "Allow",
+        "Resource" : var.dynamodb_table_arn
       }
     ]
   })
