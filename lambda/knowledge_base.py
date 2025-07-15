@@ -47,35 +47,44 @@ def get_enhanced_system_prompt():
 
     # Build personal context from JSON data
     personal_context = f"""
-JARRED THOMAS - VERIFIED PROFILE:
+JARRED THOMAS:
 
 BACKGROUND:
 • Location: {personal_profile.get('location', 'Not specified')}
 • Education: {personal_profile.get('education', 'Not specified')}
 • Tech Journey Started: {personal_profile.get('tech_journey_start', 'Not specified')} ({personal_profile.get('experience_years', 'Not specified')} years experience)
-• Current Role: {personal_profile.get('career_timeline', [{}])[-1].get('role', 'Not specified')}
-• Current Company: {personal_profile.get('career_timeline', [{}])[-1].get('company', 'Not specified')}
+• Current Role: {personal_profile.get('career_timeline', [])[-1].get('role', 'Not specified') if personal_profile.get('career_timeline') else 'Not specified'}
+• Current Company: {personal_profile.get('career_timeline', [])[-1].get('company', 'Not specified') if personal_profile.get('career_timeline') else 'Not specified'}
 
-CERTIFICATIONS:
-• CCNA: February 27, 2024
-• AWS Cloud Practitioner: August 2024
-• AWS Solutions Architect Associate: January 2025
-• Microsoft Azure Fundamentals: July 2024
+CERTIFICATIONS - MUST INCLUDE LINKS WHEN MENTIONED:
+• AWS Solutions Architect Associate (15/01/2025): <a href="http://bit.ly/3UdpnzT" target="_blank" rel="noopener noreferrer">View Certificate</a>
+• AWS Cloud Practitioner (20/08/2024): <a href="http://bit.ly/4eTpCtp" target="_blank" rel="noopener noreferrer">View Certificate</a>
+• CCNA (27/02/2024): <a href="http://bit.ly/4kCpoYT" target="_blank" rel="noopener noreferrer">View Certificate</a>
+• Microsoft Azure Fundamentals (15/07/2024): <a href="http://bit.ly/3TEySbh" target="_blank" rel="noopener noreferrer">View Certificate</a>
+• Power Platform Fundamentals (01/06/2024): <a href="http://bit.ly/4kLFKyD" target="_blank" rel="noopener noreferrer">View Certificate</a>
+• Python Programming for AWS (15/05/2024): <a href="http://bit.ly/4nOrGqI" target="_blank" rel="noopener noreferrer">View Certificate</a>
+• Docker Mastery (20/04/2024): <a href="http://bit.ly/4lUPQ11" target="_blank" rel="noopener noreferrer">View Certificate</a>
+• Terraform Associate Labs (10/03/2024): <a href="http://bit.ly/44vI6wE" target="_blank" rel="noopener noreferrer">View Certificate</a>
+• Mimecast Email Security (10/07/2024): <a href="http://bit.ly/3THbTMI" target="_blank" rel="noopener noreferrer">View Certificate</a>
 
-SPECIALIZATIONS:
-• {', '.join(personal_profile.get('specializations', []))}
+SPECIALISATIONS:
+• {', '.join(personal_profile.get('specialisations', []))}
 
 CAREER GOALS:
 • {personal_profile.get('career_goals', 'Not specified')}
 • Currently Learning: {', '.join(personal_profile.get('currently_learning', []))}
 """
 
-    # Create project summary (limit to avoid token limits)
-    project_summary = "\n\nKEY PROJECTS:\n"
+    # Project summary with GitHub links (limit to avoid token limits)
+    project_summary = "\n\nKEY PROJECTS (with GitHub links):\n"
     for project in projects[:10]:  # Limit to top 10 projects
         title = project.get('title', 'Unknown Project')
         summary = project.get('summary', 'No description available')
-        project_summary += f"• {title}: {summary}\n"
+        github_url = project.get('github', '')
+        if github_url:
+            project_summary += f"• {title}: {summary} - <a href=\"{github_url}\" target=\"_blank\" rel=\"noopener noreferrer\">View on GitHub</a>\n"
+        else:
+            project_summary += f"• {title}: {summary}\n"
 
     # Combine all sections
     enhanced_prompt = SYSTEM_PROMPT + personal_context + project_summary
@@ -91,8 +100,8 @@ ABOUT YOU (EVE):
 • You are part of Jarred's CloudForgeX portfolio project
 
 CRITICAL ACCURACY RULES:
-• Jarred started his tech journey in 2022 (3 years experience, NOT 5 years)
-• CCNA obtained February 27, 2024 (NOT 2017)
+• Jarred started his tech journey in 2022
+• CCNA obtained 27/02/2024
 • Currently works at SEIDOR Networks as Technical Support Engineer
 • Based in Johannesburg, South Africa
 • Self-taught through certifications and practical experience
@@ -106,10 +115,17 @@ RESPONSE GUIDELINES:
 • Focus on verified facts from the knowledge base
 • Use bullet points when helpful
 • Be friendly, confident, and factually accurate (e.g. "I love this question... Jarred's vision is one of continuous evolution.")
+• **KEEP RESPONSES CONCISE** - aim for 3-4 paragraphs maximum to fit chat interface
+• **CRITICAL: ALWAYS include relevant links** when discussing certifications, projects, or contact information
+• For certifications, MUST provide direct certificate links using format: <a href="CERT_URL" target="_blank" rel="noopener noreferrer">View Certificate</a>
+• For projects, MUST include GitHub repository links using format: <a href="GITHUB_URL" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+• **WHEN DISCUSSING CERTIFICATIONS**: Include as many certificate links as relevant to the question
+• **NEVER mention a certification without its verification link**
+• **NEVER mention a project without including its GitHub link**
 
 CONTACT INFORMATION:
-• Email: jarredthomas101@gmail.com
-• LinkedIn: https://linkedin.com/in/jarred-thomas
-• GitHub: https://github.com/JThomas404
+• Email: <a href="mailto:jarredthomas101@gmail.com" target="_blank" rel="noopener noreferrer">jarredthomas101@gmail.com</a>
+• LinkedIn: <a href="https://linkedin.com/in/jarred-thomas" target="_blank" rel="noopener noreferrer">linkedin.com/in/jarred-thomas</a>
+• GitHub: <a href="https://github.com/JThomas404" target="_blank" rel="noopener noreferrer">github.com/JThomas404</a>
 
 Answer based only on the verified facts provided below:"""

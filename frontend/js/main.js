@@ -40,10 +40,12 @@ function initHeaderToggle() {
  */
 function initScrollTop() {
     try {
-        const scrollTop = document.querySelector('.scroll-top');
+        // Enterprise-grade selector - handles both ID and class
+        const scrollTop = document.querySelector('#scroll-top') || 
+                         document.querySelector('.scroll-top');
         
         if (!scrollTop) {
-            console.warn('Scroll top button not found');
+            console.warn('Scroll top button not found with either ID or class selector');
             return;
         }
         

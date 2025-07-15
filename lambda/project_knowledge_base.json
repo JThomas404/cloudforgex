@@ -30,31 +30,57 @@
     ],
     "certifications": [
       {
-        "name": "CCNA",
-        "date": "February 27, 2024"
+        "name": "AWS Certified Solutions Architect - Associate (SAA-C03)",
+        "date": "15/01/2025",
+        "url": "https://d1hcjp46h1clr8.cloudfront.net/assets/documents/AWS%20Certified%20Solutions%20Architect%20-%20Associate%20certificate.pdf"
       },
       {
-        "name": "AWS Cloud Practitioner",
-        "date": "August 2024"
+        "name": "AWS Certified Cloud Practitioner (CLF-C02)",
+        "date": "20/08/2024",
+        "url": "https://d1hcjp46h1clr8.cloudfront.net/assets/documents/AWS%20Certified%20Cloud%20Practitioner%20certificate.pdf"
       },
       {
-        "name": "AWS Solutions Architect Associate",
-        "date": "January 2025"
+        "name": "Cisco Certified Network Associate (CCNA)",
+        "date": "27/02/2024",
+        "url": "https://d1hcjp46h1clr8.cloudfront.net/assets/documents/CCNA%20Cisco%20Certified%20Network%20Associate%20certificate.pdf"
       },
       {
-        "name": "Microsoft Azure Fundamentals",
-        "date": "July 2024"
+        "name": "Microsoft Certified: Azure Fundamentals (AZ-900)",
+        "date": "15/07/2024",
+        "url": "https://d1hcjp46h1clr8.cloudfront.net/assets/documents/Microsoft%20Certified-%20Azure%20Fundamentals%20(AZ-900).pdf"
       },
       {
-        "name": "Microsoft Power Platform Fundamentals",
-        "date": "2024"
+        "name": "Microsoft Certified: Power Platform Fundamentals (PL-900)",
+        "date": "01/06/2024",
+        "url": "https://d1hcjp46h1clr8.cloudfront.net/assets/documents/Power%20Platform%20Fundamentals%20(PL-900).pdf"
       },
       {
-        "name": "Mimecast Email Security",
-        "date": "July 2024"
+        "name": "Mimecast Email Security Cloud Gateway Fundamentals",
+        "date": "10/07/2024",
+        "url": "https://d1hcjp46h1clr8.cloudfront.net/assets/documents/Mimecast%20Email%20Security%20Cloud%20Gateway%20Fundamentals%20Certification.pdf"
+      },
+      {
+        "name": "Python Programming for AWS (Boto3)",
+        "date": "15/05/2024",
+        "url": "https://d1hcjp46h1clr8.cloudfront.net/assets/documents/Python%20Programming%20for%20AWS%20(Boto3).pdf"
+      },
+      {
+        "name": "Docker Mastery",
+        "date": "20/04/2024",
+        "url": "https://d1hcjp46h1clr8.cloudfront.net/assets/documents/Docker%20Mastery%20%2B%20Adrian%20Cantrill's%20Docker%20Fundamentals.pdf"
+      },
+      {
+        "name": "Terraform Associate Hands-On Labs",
+        "date": "10/03/2024",
+        "url": "https://d1hcjp46h1clr8.cloudfront.net/assets/documents/Terraform%20Associate%20Hands-On%20Labs.pdf"
+      },
+      {
+        "name": "Linux Foundation Certified Systems Administrator (LFCS)",
+        "date": "In Progress",
+        "url": null
       }
     ],
-    "specializations": [
+    "specialisations": [
       "Cloud Computing (AWS, Azure)",
       "Networking and Security",
       "DevOps and Infrastructure as Code"
@@ -208,7 +234,7 @@
       "summary": "Cost-saving automation for unassociated EIPs using AWS Lambda to identify and release unused Elastic IP addresses, preventing unnecessary charges.",
       "highlights": [
         "Automated detection of unassociated Elastic IP addresses",
-        "Cost optimization through automated cleanup processes",
+        "Cost optimisation through automated cleanup processes",
         "Serverless architecture with scheduled execution",
         "Comprehensive logging and error handling"
       ],
@@ -247,7 +273,7 @@
       "summary": "Daily Lambda backups with Boto3 and tagging for automated EC2 volume snapshot management and retention policies.",
       "highlights": [
         "Automated daily snapshots of EC2 volumes",
-        "Intelligent tagging system for snapshot organization",
+        "Intelligent tagging system for snapshot organisation",
         "Retention policies to manage storage costs",
         "Error handling and notification systems"
       ],
@@ -263,10 +289,10 @@
     },
     {
       "title": "Docker Security Falcon (Kubernetes Edition)",
-      "summary": "Secure FastAPI app with CI/CD and RBAC, containerized with Docker and deployed on Kubernetes with comprehensive security scanning.",
+      "summary": "Secure FastAPI app with CI/CD and RBAC, containerised with Docker and deployed on Kubernetes with comprehensive security scanning.",
       "highlights": [
         "Production-ready FastAPI microservice with security best practices",
-        "Docker containerization with multi-stage builds",
+        "Docker containerisation with multi-stage builds",
         "Kubernetes deployment with RBAC and security policies",
         "CI/CD pipeline with automated security scanning using Trivy"
       ],
@@ -288,7 +314,7 @@
         "Modular FastAPI architecture for scalability",
         "Comprehensive testing framework with pytest",
         "DevSecOps integration with security scanning",
-        "Docker containerization and deployment automation"
+        "Docker containerisation and deployment automation"
       ],
       "technologies": [
         "FastAPI",
@@ -302,10 +328,10 @@
     },
     {
       "title": "httpenv",
-      "summary": "Dockerized HTTP environment variable echo tool for network testing and debugging in containerized environments.",
+      "summary": "Dockerised HTTP environment variable echo tool for network testing and debugging in containerised environments.",
       "highlights": [
         "Simple HTTP service for environment variable inspection",
-        "Docker containerization for easy deployment",
+        "Docker containerisation for easy deployment",
         "Network testing and debugging capabilities",
         "Lightweight and efficient design"
       ],
@@ -320,10 +346,10 @@
     },
     {
       "title": "SAP HANA Professional Portfolio",
-      "summary": "Real-world Linux administration for SAP Basis including database management, optimization, and migration projects.",
+      "summary": "Real-world Linux administration for SAP Basis including database management, optimisation, and migration projects.",
       "highlights": [
         "Production SAP HANA database administration",
-        "Linux system administration and optimization",
+        "Linux system administration and optimisation",
         "Database migration and backup strategies",
         "Performance tuning and monitoring"
       ],
@@ -338,11 +364,11 @@
     },
     {
       "title": "AWS Cost Monitoring Script",
-      "summary": "Bash tool for identifying unused EC2/EBS resources to optimize AWS costs and improve resource utilization.",
+      "summary": "Bash tool for identifying unused EC2/EBS resources to optimise AWS costs and improve resource utilisation.",
       "highlights": [
         "Automated detection of unused AWS resources",
-        "Cost optimization recommendations",
-        "Comprehensive reporting on resource utilization",
+        "Cost optimisation recommendations",
+        "Comprehensive reporting on resource utilisation",
         "Bash scripting for cross-platform compatibility"
       ],
       "technologies": [
@@ -439,7 +465,7 @@
     
     "What's Jarred's most impactful project?": "Jarred's most defining project is his **Serverless Web Application Project** — but what made it truly impactful wasn't just what he built, but how he rebuilt it.\n\nThe first two launches failed — not because the system didn't work, but because Jarred was focused on what worked... not on what worked best. That setback forced him to think like a real cloud engineer to build not just functional architecture, but resilient, scalable, and maintainable systems that would stand up in production environments.\n\nHe took on multiple roles:\n\n• **DevOps Engineer** – wrote the backend and deployed the frontend\n• **Solutions Architect** – designed the infrastructure using Terraform and GitHub Actions\n• **Cloud Engineer** – automated and secured the full deployment in AWS\n\nThat failure taught Jarred how to rebuild with clarity, humility, and discipline — and it became the project that shaped his mindset more than any certification ever could.",
     
-    "What certifications does Jarred hold?": "Jarred's certifications reflect his commitment to real-world expertise and platform fluency:\n\n• **AWS Certified Solutions Architect – Associate (SAA-C03)**\n• **AWS Certified Cloud Practitioner (CLF-C02)**\n• **Cisco Certified Network Associate (CCNA)**\n• **Microsoft Certified: Azure Fundamentals (AZ-900)**\n• **Power Platform Fundamentals (PL-900)**\n• **Mimecast Cloud Gateway Fundamentals**\n• **Python Programming for AWS (Boto3)**\n• **Docker Mastery + Adrian Cantrill's Docker Fundamentals**\n• **Terraform Associate Hands-On Labs**\n• **Linux Foundation Certified Systems Administrator** _(in progress)_\n\nThese show not just study — but _depth, breadth, and applied competence_.",
+    "What certifications does Jarred hold?": "Jarred's certifications reflect his commitment to real-world expertise and platform fluency:\n\n• **AWS Certified Solutions Architect – Associate (SAA-C03)**\n• **AWS Certified Cloud Practitioner (CLF-C02)**\n• **Cisco Certified Network Associate (CCNA)**\n• **Microsoft Certified: Azure Fundamentals (AZ-900)**\n• **Power Platform Fundamentals (PL-900)**\n• **Mimecast Cloud Gateway Fundamentals**\n• **Python Programming for AWS (Boto3)**\n• **Docker Mastery**\n• **Terraform Associate Hands-On Labs**\n• **Linux Foundation Certified Systems Administrator** _(in progress)_\n\nThese show not just study — but _depth, breadth, and applied competence_.",
     
     "What tools and technologies does Jarred use most?": "Jarred works with a toolset designed for **automation**, **security**, and **cloud scalability**. His strength lies in how he connects and automates across platforms.\n\n• **Cloud & Infrastructure:** AWS, Azure, Terraform, Docker, GitHub Actions, CI/CD\n• **Scripting & Automation:** Python, Boto3, Bash, PowerShell, JSON, YAML\n• **Key AWS Services:** Lambda, API Gateway, DynamoDB, Bedrock, S3, Route 53, CloudFront, IAM, SSM, CloudWatch\n• **Developer Tools:** VS Code, Git, Postman, Notion, Nginx\n\nHe doesn't just use tools — he _orchestrates_ them to build resilient, modular, and intelligent cloud-native systems.",
     

@@ -14,7 +14,7 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://cloudforgex-certs.s3.us-east-1.amazonaws.com https:; object-src 'none'; base-uri 'self';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://cloudforgex-6dbece76.s3.amazonaws.com https:; object-src 'none'; base-uri 'self';">
 
     <!-- Favicons -->
     <link href="assets/images/favicon.png" rel="icon">
@@ -76,6 +76,7 @@
                 <li><a href="#hero" class="active"><i class="fas fa-home navicon"></i><span>Home</span></a></li>
                 <li><a href="#about"><i class="fas fa-user navicon"></i><span>About</span></a></li>
                 <li><a href="#skills"><i class="fas fa-cogs navicon"></i><span>Skills</span></a></li>
+                <li><a href="#system-monitoring"><i class="fas fa-chart-line navicon"></i><span>Monitoring</span></a></li>
                 <li><a href="#certifications"><i class="fas fa-certificate navicon"></i><span>Certifications</span></a></li>
                 <li><a href="#projects"><i class="fas fa-images navicon"></i><span>Projects</span></a></li>
                 <li><a href="#experience"><i class="fas fa-briefcase navicon"></i><span>Experience</span></a></li>
@@ -94,7 +95,7 @@
                     <div class="col-lg-9">
                         <h1>Hi, I'm <span>Jarred Thomas</span></h1>
                         <h2 class="typing" id="typed-text"></h2>
-                        <a href="assets/documents/resume.pdf" class="btn" download>Download Resume</a>
+                        <a href="https://d1hcjp46h1clr8.cloudfront.net/assets/documents/Resume.pdf" class="btn" download>Download Resume</a>
                         <div class="social-links">
                             <a href="https://github.com/JThomas404" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
                             <a href="https://www.linkedin.com/in/jarred-thomas" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
@@ -265,6 +266,50 @@
             </div>
         </section>
 
+        <!-- System Monitoring Section -->
+        <section id="system-monitoring" class="system-monitoring section">
+            <div class="container section-title" data-aos="fade-up">
+                <h2>System Monitoring</h2>
+                <p>Real-time performance and cost optimisation metrics</p>
+            </div>
+
+            <div class="container" data-aos="fade-up" data-aos-delay="100">
+                <div class="monitoring-dashboard">
+                    <div class="status-indicator" data-aos="fade-up" data-aos-delay="200">
+                        <span class="status-text">EVE SYSTEM ONLINE</span>
+                        <img src="assets/images/online-status.svg" alt="Online Status" class="status-icon">
+                    </div>
+                    
+                    <div class="metrics-grid" data-aos="fade-up" data-aos-delay="300">
+                        <div class="metric-card">
+                            <img src="assets/images/response-time-jet.svg" alt="Response Time" class="metric-icon">
+                            <div class="metric-value">~1.2s</div>
+                            <h4 class="metric-title">Response Time</h4>
+                            <p class="metric-description">Average processing speed</p>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <img src="assets/images/uptime-signal.svg" alt="System Uptime" class="metric-icon">
+                            <div class="metric-value">99.9%</div>
+                            <h4 class="metric-title">System Uptime</h4>
+                            <p class="metric-description">Availability percentage</p>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <img src="assets/images/cost-savings-piggy.svg" alt="Cost Savings" class="metric-icon">
+                            <div class="metric-value">35%</div>
+                            <h4 class="metric-title">Cost Savings</h4>
+                            <p class="metric-description">Through optimisation</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-actions" data-aos="fade-up" data-aos-delay="600">
+                        <a href="https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards:name=CloudForgeX-CW-Dashboard" target="_blank" rel="noopener noreferrer nofollow" class="btn-project">View Full AWS CloudWatch Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Certifications Section -->
         <section id="certifications" class="certifications section">
             <div class="container section-title" data-aos="fade-up">
@@ -275,21 +320,22 @@
             <div class="container">
                 <div class="certifications-grid">
                     <div class="cert-item">
-                        <h4>AWS Certified Solutions Architect - Associate</h4>
+                        <h4>AWS Certified Solutions Architect Associate</h4>
                         <p><em>Amazon Web Services - 2024</em></p>
                         <p>Professional certification in AWS cloud architecture and solutions design</p>
-                        <a href="assets/documents/AWS Certified Solutions Architect - Associate certificate.pdf" target="_blank" class="btn-project">View Certificate</a>
+                        <a href="https://d1hcjp46h1clr8.cloudfront.net/assets/documents/AWS%20Certified%20Solutions%20Architect%20-%20Associate%20certificate.pdf" target="_blank" class="btn-project">View Certificate</a>
                     </div>
                     <div class="cert-item">
                         <h4>CCNA Cisco Certified Network Associate</h4>
                         <p><em>Cisco - 2023</em></p>
                         <p>Comprehensive networking fundamentals and Cisco technologies certification</p>
-                        <a href="assets/documents/Cisco Certified Network Associate certificate.pdf" target="_blank" class="btn-project">View Certificate</a>
+                        <a href="https://d1hcjp46h1clr8.cloudfront.net/assets/documents/CCNA%20Cisco%20Certified%20Network%20Associate%20certificate.pdf" target="_blank" class="btn-project">View Certificate</a>
                     </div>
                     <div class="cert-item">
-                        <h4>Linux Foundation Certified Systems Administrator - LFCS</h4>
+                        <h4>Linux Foundation Certified Systems Administrator</h4>
                         <p><em>Linux Foundation - In Progress</em></p>
                         <p>Advanced Linux system administration and troubleshooting skills</p>
+                        <a href="https://training.linuxfoundation.org/certification/linux-foundation-certified-sysadmin-lfcs/" target="_blank" rel="noopener noreferrer" class="btn-project">Learn About Certification</a>
                     </div>
                 </div>
             </div>
@@ -347,7 +393,7 @@
                     </div>
                     
                     <div class="cert-item">
-                        <h4>Automating EC2 Snapshots with Lambda and EventBridge</h4>
+                        <h4>Automating EC2 Snapshots with Lambda & EventBridge</h4>
                         <p>Built a serverless automation pipeline using AWS Lambda and EventBridge to create daily snapshots of EC2 volumes. Enhances disaster recovery and ensures consistent backups with minimal human intervention.</p>
                         <a href="https://github.com/JThomas404/python-boto3-aws-automation-scripts" target="_blank" rel="noopener noreferrer nofollow" class="btn-project">View on GitHub</a>
                     </div>
@@ -361,40 +407,27 @@
             </div>
         </section>
 
-        <!-- System Monitoring Dashboard -->
-        <section id="system-monitoring" class="section">
-            <div class="container">
-                <h2 class="section-title">System Monitoring & Analytics</h2>
-        
-                <div class="monitoring-card">
-                    <div class="status-indicator">
-                        <span class="status-dot"></span>
-                        <strong>EVE System Online</strong>
+        <!-- Experience Section -->
+        <section id="experience" class="experience section">
+            <div class="container section-title" data-aos="fade-up">
+                <h2>Experience & Education</h2>
+                <p>Professional development and continuous learning</p>
+            </div>
+
+            <div class="container" data-aos="fade-up" data-aos-delay="100">
+                <div class="experience-timeline">
+                    <div class="timeline-item" data-aos="fade-up" data-aos-delay="100">
+                        <div class="timeline-date">2024</div>
+                        <h4>Master DevOps with Terraform on AWS</h4>
+                        <p><em>Udemy</em></p>
+                        <p>Advanced training in infrastructure automation and cloud architecture</p>
                     </div>
-        
-                    <div class="metrics-grid">
-                        <div class="metric">
-                            <span class="metric-label">Response Time</span>
-                            <span class="metric-value">~1.2s</span>
-                        </div>
-                        <div class="metric">
-                            <span class="metric-label">System Uptime</span>
-                            <span class="metric-value">99.9%</span>
-                        </div>
-                        <div class="metric">
-                            <span class="metric-label">Cost Savings</span>
-                            <span class="metric-value">35%</span>
-                        </div>
+                    <div class="timeline-item" data-aos="fade-up" data-aos-delay="200">
+                        <div class="timeline-date">2024</div>
+                        <h4>Docker & Kubernetes – Practical Guide</h4>
+                        <p><em>Udemy</em></p>
+                        <p>Comprehensive containerization and orchestration training</p>
                     </div>
-        
-                    <a href="https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards:name=CloudForgeX-CW-Dashboard"
-                        target="_blank" class="dashboard-btn">
-                        View Full AWS CloudWatch Dashboard
-                    </a>
-        
-                    <p class="monitoring-note">
-                        Real-time monitoring with comprehensive observability and cost optimisation
-                    </p>
                 </div>
             </div>
         </section>
@@ -441,23 +474,7 @@
 
     </main>
 
-    <!-- Footer -->
-    <footer id="footer" class="footer position-relative">
-        <div class="container">
-            <h3 class="sitename">Jarred Thomas</h3>
-            <p>Cloud Engineer specialising in AWS, Terraform, and Kubernetes. Building scalable, secure infrastructure solutions.</p>
-            <div class="social-links d-flex justify-content-center">
-                <a href="https://github.com/JThomas404" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
-                <a href="https://www.linkedin.com/in/jarred-thomas" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
-                <a href="mailto:jarredthomas101@gmail.com"><i class="fas fa-envelope"></i></a>
-            </div>
-            <div class="container">
-                <div class="copyright">
-                    <span>Copyright</span> <strong class="px-1 sitename">Jarred Thomas</strong> <span>All Rights Reserved</span>
-                </div>
-            </div>
-        </div>
-    </footer>
+
 
     <!-- Scroll Top -->
     <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="fas fa-arrow-up"></i></a>
