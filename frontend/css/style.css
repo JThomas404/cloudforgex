@@ -476,6 +476,7 @@ section:not(#hero) {
     flex-direction: column;
     min-height: 380px;
     height: auto;
+    justify-content: flex-start;
 }
 
 .cert-item:hover {
@@ -493,7 +494,25 @@ section:not(#hero) {
     color: var(--default-color);
     line-height: 1.6;
     margin-bottom: 15px;
+}
+
+.cert-header {
+    height: 100px; /* Fixed height for header section */
+    margin-bottom: 15px;
+}
+
+.cert-content {
     flex: 1;
+}
+
+.cert-item p em {
+    display: block;
+    margin-bottom: 12px;
+    color: #777777;
+}
+
+.cert-item p strong {
+    color: var(--accent-color);
 }
 
 .cert-item .btn-project {

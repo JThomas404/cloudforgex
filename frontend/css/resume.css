@@ -1,105 +1,358 @@
+/* 1. Global Styles & Variables */
+:root {
+    --default-font: "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --heading-font: "Raleway", sans-serif;
+    --nav-font: "Poppins", sans-serif;
+    --background-color: #121212;
+    --default-color: #f1f1f1;
+    --heading-color: #ffffff;
+    --accent-color: #1fa2ff;
+    --surface-color: #1a1a1a;
+    --contrast-color: #ffffff;
+    --subtitle-color: #777777;
+    --card-padding: 25px;
+    --card-border-radius: 10px;
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --card-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    --transition-speed: 0.3s;
+}
 
-/* Resume-specific styles */
+body,
+html {
+    margin: 0;
+    padding: 0;
+    font-family: var(--default-font);
+    background-color: var(--background-color);
+    color: var(--default-color);
+    line-height: 1.6;
+    scroll-behavior: smooth;
+}
+
+/* 2. Base Layout & Container */
 .resume-container {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 40px;
-  background: var(--surface-color, #1a1a1a);
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 60px;
+    background: var(--surface-color);
+    border-radius: 10px;
+    border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    font-family: var(--default-font);
+    line-height: 1.6;
 }
+
+/* 3. Header Section */
 .resume-header {
-  text-align: center;
-  border-bottom: 2px solid var(--accent-color, #1fa2ff);
-  padding-bottom: 20px;
-  margin-bottom: 30px;
+    text-align: center;
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 30px;
+    margin-bottom: 40px;
 }
+
 .resume-header h1 {
-  color: var(--accent-color, #1fa2ff);
-  margin-bottom: 5px;
+    font-family: var(--heading-font);
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--heading-color);
+    margin-bottom: 10px;
 }
+
 .resume-header .title {
-  font-size: 18px;
-  color: var(--default-color, #ccc);
-  margin-bottom: 15px;
+    font-size: 20px;
+    color: var(--accent-color);
+    font-weight: 500;
+    margin-bottom: 20px;
 }
+
 .resume-contact-info {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
 }
+
 .resume-contact-info span {
-  color: var(--default-color, #f1f1f1);
-  font-size: 14px;
+    color: var(--default-color);
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
+
+.resume-contact-info i {
+    color: var(--accent-color);
+    width: 16px;
+}
+
+/* 4. Section Styling */
 .resume-section {
-  margin-bottom: 30px;
+    margin-bottom: 40px;
 }
+
 .resume-section h2 {
-  color: var(--accent-color, #1fa2ff);
-  border-bottom: 1px solid var(--surface-color, #333);
-  padding-bottom: 5px;
-  margin-bottom: 15px;
+    font-family: var(--heading-font);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--accent-color);
+    position: relative;
 }
-.job, .education-item {
-  margin-bottom: 20px;
+
+.resume-section h2::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: var(--accent-color);
 }
-.job-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 5px;
+
+/* 5. Button Styling */
+.resume-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background: var(--accent-color);
+    color: var(--contrast-color);
+    border-radius: 25px;
+    text-decoration: none;
+    transition: 0.3s;
+    font-weight: 500;
+    margin-top: 10px;
+    border: none;
+    cursor: pointer;
 }
-.job-title {
-  font-weight: bold;
-  color: var(--default-color, #f1f1f1);
+
+.resume-btn:hover {
+    background: color-mix(in srgb, var(--accent-color), transparent 20%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(31, 162, 255, 0.3);
+    color: var(--contrast-color);
 }
-.job-date {
-  color: var(--default-color, #ccc);
-  font-size: 14px;
-}
-.company {
-  color: var(--accent-color, #1fa2ff);
-  margin-bottom: 10px;
-}
-.job ul {
-  margin: 10px 0;
-  padding-left: 20px;
-}
-.skills-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-.skill-tag {
-  background: var(--surface-color, #333);
-  color: var(--default-color, #f1f1f1);
-  padding: 5px 10px;
-  border-radius: 15px;
-  font-size: 14px;
-}
+
+/* 6. Back & Download Buttons */
 .resume-back-btn {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  background: var(--accent-color, #1fa2ff);
-  color: var(--contrast-color, white);
-  padding: 10px 15px;
-  border-radius: 5px;
-  text-decoration: none;
-  transition: background 0.3s;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: var(--accent-color);
+    color: var(--contrast-color);
+    padding: 12px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
+
 .resume-back-btn:hover {
-  background: #0d8ce8;
+    background: color-mix(in srgb, var(--accent-color), transparent 20%);
+    transform: translateY(-2px);
+    color: var(--contrast-color);
 }
+
+.resume-download-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--accent-color);
+    color: var(--contrast-color);
+    padding: 12px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.resume-download-btn:hover {
+    background: color-mix(in srgb, var(--accent-color), transparent 20%);
+    transform: translateY(-2px);
+    color: var(--contrast-color);
+}
+
+:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* 7. Cards - Landscape Format */
+.resume-cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 30px 0;
+    width: 100%;
+}
+
+.resume-card-item {
+    background: var(--surface-color);
+    padding: var(--card-padding);
+    border-radius: var(--card-border-radius);
+    border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed), border-color var(--transition-speed);
+    width: 100%;
+    min-height: 120px;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--card-shadow);
+    position: relative;
+}
+
+.resume-card-item:hover {
+    transform: scale(1.05);
+    box-shadow: var(--card-hover-shadow);
+    border-color: var(--accent-color);
+}
+
+.resume-card-item h4 {
+    color: var(--accent-color);
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 6px 0;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.resume-card-item .resume-subtitle {
+    color: #777777;
+    font-weight: 500;
+    font-size: 13px;
+    margin-bottom: 8px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.resume-card-item p {
+    color: var(--default-color);
+    line-height: 1.4;
+    margin: 0;
+    font-size: 14px;
+    overflow: hidden;
+    flex: 1;
+}
+
+/* 8. Special styling for recommendation cards */
+.resume-card-item.recommendation {
+    height: auto;
+    min-height: 120px;
+}
+
+.resume-card-item.recommendation p {
+    margin-bottom: 15px;
+}
+
+.resume-card-item.recommendation::after {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--accent-color);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+/* 9. Print Styles */
 @media print {
-  body { background: white; color: black; }
-  .resume-container { box-shadow: none; background: white; }
-  .resume-back-btn { display: none; }
+    body {
+        background: white;
+        color: black;
+        font-size: 12pt;
+    }
+    
+    .resume-container {
+        box-shadow: none;
+        background: white;
+        border: none;
+        padding: 20pt;
+        margin: 0;
+        max-width: none;
+    }
+    
+    .resume-back-btn {
+        display: none;
+    }
+    
+    .resume-btn {
+        background: transparent;
+        color: black;
+        border: 1px solid black;
+    }
+    
+    .resume-card-item {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+    
+    .resume-section {
+        page-break-before: auto;
+    }
+    
+    .recommendation {
+        page-break-before: always;
+    }
+    
+    .resume-card-item.recommendation::after {
+        display: none;
+    }
 }
+
+/* 10. Responsive Design */
 @media (max-width: 768px) {
-  .resume-container { margin: 20px; padding: 20px; }
-  .job-header { flex-direction: column; }
-  .resume-contact-info { flex-direction: column; gap: 10px; }
+    .resume-container {
+        margin: 20px;
+        padding: 30px 20px;
+    }
+    
+    .resume-header h1 {
+        font-size: 36px;
+    }
+    
+    .resume-contact-info {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    .resume-card-item {
+        min-height: 100px;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .resume-container {
+        margin: 10px;
+        padding: 20px 15px;
+    }
+    
+    .resume-header h1 {
+        font-size: 28px;
+    }
+    
+    .resume-section h2 {
+        font-size: 24px;
+    }
+    
+    .resume-card-item {
+        padding: 15px;
+        min-height: 80px;
+    }
+    
+    .resume-btn {
+        padding: 10px 20px;
+        font-size: 13px;
+    }
 }

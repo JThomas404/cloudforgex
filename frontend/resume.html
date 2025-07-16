@@ -1,20 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cloud Engineer with expertise in AWS, Terraform, and serverless architecture">
     <title>Jarred Thomas - Resume</title>
-    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/resume.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "Person",
+      "name": "Jarred Thomas",
+      "jobTitle": "Cloud Engineer",
+      "url": "https://yourwebsite.com",
+      "sameAs": [
+        "https://linkedin.com/in/jarred-thomas",
+        "https://github.com/JThomas404"
+      ]
+    }
+    </script>
 </head>
+
 <body>
     <a href="index.html" class="resume-back-btn"><i class="fas fa-arrow-left"></i> Back to Portfolio</a>
-    
+
     <div class="resume-container">
         <header class="resume-header">
             <h1>Jarred Thomas</h1>
-            <div class="title">Cloud Engineer & Infrastructure Specialist</div>
+            <div class="title">Cloud Engineer | Infrastructure & Automation Specialist</div>
             <div class="resume-contact-info">
                 <span><i class="fas fa-envelope"></i> jarredthomas101@gmail.com</span>
                 <span><i class="fab fa-linkedin"></i> linkedin.com/in/jarred-thomas</span>
@@ -25,90 +40,200 @@
 
         <section class="resume-section">
             <h2>Professional Summary</h2>
-            <p>Cloud Engineer with expertise in AWS infrastructure, Terraform automation, and Kubernetes orchestration. Proven track record of designing scalable, secure cloud solutions and preventing critical system failures through strategic migrations and modernisation initiatives.</p>
+            <div class="resume-cards-container">
+                <div class="resume-card-item">
+                    <h4>Cloud Engineering Professional</h4>
+                    <p class="resume-subtitle">Self-Taught Journey | 2022 - Present</p>
+                    <p>I am a self-taught Cloud Engineer who started in cloud computing in 2022. I quickly built skills in AWS, Terraform, and serverless architecture. I have a strong history of stopping critical system failures, achieving 99.9% uptime in production environments, and delivering significant results, including a 95% reduction in downtime and 100% backup reliability.</p>
+                </div>
+            </div>
         </section>
 
         <section class="resume-section">
             <h2>Technical Skills</h2>
-            <div class="skills-list">
-                <span class="skill-tag">AWS</span>
-                <span class="skill-tag">Terraform</span>
-                <span class="skill-tag">Kubernetes</span>
-                <span class="skill-tag">Docker</span>
-                <span class="skill-tag">Azure</span>
-                <span class="skill-tag">PowerShell</span>
-                <span class="skill-tag">Bash</span>
-                <span class="skill-tag">CI/CD</span>
-                <span class="skill-tag">Infrastructure as Code</span>
-                <span class="skill-tag">SQL Server</span>
-                <span class="skill-tag">Git</span>
-                <span class="skill-tag">Linux</span>
+            
+            <div class="resume-cards-container">
+                <div class="resume-card-item">
+                    <h4><i class="fas fa-cloud"></i> Cloud Platforms & Infrastructure</h4>
+                    <p class="resume-subtitle">AWS & Azure | Production Experience</p>
+                    <p>AWS (EC2, S3, Lambda, API Gateway, DynamoDB, IAM, Route 53, CloudWatch), VPC Architecture, Subnets & NACLs, ALB/ELB, Azure Fundamentals</p>
+                </div>
+
+                <div class="resume-card-item">
+                    <h4><i class="fas fa-code"></i> Infrastructure as Code</h4>
+                    <p class="resume-subtitle">Terraform & Ansible | Automation</p>
+                    <p>Terraform (modular design, remote state, workspaces), Ansible</p>
+                </div>
+
+                <div class="resume-card-item">
+                    <h4><i class="fab fa-docker"></i> Containers & Orchestration</h4>
+                    <p class="resume-subtitle">Docker & Kubernetes | DevOps</p>
+                    <p>Docker (optimised images, multi-stage builds), Kubernetes (Minikube, YAML, deployments, RBAC)</p>
+                </div>
+
+                <div class="resume-card-item">
+                    <h4><i class="fas fa-cogs"></i> CI/CD & Automation</h4>
+                    <p class="resume-subtitle">GitHub Actions & Scripting | Pipeline Automation</p>
+                    <p>GitHub Actions, Bash Scripting, Python, PowerShell, JSON/YAML</p>
+                </div>
+
+                <div class="resume-card-item">
+                    <h4><i class="fas fa-network-wired"></i> Networking</h4>
+                    <p class="resume-subtitle">Cisco CCNA Certified | Network Infrastructure</p>
+                    <p>Routing & Switching, Subnetting & CIDR, DNS (Route 53), NAT Gateways, VPNs, Firewall Management</p>
+                </div>
+
+                <div class="resume-card-item">
+                    <h4><i class="fas fa-shield-alt"></i> Monitoring & Security</h4>
+                    <p class="resume-subtitle">AWS Security Services | Cloud Security</p>
+                    <p>CloudWatch, CloudTrail, AWS SSM, IAM Policies, Encryption (at rest/in transit), Parameter Store</p>
+                </div>
+
+                <div class="resume-card-item">
+                    <h4><i class="fas fa-bolt"></i> Serverless & Web Development</h4>
+                    <p class="resume-subtitle">AWS Serverless Stack | Full-Stack Development</p>
+                    <p>Lambda + API Gateway, DynamoDB Patterns, S3 Hosting, Bedrock AI Integration, HTML/CSS/JavaScript (ES6+)</p>
+                </div>
+
+                <div class="resume-card-item">
+                    <h4><i class="fas fa-tools"></i> Developer Tools</h4>
+                    <p class="resume-subtitle">Development Environment | Productivity Tools</p>
+                    <p>VS Code, Git, Postman, Notion</p>
+                </div>
             </div>
         </section>
 
         <section class="resume-section">
             <h2>Key Projects</h2>
-            
-            <div class="job">
-                <div class="job-header">
-                    <div class="job-title">CloudForgeX - AWS Infrastructure Portfolio</div>
-                    <div class="job-date">2024 - Present</div>
-                </div>
-                <div class="company">Personal Project</div>
-                <ul>
-                    <li>Architected complete AWS infrastructure using Terraform IaC</li>
-                    <li>Implemented Kubernetes orchestration with CI/CD pipelines</li>
-                    <li>Integrated AI chatbot functionality with cloud services</li>
-                    <li>Deployed secure, scalable web applications with CloudFront CDN</li>
-                </ul>
-            </div>
 
-            <div class="job">
-                <div class="job-header">
-                    <div class="job-title">SQL Server Migration & Modernisation</div>
-                    <div class="job-date">2024</div>
+            <div class="resume-cards-container">
+                <div class="resume-card-item">
+                    <h4><i class="fas fa-project-diagram"></i> CloudForgeX - AI-Powered Serverless Portfolio</h4>
+                    <p class="resume-subtitle">Personal Project</p>
+                    <p>I designed a production-grade serverless portfolio using AWS Lambda (Python 3.9), API Gateway, and DynamoDB, achieving 99.9% uptime across three regions. I automated infrastructure setup with modular Terraform (v1.5+) and GitHub Actions CI/CD pipelines, cutting deployment time by 65%.</p>
                 </div>
-                <div class="company">Client Project</div>
-                <ul>
-                    <li>Prevented critical backup system failure through strategic migration</li>
-                    <li>Designed highly available solution with enhanced disaster recovery</li>
-                    <li>Modernised maintenance workflows for long-term resilience</li>
-                    <li>Implemented scalable architecture for future growth</li>
-                </ul>
-            </div>
-        </section>
 
-        <section class="resume-section">
-            <h2>Education & Training</h2>
-            
-            <div class="education-item">
-                <div class="job-header">
-                    <div class="job-title">Master DevOps with Terraform on AWS</div>
-                    <div class="job-date">2024</div>
+                <div class="resume-card-item">
+                    <h4><i class="fas fa-database"></i> SQL Server Backup & Maintenance Automation</h4>
+                    <p class="resume-subtitle">Enterprise Production Solution</p>
+                    <p>I prevented a critical system failure at Butternut Box through root cause analysis and corrective design using SQL Server 2019. I achieved 100% backup reliability by redesigning SQL Server maintenance plans and adding automated monitoring, saving over 12 hours of manual work each week.</p>
                 </div>
-                <div class="company">Udemy</div>
-            </div>
 
-            <div class="education-item">
-                <div class="job-header">
-                    <div class="job-title">Docker & Kubernetes – Practical Guide</div>
-                    <div class="job-date">2024</div>
+                <div class="resume-card-item">
+                    <h4><i class="fas fa-shield-alt"></i> Docker Container Security Falcon</h4>
+                    <p class="resume-subtitle">Personal Project</p>
+                    <p>I developed a secure FastAPI microservice with automated vulnerability scanning using Trivy. I deployed containerised workloads on a production-ready Kubernetes cluster with RBAC and namespace isolation.</p>
                 </div>
-                <div class="company">Udemy</div>
+
+                <div class="resume-card-item">
+                    <h4><i class="fas fa-bolt"></i> Serverless Web Application</h4>
+                    <p class="resume-subtitle">Enterprise Production Solution</p>
+                    <p>I built a serverless web application with S3 static hosting and CloudFront CDN for global content delivery. I created backend logic using Lambda and API Gateway, managing over 1,000 form submissions each month.</p>
+                </div>
+
+                <div class="resume-card-item">
+                    <h4><i class="fas fa-exchange-alt"></i> Automated Billing ETL Pipeline</h4>
+                    <p class="resume-subtitle">Personal Project</p>
+                    <p>I designed an event-driven ETL pipeline using S3 and Lambda to process uploaded CSV billing data. I normalised and validated records before inserting them into Aurora Serverless MySQL.</p>
+                </div>
             </div>
         </section>
 
         <section class="resume-section">
-            <h2>Core Competencies</h2>
-            <ul>
-                <li><strong>Cloud Architecture:</strong> Design and implement scalable AWS infrastructure</li>
-                <li><strong>Infrastructure as Code:</strong> Terraform automation and best practices</li>
-                <li><strong>Container Orchestration:</strong> Kubernetes deployment and management</li>
-                <li><strong>DevOps Practices:</strong> CI/CD pipelines and automated workflows</li>
-                <li><strong>Security:</strong> Cloud security best practices and compliance</li>
-                <li><strong>Problem Solving:</strong> Critical system analysis and strategic solutions</li>
-            </ul>
+            <h2>Work Experience</h2>
+
+            <div class="resume-cards-container">
+                <div class="resume-card-item">
+                    <h4>Remote Technical Support Engineer – Tier 1 (Cloud and NOC Monitoring)</h4>
+                    <p class="resume-subtitle">2023 – Present | SEIDOR Networks</p>
+                    <p>I specialised in multi-cloud environments (AWS, Azure, Huawei Cloud) and on-premise infrastructure. I led automation and backup strategies for enterprise SQL environments, preventing three critical system failures and reducing downtime by 85%. I implemented scalable cloud solutions using Terraform IaC and CI/CD pipelines, successfully delivering eight client infrastructure projects with improved reliability and performance.</p>
+                </div>
+
+                <div class="resume-card-item">
+                    <h4>Network Engineer Consultant</h4>
+                    <p class="resume-subtitle">2023 – 2024 | Angamma Charitable Trust</p>
+                    <p>I designed secure networks for three office locations, set up site-to-site VPNs, and segmented traffic using VLANs. I successfully established remote office networks with 99.5% uptime and led technology upgrade projects that improved network performance by 40%.</p>
+                </div>
+
+                <div class="resume-card-item">
+                    <h4>Junior Network Engineer</h4>
+                    <p class="resume-subtitle">2022 – 2023 | Lorge Consulting Services</p>
+                    <p>I developed basic networking and troubleshooting skills under senior mentorship. I became the go-to person for network issue resolution, showing a methodical way of solving problems.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="resume-section">
+            <h2>Education & Certifications</h2>
+
+            <div class="resume-cards-container">
+                <div class="resume-card-item">
+                    <h4><i class="fab fa-aws"></i> AWS Certifications</h4>
+                    <p class="resume-subtitle">Amazon Web Services | Cloud Architecture</p>
+                    <p>AWS Certified Solutions Architect – Associate (SAA-C03) - 2025, AWS Certified Cloud Practitioner (CLF-C02) - 2025</p>
+                </div>
+
+                <div class="resume-card-item">
+                    <h4><i class="fas fa-network-wired"></i> Networking & Infrastructure</h4>
+                    <p class="resume-subtitle">Cisco & HashiCorp | Network & Infrastructure</p>
+                    <p>Cisco Certified Network Associate (CCNA) - 2025, HashiCorp Certified: Terraform Associate (Hands-On Labs) - 2025</p>
+                </div>
+
+                <div class="resume-card-item">
+                    <h4><i class="fab fa-microsoft"></i> Microsoft Cloud Platform</h4>
+                    <p class="resume-subtitle">Microsoft | Azure & Power Platform</p>
+                    <p>Microsoft Certified: Azure Fundamentals (AZ-900) - 2025, Microsoft Certified: Power Platform Fundamentals (PL-900) - 2023</p>
+                </div>
+
+                <div class="resume-card-item">
+                    <h4><i class="fab fa-docker"></i> Container & Development Technologies</h4>
+                    <p class="resume-subtitle">Docker & Programming | DevOps</p>
+                    <p>Docker Mastery: Kubernetes + Swarm (with Docker Captain) - 2025, Python Programming for AWS with Boto3 - 2025, Docker Fundamentals - Adrian Cantrill - 2025</p>
+                </div>
+
+                <div class="resume-card-item">
+                    <h4><i class="fas fa-graduation-cap"></i> Specialised Training & In Progress</h4>
+                    <p class="resume-subtitle">Continuous Learning | Advanced Skills</p>
+                    <p>Linux Foundation Certified Systems Administrator (LFCS) - In Progress</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="resume-section">
+            <h2>LinkedIn Recommendations</h2>
+
+            <div class="resume-cards-container">
+                <div class="resume-card-item recommendation">
+                    <h4>Neville Govender</h4>
+                    <p class="resume-subtitle">CEO @ Rayburn Consulting & Lorge Consulting Services | Former Manager</p>
+                    <p>"It is with great pleasure that I recommend Jarred Thomas for his professionalism, dedication, and commitment to continuous growth.</p>
+                    <p>Jarred joined my team as an IT Intern and, over time, has developed into a fine young man—both personally and professionally. From the outset, he demonstrated a strong work ethic, a genuine eagerness to learn, and an admirable level of accountability in everything he undertook.</p>
+                    <p>What sets Jarred apart is his consistent willingness to go above and beyond, his respectful and solution-oriented approach to challenges, and his drive to improve not only his technical skills but also his interpersonal and professional capabilities.</p>
+                    <p>It has been rewarding to witness his growth firsthand, and I have no doubt that Jarred will continue to succeed in any path he pursues. He would be an asset to any organisation fortunate enough to work with him."</p>
+                </div>
+
+                <div class="resume-card-item recommendation">
+                    <h4>Dr. Sharlotte Naidu</h4>
+                    <p class="resume-subtitle">Organisational & Digital Transformation Specialist | Senior Colleague</p>
+                    <p>"I had the pleasure of working closely with Jarred during their time at Lorge Consulting. As a young IT network professional, Jarred demonstrated an exceptional ability to grasp complex network architectures and deliver effective solutions.</p>
+                    <p>Throughout my tenure, Jarred consistently impressed with their dedication to learning and applying new technologies. They quickly became a go-to person for troubleshooting network issues, showing a keen eye for detail and a methodical approach to problem-solving.</p>
+                    <p>Jarred also excelled in collaborating with team members and stakeholders, effectively communicating technical concepts in a clear and concise manner. Their enthusiasm for networking technologies was infectious, inspiring others to expand their knowledge base.</p>
+                    <p>In addition to their technical skills, Jarred exhibited strong organisational skills and a commitment to meeting deadlines. They were proactive in identifying areas for improvement, contributing valuable insights that enhanced our network infrastructure.</p>
+                    <p>I have no doubt that Jarred will continue to thrive and make significant contributions in their career as they embark on new challenges. Their passion for networking, coupled with their determination to succeed, makes them a valuable asset to any organisation. All the best Jarred."</p>
+                </div>
+
+                <div class="resume-card-item recommendation">
+                    <h4>Shanti Naidoo-Pagé</h4>
+                    <p class="resume-subtitle">Paradigm Weaver for Radical Collaboration | Former Manager</p>
+                    <p>"Jarred is an outstanding Network Engineer with a proven track record of delivering excellent results in challenging environments.</p>
+                    <p>His prompt response to network downtime incidents, adept handling of security breaches, and successful setup of remote office networks demonstrate his technical proficiency and problem-solving skills.</p>
+                    <p>Jarred's leadership in technology upgrade projects and commitment to employee development further showcase his ability to drive positive outcomes for the organisation.</p>
+                    <p>I highly recommend Jarred for his expertise, professionalism, and dedication to excellence."</p>
+                </div>
+            </div>
         </section>
     </div>
+
 </body>
+
 </html>
