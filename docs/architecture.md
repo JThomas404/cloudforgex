@@ -25,283 +25,114 @@ CloudForgeX is a serverless AI-powered portfolio hosted on AWS, showcasing cloud
 
 ## Architecture Diagram
 
-```html
-<div
-  class="architecture-diagram"
-  style="font-family: monospace; text-align: center;"
->
-  <!-- User Layer -->
-  <div
-    style="border: 2px solid #232F3E; border-radius: 5px; padding: 10px; margin-bottom: 20px; background-color: #f8f8f8;"
-  >
-    <div style="font-weight: bold; margin-bottom: 10px;">USERS</div>
-    <div style="display: flex; justify-content: center; align-items: center;">
-      <img
-        src="images/User.svg"
-        width="40"
-        height="40"
-        alt="User"
-        style="margin: 0 10px;"
-      />
-      <div style="font-size: 20px;">→</div>
-      <img
-        src="images/Generic-Web-Browser.svg"
-        width="40"
-        height="40"
-        alt="Web Browser"
-        style="margin: 0 10px;"
-      />
-    </div>
-    <div style="font-size: 20px; margin-top: 10px;">↓</div>
-  </div>
+```mermaid
+flowchart TD
+    %% Define styles
+    classDef user fill:#85B3D1,stroke:#232F3E,color:#232F3E,stroke-width:2px
+    classDef global fill:#FF9900,stroke:#232F3E,color:#232F3E,stroke-width:2px,opacity:0.7
+    classDef region stroke:#232F3E,stroke-width:2px,opacity:0.2
+    classDef az stroke:#666,stroke-width:1px,opacity:0.2
+    classDef vpc stroke:#999,stroke-width:1px,fill:#eef,opacity:0.3
+    classDef publicSubnet stroke:#999,stroke-dasharray:5 5,fill:#efe,opacity:0.3
+    classDef privateSubnet stroke:#999,stroke-dasharray:5 5,fill:#fee,opacity:0.3
+    classDef service fill:#FF9900,stroke:#232F3E,color:#232F3E,stroke-width:1px
+    classDef management fill:#3F8624,stroke:#232F3E,color:#232F3E,stroke-width:1px
+    classDef pipeline fill:#4CAF50,stroke:#232F3E,color:#232F3E,stroke-width:1px
 
-  <!-- AWS Global -->
-  <div
-    style="border: 2px solid #232F3E; border-radius: 5px; padding: 10px; margin-bottom: 20px; background-color: #FF990022;"
-  >
-    <div style="font-weight: bold; margin-bottom: 10px;">AWS GLOBAL</div>
-    <div style="display: flex; justify-content: center; align-items: center;">
-      <img
-        src="images/Amazon-Route-53.svg"
-        width="40"
-        height="40"
-        alt="Route 53"
-        style="margin: 0 10px;"
-      />
-      <div style="font-size: 20px;">→</div>
-      <img
-        src="images/Amazon-CloudFront.svg"
-        width="40"
-        height="40"
-        alt="CloudFront"
-        style="margin: 0 10px;"
-      />
-      <div style="font-size: 20px;">←</div>
-      <img
-        src="images/AWS-Certificate-Manager.svg"
-        width="40"
-        height="40"
-        alt="ACM"
-        style="margin: 0 10px;"
-      />
-    </div>
-    <div style="font-size: 20px; margin-top: 10px;">↓</div>
-  </div>
-
-  <!-- AWS Region -->
-  <div
-    style="border: 2px solid #232F3E; border-radius: 5px; padding: 10px; margin-bottom: 20px; background-color: #FF990011;"
-  >
-    <div style="font-weight: bold; margin-bottom: 10px;">
-      AWS REGION (eu-west-2)
-    </div>
-
-    <!-- Availability Zones -->
-    <div
-      style="display: flex; justify-content: space-around; margin-bottom: 20px;"
-    >
-      <!-- AZ A -->
-      <div
-        style="border: 1px solid #666; border-radius: 5px; padding: 10px; width: 45%; background-color: #f8f8f8;"
-      >
-        <div style="font-weight: bold; margin-bottom: 10px;">
-          Availability Zone A
-        </div>
-
-        <!-- VPC -->
-        <div
-          style="border: 1px solid #999; border-radius: 5px; padding: 10px; margin-bottom: 10px; background-color: #eef;"
-        >
-          <div style="font-weight: bold; margin-bottom: 5px;">VPC</div>
-
-          <!-- Private Subnet -->
-          <div
-            style="border: 1px dashed #999; border-radius: 5px; padding: 10px; margin-bottom: 10px; background-color: #fee;"
-          >
-            <div style="font-size: 12px; margin-bottom: 5px;">
-              Private Subnet
-            </div>
-            <img
-              src="images/AWS-Lambda.svg"
-              width="40"
-              height="40"
-              alt="Lambda EVE"
-            />
-            <div style="font-size: 20px;">↑</div>
-          </div>
-
-          <!-- Public Subnet -->
-          <div
-            style="border: 1px dashed #999; border-radius: 5px; padding: 10px; background-color: #efe;"
-          >
-            <div style="font-size: 12px; margin-bottom: 5px;">
-              Public Subnet
-            </div>
-            <img
-              src="images/Amazon-API-Gateway.svg"
-              width="40"
-              height="40"
-              alt="API Gateway"
-            />
-            <div style="font-size: 20px;">↑</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- AZ B -->
-      <div
-        style="border: 1px solid #666; border-radius: 5px; padding: 10px; width: 45%; background-color: #f8f8f8;"
-      >
-        <div style="font-weight: bold; margin-bottom: 10px;">
-          Availability Zone B
-        </div>
-
-        <!-- VPC -->
-        <div
-          style="border: 1px solid #999; border-radius: 5px; padding: 10px; margin-bottom: 10px; background-color: #eef;"
-        >
-          <div style="font-weight: bold; margin-bottom: 5px;">VPC</div>
-
-          <!-- Private Subnet -->
-          <div
-            style="border: 1px dashed #999; border-radius: 5px; padding: 10px; margin-bottom: 10px; background-color: #fee;"
-          >
-            <div style="font-size: 12px; margin-bottom: 5px;">
-              Private Subnet
-            </div>
-            <img
-              src="images/AWS-Lambda.svg"
-              width="40"
-              height="40"
-              alt="Lambda EVE"
-            />
-            <div style="font-size: 20px;">↑</div>
-          </div>
-
-          <!-- Public Subnet -->
-          <div
-            style="border: 1px dashed #999; border-radius: 5px; padding: 10px; background-color: #efe;"
-          >
-            <div style="font-size: 12px; margin-bottom: 5px;">
-              Public Subnet
-            </div>
-            <img
-              src="images/Amazon-API-Gateway.svg"
-              width="40"
-              height="40"
-              alt="API Gateway"
-            />
-            <div style="font-size: 20px;">↑</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- AWS Services -->
-    <div style="display: flex; justify-content: space-around;">
-      <!-- Core Services -->
-      <div
-        style="border: 1px solid #666; border-radius: 5px; padding: 10px; width: 45%; background-color: #f8f8f8;"
-      >
-        <div style="font-weight: bold; margin-bottom: 10px;">AWS Services</div>
-        <div style="display: flex; align-items: center; margin-bottom: 5px;">
-          <img
-            src="images/Amazon-Simple-Storage-Service-S3.svg"
-            width="30"
-            height="30"
-            alt="S3"
-          />
-          <span style="margin-left: 10px;">S3 Website</span>
-        </div>
-        <div style="display: flex; align-items: center; margin-bottom: 5px;">
-          <img
-            src="images/Amazon-Simple-Storage-Service-S3.svg"
-            width="30"
-            height="30"
-            alt="S3"
-          />
-          <span style="margin-left: 10px;">S3 Certificates</span>
-        </div>
-        <div style="display: flex; align-items: center; margin-bottom: 5px;">
-          <img
-            src="images/Amazon-DynamoDB.svg"
-            width="30"
-            height="30"
-            alt="DynamoDB"
-          />
-          <span style="margin-left: 10px;">DynamoDB</span>
-        </div>
-        <div style="display: flex; align-items: center;">
-          <img
-            src="images/Amazon-Bedrock.svg"
-            width="30"
-            height="30"
-            alt="Bedrock"
-          />
-          <span style="margin-left: 10px;">Bedrock</span>
-        </div>
-      </div>
-
-      <!-- Management Services -->
-      <div
-        style="border: 1px solid #666; border-radius: 5px; padding: 10px; width: 45%; background-color: #f8f8f8;"
-      >
-        <div style="font-weight: bold; margin-bottom: 10px;">
-          Monitoring & Management
-        </div>
-        <div style="display: flex; align-items: center; margin-bottom: 5px;">
-          <img
-            src="images/Amazon-CloudWatch.svg"
-            width="30"
-            height="30"
-            alt="CloudWatch"
-          />
-          <span style="margin-left: 10px;">CloudWatch</span>
-        </div>
-        <div style="display: flex; align-items: center; margin-bottom: 5px;">
-          <img
-            src="images/AWS-Systems-Manager_Parameter-Store.svg"
-            width="30"
-            height="30"
-            alt="SSM"
-          />
-          <span style="margin-left: 10px;">Parameter Store</span>
-        </div>
-        <div style="display: flex; align-items: center;">
-          <img
-            src="images/AWS-Identity-and-Access-Management-IAM.svg"
-            width="30"
-            height="30"
-            alt="IAM"
-          />
-          <span style="margin-left: 10px;">IAM</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CI/CD Pipeline -->
-  <div style="font-size: 20px; margin: 10px 0;">↑</div>
-  <div
-    style="border: 2px solid #232F3E; border-radius: 5px; padding: 10px; background-color: #4CAF5022;"
-  >
-    <div style="font-weight: bold; margin-bottom: 10px;">CI/CD PIPELINE</div>
-    <div style="display: flex; justify-content: center; align-items: center;">
-      <img src="images/GitHub-Icon.svg" width="40" height="40" alt="GitHub" />
-      <div style="font-size: 20px; margin: 0 10px;">→</div>
-      <span>GitHub Actions</span>
-      <div style="font-size: 20px; margin: 0 10px;">→</div>
-      <img
-        src="images/Terraform-Icon.svg"
-        width="40"
-        height="40"
-        alt="Terraform"
-      />
-      <div style="font-size: 20px; margin: 0 10px;">→</div>
-      <span>AWS Resources</span>
-    </div>
-  </div>
-</div>
+    %% User Layer
+    User((User)) --> Browser(Web Browser)
+    Browser --> CloudFront
+    
+    %% AWS Global Services
+    subgraph Global ["AWS Global Services"]
+        Route53["Route 53"] --> CloudFront["CloudFront"]
+        ACM["ACM"] -.-> CloudFront
+        CloudFront --> S3Website["S3 Website"]
+        CloudFront --> APIGateway
+    end
+    
+    %% AWS Region
+    subgraph Region ["AWS Region (eu-west-2)"]
+        %% Availability Zone A
+        subgraph AZA ["Availability Zone A"]
+            subgraph VPCA ["VPC"]
+                subgraph PrivateSubnetA ["Private Subnet"]
+                    LambdaA["Lambda EVE"]
+                end
+                
+                subgraph PublicSubnetA ["Public Subnet"]
+                    APIGatewayA["API Gateway"]
+                end
+                
+                APIGatewayA --> LambdaA
+            end
+        end
+        
+        %% Availability Zone B
+        subgraph AZB ["Availability Zone B"]
+            subgraph VPCB ["VPC"]
+                subgraph PrivateSubnetB ["Private Subnet"]
+                    LambdaB["Lambda EVE"]
+                end
+                
+                subgraph PublicSubnetB ["Public Subnet"]
+                    APIGatewayB["API Gateway"]
+                end
+                
+                APIGatewayB --> LambdaB
+            end
+        end
+        
+        %% AWS Services
+        subgraph Services ["AWS Services"]
+            S3Website
+            S3Certs["S3 Certificates"]
+            DynamoDB[("DynamoDB")]
+            Bedrock["AWS Bedrock"]
+        end
+        
+        %% Management Services
+        subgraph Management ["Monitoring & Management"]
+            CloudWatch["CloudWatch"]
+            SSM["SSM Parameter Store"]
+            IAM["IAM"]
+        end
+        
+        %% Connect services
+        APIGateway --> APIGatewayA
+        APIGateway --> APIGatewayB
+        LambdaA --> DynamoDB
+        LambdaB --> DynamoDB
+        LambdaA --> Bedrock
+        LambdaB --> Bedrock
+        LambdaA --> S3Certs
+        LambdaB --> S3Certs
+        LambdaA --> SSM
+        LambdaB --> SSM
+        CloudWatch -.-> LambdaA
+        CloudWatch -.-> LambdaB
+        CloudWatch -.-> APIGatewayA
+        CloudWatch -.-> APIGatewayB
+    end
+    
+    %% CI/CD Pipeline
+    subgraph Pipeline ["CI/CD Pipeline"]
+        GitHub["GitHub"] --> GHActions["GitHub Actions"]
+        GHActions --> Terraform["Terraform"]
+        Terraform --> Region
+    end
+    
+    %% Apply styles
+    class User,Browser user
+    class Route53,CloudFront,ACM global
+    class Region region
+    class AZA,AZB az
+    class VPCA,VPCB vpc
+    class PublicSubnetA,PublicSubnetB publicSubnet
+    class PrivateSubnetA,PrivateSubnetB privateSubnet
+    class S3Website,S3Certs,DynamoDB,Bedrock,APIGateway,APIGatewayA,APIGatewayB,LambdaA,LambdaB service
+    class CloudWatch,SSM,IAM management
+    class GitHub,GHActions,Terraform pipeline
 ```
 
 The architecture diagram illustrates the serverless design of CloudForgeX using AWS Architecture Icons. The system is organized into logical layers:
