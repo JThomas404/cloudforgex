@@ -1,7 +1,5 @@
 # CloudForgeX - Serverless AI-Powered Cloud Portfolio
 
-![AWS](docs/images/AWS-Lambda.svg) ![Terraform](docs/images/Terraform-Icon.svg) ![CloudFront](docs/images/Amazon-CloudFront.svg) ![Bedrock](docs/images/Amazon-Bedrock.svg)
-
 ## Table of Contents
 
 - [Overview](#overview)
@@ -139,26 +137,31 @@ cloudforgex/
 The CloudForgeX project was implemented through the following key phases:
 
 1. **Infrastructure Design and Planning**
+
    - Designed serverless architecture following AWS Well-Architected Framework
    - Created modular Terraform structure for infrastructure components
    - Established security controls and compliance requirements
 
 2. **Frontend Development**
+
    - Implemented responsive HTML5/CSS3/JavaScript frontend
    - Integrated AOS library for smooth animations and transitions
    - Developed EVE AI assistant interface with real-time interaction
 
 3. **Backend Implementation**
+
    - Developed Lambda functions with Python for AI processing
    - Implemented DynamoDB for conversation logging and context storage
    - Created secure certificate viewing system with S3 presigned URLs
 
 4. **Security Hardening**
+
    - Applied least privilege IAM policies for all components
    - Implemented encryption at rest and in transit for all data
    - Configured CloudFront with security headers and CORS policies
 
 5. **CI/CD Pipeline Configuration**
+
    - Created GitHub Actions workflows for Terraform, Lambda, and Docker
    - Implemented automated testing and security scanning
    - Configured deployment environments with appropriate safeguards
@@ -179,28 +182,32 @@ The frontend implementation uses modern web technologies without framework depen
 ```html
 <!-- EVE AI Assistant Interface -->
 <div id="faq-assistant" class="faq-assistant expanded">
-    <div class="faq-header">
-        <i class="fas fa-brain"></i>
-        <span>EVE - Your AI Assistant</span>
-        <button id="faq-toggle" class="faq-toggle">
-            <i class="fas fa-chevron-down"></i>
-        </button>
-    </div>
-    <div id="faq-content" class="faq-content">
-        <div id="faq-messages" class="faq-messages">
-            <div class="faq-message bot-message welcome-message">
-                <div class="message-content">
-                    <span id="welcome-text"></span>
-                </div>
-            </div>
+  <div class="faq-header">
+    <i class="fas fa-brain"></i>
+    <span>EVE - Your AI Assistant</span>
+    <button id="faq-toggle" class="faq-toggle">
+      <i class="fas fa-chevron-down"></i>
+    </button>
+  </div>
+  <div id="faq-content" class="faq-content">
+    <div id="faq-messages" class="faq-messages">
+      <div class="faq-message bot-message welcome-message">
+        <div class="message-content">
+          <span id="welcome-text"></span>
         </div>
-        <div class="faq-input-container">
-            <input type="text" id="faq-input" placeholder="Ask EVE about Jarred's work..." />
-            <button id="faq-send" class="faq-send-btn">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </div>
+      </div>
     </div>
+    <div class="faq-input-container">
+      <input
+        type="text"
+        id="faq-input"
+        placeholder="Ask EVE about Jarred's work..."
+      />
+      <button id="faq-send" class="faq-send-btn">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
 </div>
 ```
 
@@ -229,7 +236,7 @@ def lambda_handler(event, context):
             'statusCode': 200,
             'headers': headers
         }
-    
+
     try:
         body = event.get('body')
         if not body:
@@ -263,7 +270,7 @@ def lambda_handler(event, context):
 
     # Log the interaction
     log_chat_interaction(message, ai_response, response_source, processing_time)
-    
+
     return {
         'statusCode': 200,
         'headers': headers,
@@ -303,7 +310,7 @@ def contains_wasteful_patterns(message: str) -> bool:
     if any(word in BANNED_PATTERNS for word in words):
         logger.info(f"Blocked wasteful pattern: {len(words)} words")
         return True
-    
+
     return False
 ```
 
@@ -312,18 +319,18 @@ def contains_wasteful_patterns(message: str) -> bool:
 ```python
 def load_project_data():
     global _cached_data
-    
+
     # Return cached data if already loaded
     if _cached_data is not None:
         return _cached_data
-    
+
     try:
         # Get the directory where this script is located
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        
+
         # Build the full path to the JSON file
         json_path = os.path.join(current_dir, 'project_knowledge_base.json')
-        
+
         # Open and load the JSON file (in Read-only mode)
         with open(json_path, 'r', encoding='utf-8') as file:
             _cached_data = json.load(file)
@@ -638,6 +645,7 @@ For more detailed information on challenges and solutions, see the [Challenges a
 ## Skills Demonstrated
 
 ### AWS Services
+
 - **Lambda**: Implemented serverless functions with Python 3.9 for the EVE AI assistant, including custom error handling, logging, and integration with multiple AWS services
 - **API Gateway**: Configured REST API with CORS headers, request validation, and integration with Lambda functions, resolving complex cross-origin issues
 - **S3**: Created secure static website hosting with CloudFront integration and implemented secure certificate access using presigned URLs with time-limited expiration
@@ -651,12 +659,14 @@ For more detailed information on challenges and solutions, see the [Challenges a
 - **AWS Bedrock**: Integrated Claude Instant AI model with token optimisation techniques and context management
 
 ### Infrastructure as Code
+
 - **Terraform**: Developed modular infrastructure with reusable components, explicit dependencies, and environment-specific configurations
 - **GitHub Actions**: Created CI/CD workflows for automated testing, security scanning, and deployment of infrastructure changes
 - **Docker**: Built container images for Lambda functions with optimised layers and minimal dependencies
 - **Kubernetes**: Configured container orchestration with deployment manifests and service definitions
 
 ### Security Practices
+
 - **Defence in Depth**: Implemented multiple security layers including network controls, access policies, encryption, and monitoring
 - **Least Privilege**: Created granular IAM policies with specific permissions for each service component
 - **Encryption**: Configured encryption at rest for all data stores and in transit for all communications
@@ -665,6 +675,7 @@ For more detailed information on challenges and solutions, see the [Challenges a
 - **Monitoring**: Set up comprehensive logging and alerting for security events with automated notification
 
 ### Software Development
+
 - **Python**: Developed backend Lambda functions with AWS SDK integration, error handling, and performance optimisation
 - **JavaScript**: Created frontend interaction with asynchronous API calls, error handling, and dynamic content rendering
 - **HTML/CSS**: Built responsive web design with mobile-first approach and progressive enhancement
