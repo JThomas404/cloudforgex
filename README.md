@@ -1,7 +1,5 @@
 # CloudForgeX - Serverless AI-Powered Cloud Portfolio
 
-![AWS](docs/images/AWS-Lambda.svg) ![Terraform](docs/images/Terraform-Icon.svg) ![CloudFront](docs/images/Amazon-CloudFront.svg) ![Bedrock](docs/images/Amazon-Bedrock.svg)
-
 ## Table of Contents
 
 - [Overview](#overview)
@@ -20,11 +18,42 @@
 - [Errors Encountered and Resolved](#errors-encountered-and-resolved)
 - [Skills Demonstrated](#skills-demonstrated)
 - [Conclusion](#conclusion)
-- [Optional Enhancements](#optional-enhancements)
 
 ## Overview
 
 CloudForgeX is a serverless AI-powered portfolio platform built on AWS that demonstrates advanced cloud engineering capabilities. The system implements a modern serverless architecture with an intelligent AI assistant named EVE (Enhanced Virtual Engineer) powered by AWS Bedrock with Claude Instant. The architecture adheres to AWS Well-Architected Framework principles, emphasising security, cost optimisation, operational excellence, and performance efficiency.
+
+### Architecture Diagram
+
+```
+                                  ┌─────────────┐
+                                  │    Users    │
+                                  └──────┬──────┘
+                                         │
+                                         ▼
+┌─────────────┐               ┌─────────────────┐
+│  Route 53   │◄──────────────┤   CloudFront    │
+└─────────────┘               └────────┬────────┘
+                                       │
+                                       ├─────────────────┐
+                                       │                 │
+                                       ▼                 ▼
+                              ┌─────────────┐    ┌──────────────┐
+                              │  S3 Bucket  │    │ API Gateway  │
+                              │  (Website)  │    └───────┬──────┘
+                              └─────────────┘            │
+                                                         ▼
+┌─────────────┐               ┌─────────────┐    ┌──────────────┐
+│     SSM     │◄──────────────┤    Lambda   │    │   DynamoDB   │
+│ Parameters  │               │  Function   │───►│  (Logging)   │
+└─────────────┘               └──────┬──────┘    └──────────────┘
+                                     │
+                                     ▼
+                              ┌─────────────┐    ┌──────────────┐
+                              │ AWS Bedrock │    │  S3 Bucket   │
+                              │   Claude    │    │ (Certificates)│
+                              └─────────────┘    └──────────────┘
+```
 
 The project showcases expertise in infrastructure as code (Terraform), serverless computing (Lambda), API design (API Gateway), content delivery (CloudFront), and AI integration (AWS Bedrock). All components are deployed through automated CI/CD pipelines using GitHub Actions, ensuring consistent and repeatable deployments.
 
@@ -107,26 +136,31 @@ cloudforgex/
 The CloudForgeX project was implemented through the following key phases:
 
 1. **Infrastructure Design and Planning**
+
    - Designed serverless architecture following AWS Well-Architected Framework
    - Created modular Terraform structure for infrastructure components
    - Established security controls and compliance requirements
 
 2. **Frontend Development**
+
    - Implemented responsive HTML5/CSS3/JavaScript frontend
    - Integrated AOS library for smooth animations and transitions
    - Developed EVE AI assistant interface with real-time interaction
 
 3. **Backend Implementation**
+
    - Developed Lambda functions with Python for AI processing
    - Implemented DynamoDB for conversation logging and context storage
    - Created secure certificate viewing system with S3 presigned URLs
 
 4. **Security Hardening**
+
    - Applied least privilege IAM policies for all components
    - Implemented encryption at rest and in transit for all data
    - Configured CloudFront with security headers and CORS policies
 
 5. **CI/CD Pipeline Configuration**
+
    - Created GitHub Actions workflows for Terraform, Lambda, and Docker
    - Implemented automated testing and security scanning
    - Configured deployment environments with appropriate safeguards
@@ -147,28 +181,32 @@ The frontend implementation uses modern web technologies without framework depen
 ```html
 <!-- EVE AI Assistant Interface -->
 <div id="faq-assistant" class="faq-assistant expanded">
-    <div class="faq-header">
-        <i class="fas fa-brain"></i>
-        <span>EVE - Your AI Assistant</span>
-        <button id="faq-toggle" class="faq-toggle">
-            <i class="fas fa-chevron-down"></i>
-        </button>
-    </div>
-    <div id="faq-content" class="faq-content">
-        <div id="faq-messages" class="faq-messages">
-            <div class="faq-message bot-message welcome-message">
-                <div class="message-content">
-                    <span id="welcome-text"></span>
-                </div>
-            </div>
+  <div class="faq-header">
+    <i class="fas fa-brain"></i>
+    <span>EVE - Your AI Assistant</span>
+    <button id="faq-toggle" class="faq-toggle">
+      <i class="fas fa-chevron-down"></i>
+    </button>
+  </div>
+  <div id="faq-content" class="faq-content">
+    <div id="faq-messages" class="faq-messages">
+      <div class="faq-message bot-message welcome-message">
+        <div class="message-content">
+          <span id="welcome-text"></span>
         </div>
-        <div class="faq-input-container">
-            <input type="text" id="faq-input" placeholder="Ask EVE about Jarred's work..." />
-            <button id="faq-send" class="faq-send-btn">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </div>
+      </div>
     </div>
+    <div class="faq-input-container">
+      <input
+        type="text"
+        id="faq-input"
+        placeholder="Ask EVE about Jarred's work..."
+      />
+      <button id="faq-send" class="faq-send-btn">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
 </div>
 ```
 
@@ -197,7 +235,7 @@ def lambda_handler(event, context):
             'statusCode': 200,
             'headers': headers
         }
-    
+
     try:
         body = event.get('body')
         if not body:
@@ -231,7 +269,7 @@ def lambda_handler(event, context):
 
     # Log the interaction
     log_chat_interaction(message, ai_response, response_source, processing_time)
-    
+
     return {
         'statusCode': 200,
         'headers': headers,
@@ -271,7 +309,7 @@ def contains_wasteful_patterns(message: str) -> bool:
     if any(word in BANNED_PATTERNS for word in words):
         logger.info(f"Blocked wasteful pattern: {len(words)} words")
         return True
-    
+
     return False
 ```
 
@@ -308,18 +346,18 @@ def generate_presigned_url(certificate_name):
 ```python
 def load_project_data():
     global _cached_data
-    
+
     # Return cached data if already loaded
     if _cached_data is not None:
         return _cached_data
-    
+
     try:
         # Get the directory where this script is located
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        
+
         # Build the full path to the JSON file
         json_path = os.path.join(current_dir, 'project_knowledge_base.json')
-        
+
         # Open and load the JSON file (in Read-only mode)
         with open(json_path, 'r', encoding='utf-8') as file:
             _cached_data = json.load(file)
@@ -638,39 +676,43 @@ For more detailed information on challenges and solutions, see the [Challenges a
 ## Skills Demonstrated
 
 ### AWS Services
-- **Lambda**: Serverless function development with Python
-- **API Gateway**: REST API configuration with CORS and security
-- **S3**: Static website hosting and secure object storage
-- **CloudFront**: CDN configuration with security headers
-- **DynamoDB**: NoSQL database design and implementation
-- **Route 53**: DNS management and domain configuration
-- **ACM**: SSL/TLS certificate management
-- **IAM**: Least privilege security policies
-- **CloudWatch**: Metrics, logs, and alarms
-- **SSM Parameter Store**: Secure configuration management
-- **AWS Bedrock**: AI model integration with Claude Instant
+
+- **Lambda**: Implemented serverless functions with Python 3.9 for the EVE AI assistant, including custom error handling, logging, and integration with multiple AWS services
+- **API Gateway**: Configured REST API with CORS headers, request validation, and integration with Lambda functions, resolving complex cross-origin issues
+- **S3**: Created secure static website hosting with CloudFront integration and implemented secure certificate access using presigned URLs with time-limited expiration
+- **CloudFront**: Set up content delivery with custom domain, SSL/TLS, security headers, and origin access control to prevent direct S3 access
+- **DynamoDB**: Designed NoSQL database schema for conversation logging with TTL for automatic data expiration and implemented efficient query patterns
+- **Route 53**: Configured DNS records for custom domain with ACM validation and CloudFront distribution
+- **ACM**: Managed SSL/TLS certificates with automatic renewal and DNS validation
+- **IAM**: Implemented least privilege security policies for all service components with specific permissions scoped to required resources
+- **CloudWatch**: Created comprehensive logging, metrics, and alarms for system health monitoring and security event detection
+- **SSM Parameter Store**: Implemented secure configuration management with encrypted parameters and controlled access
+- **AWS Bedrock**: Integrated Claude Instant AI model with token optimisation techniques and context management
 
 ### Infrastructure as Code
-- **Terraform**: Modular infrastructure definition
-- **GitHub Actions**: CI/CD pipeline automation
-- **Docker**: Container image creation and management
-- **Kubernetes**: Container orchestration configuration
+
+- **Terraform**: Developed modular infrastructure with reusable components, explicit dependencies, and environment-specific configurations
+- **GitHub Actions**: Created CI/CD workflows for automated testing, security scanning, and deployment of infrastructure changes
+- **Docker**: Built container images for Lambda functions with optimised layers and minimal dependencies
+- **Kubernetes**: Configured container orchestration with deployment manifests and service definitions
 
 ### Security Practices
-- **Defence in Depth**: Multiple security layers
-- **Least Privilege**: Minimal IAM permissions
-- **Encryption**: Data protection at rest and in transit
-- **Input Validation**: Multi-layer request validation
-- **Secure Headers**: Web security best practices
-- **Monitoring**: Security event detection and alerting
+
+- **Defence in Depth**: Implemented multiple security layers including network controls, access policies, encryption, and monitoring
+- **Least Privilege**: Created granular IAM policies with specific permissions for each service component
+- **Encryption**: Configured encryption at rest for all data stores and in transit for all communications
+- **Input Validation**: Developed multi-layer request validation to prevent abuse and protect against injection attacks
+- **Secure Headers**: Implemented security headers through CloudFront to prevent XSS and other web vulnerabilities
+- **Monitoring**: Set up comprehensive logging and alerting for security events with automated notification
 
 ### Software Development
-- **Python**: Backend development with AWS SDK
-- **JavaScript**: Frontend interaction and API integration
-- **HTML/CSS**: Responsive web design
-- **Testing**: Unit and integration testing
-- **Logging**: Comprehensive observability implementation
-- **Error Handling**: Robust exception management
+
+- **Python**: Developed backend Lambda functions with AWS SDK integration, error handling, and performance optimisation
+- **JavaScript**: Created frontend interaction with asynchronous API calls, error handling, and dynamic content rendering
+- **HTML/CSS**: Built responsive web design with mobile-first approach and progressive enhancement
+- **Testing**: Implemented unit and integration tests for Lambda functions and infrastructure validation
+- **Logging**: Created structured logging with appropriate detail levels for troubleshooting and security monitoring
+- **Error Handling**: Developed robust exception management with user-friendly error messages and comprehensive logging
 
 ## Conclusion
 
@@ -686,12 +728,4 @@ Key achievements include:
 
 The project serves as a practical demonstration of cloud engineering capabilities, architectural thinking, and security awareness in a real-world application.
 
-## Optional Enhancements
-
-Future enhancements to consider:
-
-1. **Enhanced Monitoring**: Implementation of X-Ray for distributed tracing
-2. **Multi-Region Deployment**: Expansion to multiple AWS regions for global redundancy
-3. **Advanced AI Capabilities**: Integration with additional AWS AI services
-4. **Performance Optimisation**: Further optimisation of Lambda functions and frontend assets
-5. **Expanded Security Controls**: Implementation of WAF and additional security layers
+---
