@@ -11,10 +11,51 @@ from knowledge_base import get_enhanced_system_prompt, get_suggested_response
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-# Environment variables with defaults (best security practices)
-ALLOWED_ORIGIN = os.environ.get('ALLOWED_ORIGIN', 'https://www.jarredthomas.cloud')
-AWS_REGION = os.environ.get('AWS_REGION', 'us-east-1')
-DYNAMODB_TABLE = os.environ.get('DYNAMODB_TABLE', 'cfx-chatbot-logs')
+# Simple SSM parameter cache
+_parameter_cache = {}
+
+def get_ssm_parameter(parameter_name, default_value=None):
+    """
+    Get a parameter from SSM Parameter Store with caching
+    
+    Args:
+        parameter_name: Full SSM parameter path
+        default_value: Value to return if parameter cannot be retrieved
+        
+    Returns:
+        Parameter value or default if not found
+    """
+    # Check cache first
+    if parameter_name in _parameter_cache:
+        return _parameter_cache[parameter_name]
+
+    # Get region from environment variable
+    region = os.environ.get('AWS_REGION', 'us-east-1')
+
+    try:
+        # Initialise SSM Client
+        ssm_client = boto3.client('ssm', region_name=region)
+
+        # Get parameter from SSM
+        response = ssm_client.get_parameter(Name=parameter_name)
+        value = response['Parameter']['Value']
+
+        # Cache the parameter
+        _parameter_cache[parameter_name] = value
+        logger.info(f"Retrieved parameter {parameter_name} from SSM")
+
+        return value
+    except Exception as e:
+        logger.warning(f"Failed to retrieve {parameter_name} from SSM: {str(e)}. Using default value.")
+        return default_value
+
+# Get environment from Lambda environment variable
+ENV = os.environ.get('ENVIRONMENT', 'dev')
+ALLOWED_ORIGIN = get_ssm_parameter(f"/cfx/{ENV}/allowed_origin", 'https://www.jarredthomas.cloud')
+AWS_REGION = get_ssm_parameter(f"/cfx/{ENV}/region", os.environ.get('AWS_REGION', 'us-east-1'))
+DYNAMODB_TABLE = get_ssm_parameter(f"/cfx/{ENV}/dynamodb_table", 'cfx-chatbot-logs')
+
+
 
 # Cost protection implementation - prevent token waste
 BANNED_PATTERNS = {
@@ -79,10 +120,8 @@ def get_ai_response(user_message):
         return suggested_response, "suggested"
     
     logger.info(f"Processing legitimate request: {len(user_message)} chars")
-
-
     try:
-        # Initialize Bedrock client
+        # Initialise Bedrock client
         bedrock = boto3.client(
             'bedrock-runtime',
             region_name=AWS_REGION,
@@ -98,9 +137,12 @@ def get_ai_response(user_message):
         # Format prompt for Claude's conversation format
         full_prompt = f"{system_prompt}\n\nHuman: {user_message}\n\nAssistant:"
         
-        # Call Bedrock with Claude Instant
+        # Get model ID from SSM
+        model_id = get_ssm_parameter(f"/cfx/{ENV}/bedrock_model", 'anthropic.claude-instant-v1')
+        
+        # Call Bedrock with model from SSM
         response = bedrock.invoke_model(
-            modelId='anthropic.claude-instant-v1',
+            modelId=model_id,
             body=json.dumps({
                 'prompt': full_prompt,
                 'max_tokens_to_sample': 500,

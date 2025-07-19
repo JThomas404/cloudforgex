@@ -22,7 +22,6 @@ resource "aws_iam_role_policy" "cfx_lambda_inline_policy" {
   role = aws_iam_role.cfx_lambda_execution_role.id
 
   policy = jsonencode({
-
     "Version" : "2012-10-17",
     "Statement" : [
       {
@@ -42,6 +41,11 @@ resource "aws_iam_role_policy" "cfx_lambda_inline_policy" {
         "Action" : ["dynamodb:PutItem"],
         "Effect" : "Allow",
         "Resource" : var.dynamodb_table_arn
+      },
+      {
+        "Action" : ["ssm:GetParameter"],
+        "Effect" : "Allow",
+        "Resource" : var.ssm_parameter_arns
       }
     ]
   })

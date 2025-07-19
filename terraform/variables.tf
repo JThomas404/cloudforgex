@@ -58,7 +58,7 @@ variable "environment_variables" {
   description = "Environment variables for Lambda"
   type        = map(string)
   default = {
-    ALLOWED_ORIGIN = "https://www.jarredthomas.cloud"
+    ENVIRONMENT = "Dev"
   }
 }
 
@@ -102,4 +102,28 @@ variable "ttl_attribute" {
   description = "Name of the attribute that automatically deletes old records in the table"
   type        = string
   default     = "ttl"
+}
+
+variable "environment" {
+  description = "Default deployment environment"
+  type        = string
+  default     = "Dev"
+}
+
+variable "bedrock_model" {
+  description = "Claude model to use for Bedrock"
+  type        = string
+  default     = "anthropic.claude-instant-v1"
+}
+
+variable "parameter_tier" {
+  description = "SSM Parameter tier (free tier)"
+  type        = string
+  default     = "Standard"
+}
+
+variable "ssm_parameter_arns" {
+  description = "ARNs of SSM parameters that Lambda need access to"
+  type        = list(string)
+  default     = []
 }

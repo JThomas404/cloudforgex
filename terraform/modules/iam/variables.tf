@@ -23,3 +23,8 @@ variable "dynamodb_table_arn" {
   description = "ARN of the DynamoDB table for Lambda permissions"
   type        = string
 }
+
+variable "ssm_parameter_arns" {
+  description = "ARNs of SSM parameters that Lambda need access to"
+  type        = list(string)
+}

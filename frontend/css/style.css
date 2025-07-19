@@ -457,6 +457,21 @@ section:not(#hero) {
 }
 
 /* 6.2. Certifications & Projects Grid - Frontend-v2 Style */
+.projects .cert-item h4 {
+    color: var(--accent-color);
+    margin-bottom: 15px;
+    font-size: 20px;
+    line-height: 1.3;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    max-height: 80px;
+}
+
 .certifications-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -497,7 +512,7 @@ section:not(#hero) {
 }
 
 .cert-header {
-    height: 100px; /* Fixed height for header section */
+    height: 100px;
     margin-bottom: 15px;
 }
 
@@ -617,13 +632,27 @@ section:not(#hero) {
     color: var(--default-color);
     font-size: 24px;
     transition: color 0.3s;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .social-links a:hover {
     color: var(--accent-color);
 }
 
+.social-links a:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 4px;
+    border-radius: 50%;
+}
 
+.social-links a:active {
+    background-color: transparent;
+}
+
+.social-links a:focus-visible {
+    outline: none;
+}
 
 /* 10. Preloader */
 #preloader {

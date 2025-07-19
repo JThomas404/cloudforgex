@@ -1,9 +1,10 @@
 module "s3_bucket" {
   source = "./modules/s3"
 
-  region                      = var.region
-  tags                        = var.tags
   cloudfront_distribution_arn = module.cloudfront.distribution_arn
+  region                      = var.region
+
+  tags = var.tags
 }
 
 module "acm_certificate" {
@@ -12,7 +13,8 @@ module "acm_certificate" {
   domain_name             = var.domain_name
   sub_alt_names           = var.sub_alt_names
   validation_record_fqdns = module.route53.validation_record_fqdns
-  tags                    = var.tags
+
+  tags = var.tags
 }
 
 module "route53" {
@@ -24,7 +26,8 @@ module "route53" {
     dvo.domain_name => dvo
   }
   cloudfront_domain_name = module.cloudfront.distribution_domain_name
-  tags                   = var.tags
+
+  tags = var.tags
 }
 
 module "cloudfront" {
@@ -41,12 +44,17 @@ module "cloudfront" {
 module "iam" {
   source = "./modules/iam"
 
-  depends_on = [module.dynamodb]
+  depends_on = [module.dynamodb, module.ssm]
 
   project_name       = var.project_name
   region             = var.region
   dynamodb_table_arn = module.dynamodb.dynamodb_table_arn
-
+  ssm_parameter_arns = [
+    module.ssm.cfx_allowed_origin_arn,
+    module.ssm.cfx_bedrock_model_arn,
+    module.ssm.cfx_region_arn,
+    module.ssm.cfx_dynamodb_table_arn
+  ]
 
   tags = var.tags
 }
@@ -88,7 +96,8 @@ module "cloudwatch" {
   lambda_function = var.lambda_function
   api_name        = var.api_name
   region          = var.region
-  tags            = var.tags
+
+  tags = var.tags
 }
 
 module "dynamodb" {
@@ -98,5 +107,19 @@ module "dynamodb" {
   table_name    = var.table_name
   ttl_attribute = var.ttl_attribute
   region        = var.region
-  tags          = var.tags
+
+  tags = var.tags
+}
+
+module "ssm" {
+  source         = "./modules/ssm"
+  project_name   = var.project_name
+  table_name     = var.table_name
+  environment    = var.environment
+  allowed_origin = var.allowed_origin
+  bedrock_model  = var.bedrock_model
+  parameter_tier = var.parameter_tier
+  region         = var.region
+
+  tags = var.tags
 }
