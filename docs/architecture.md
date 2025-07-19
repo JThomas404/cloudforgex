@@ -25,49 +25,87 @@ CloudForgeX is a serverless AI-powered portfolio hosted on AWS, showcasing cloud
 
 ## Architecture Diagram
 
-### User Layer
-<img src="images/User.svg" width="30" height="30" alt="User"> → <img src="images/Generic-Web-Browser.svg" width="30" height="30" alt="Web Browser"> → <img src="images/Amazon-CloudFront.svg" width="30" height="30" alt="CloudFront">
-
-### Edge Layer
-<img src="images/Amazon-CloudFront.svg" width="30" height="30" alt="CloudFront"> → <img src="images/Amazon-Simple-Storage-Service-S3.svg" width="30" height="30" alt="S3">
-
-<img src="images/Amazon-Route-53.svg" width="30" height="30" alt="Route 53"> → <img src="images/Amazon-CloudFront.svg" width="30" height="30" alt="CloudFront">
-
-<img src="images/AWS-Certificate-Manager.svg" width="30" height="30" alt="ACM"> ⟳ <img src="images/Amazon-CloudFront.svg" width="30" height="30" alt="CloudFront">
-
-### Application Layer
-<img src="images/Amazon-CloudFront.svg" width="30" height="30" alt="CloudFront"> → <img src="images/Amazon-API-Gateway.svg" width="30" height="30" alt="API Gateway"> → <img src="images/AWS-Lambda.svg" width="30" height="30" alt="Lambda EVE">
-
-### Data Layer
-<img src="images/AWS-Lambda.svg" width="30" height="30" alt="Lambda EVE"> → <img src="images/Amazon-DynamoDB.svg" width="30" height="30" alt="DynamoDB">
-
-<img src="images/AWS-Lambda.svg" width="30" height="30" alt="Lambda EVE"> → <img src="images/Amazon-Bedrock.svg" width="30" height="30" alt="AWS Bedrock">
-
-<img src="images/AWS-Lambda.svg" width="30" height="30" alt="Lambda EVE"> → <img src="images/Amazon-Simple-Storage-Service-S3.svg" width="30" height="30" alt="S3 Certificates">
-
-### Management Layer
-<img src="images/AWS-Lambda.svg" width="30" height="30" alt="Lambda EVE"> → <img src="images/AWS-Systems-Manager_Parameter-Store.svg" width="30" height="30" alt="SSM Parameter Store">
-
-<img src="images/Amazon-CloudWatch.svg" width="30" height="30" alt="CloudWatch"> ⟳ <img src="images/AWS-Lambda.svg" width="30" height="30" alt="Lambda EVE">
-
-<img src="images/Amazon-CloudWatch.svg" width="30" height="30" alt="CloudWatch"> ⟳ <img src="images/Amazon-API-Gateway.svg" width="30" height="30" alt="API Gateway">
-
-<img src="images/Amazon-CloudWatch.svg" width="30" height="30" alt="CloudWatch"> ⟳ <img src="images/Amazon-CloudFront.svg" width="30" height="30" alt="CloudFront">
-
-### CI/CD Pipeline
-<img src="images/GitHub-Icon.svg" width="30" height="30" alt="GitHub"> → GitHub Actions → <img src="images/Terraform-Icon.svg" width="30" height="30" alt="Terraform"> → AWS Resources
-
----
+```
++----------------------------------------------------------------------------------------------------------+
+|                                                                                                          |
+|                                           USERS                                                          |
+|                                                                                                          |
+|  <img src="images/User.svg" width="30" height="30" alt="User">  →  <img src="images/Generic-Web-Browser.svg" width="30" height="30" alt="Web Browser">  |
+|                                             |                                                           |
+|                                             ↓                                                           |
+|                                                                                                          |
++----------------------------------------------------------------------------------------------------------+
+                                               |
+                                               ↓
++----------------------------------------------------------------------------------------------------------+
+|                                         AWS GLOBAL                                                       |
+|                                                                                                          |
+|  <img src="images/Amazon-Route-53.svg" width="30" height="30" alt="Route 53">  →  <img src="images/Amazon-CloudFront.svg" width="30" height="30" alt="CloudFront">  ←  <img src="images/AWS-Certificate-Manager.svg" width="30" height="30" alt="ACM">  |
+|                                             |                                                           |
+|                                             ↓                                                           |
+|                                                                                                          |
++----------------------------------------------------------------------------------------------------------+
+                                               |
+                                               ↓
++----------------------------------------------------------------------------------------------------------+
+|                                       AWS REGION (eu-west-2)                                             |
+|                                                                                                          |
+|  +--------------------------------------+  +--------------------------------------+                     |
+|  |         Availability Zone A          |  |         Availability Zone B          |                     |
+|  |                                      |  |                                      |                     |
+|  |  +------------------------------+    |  |  +------------------------------+    |                     |
+|  |  |           VPC               |    |  |  |           VPC               |    |                     |
+|  |  |                             |    |  |  |                             |    |                     |
+|  |  |  +------------------------+ |    |  |  |  +------------------------+ |    |                     |
+|  |  |  |    Private Subnet      | |    |  |  |  |    Private Subnet      | |    |                     |
+|  |  |  |                        | |    |  |  |  |                        | |    |                     |
+|  |  |  |  <img src="images/AWS-Lambda.svg" width="30" height="30" alt="Lambda EVE">  | |    |  |  |  <img src="images/AWS-Lambda.svg" width="30" height="30" alt="Lambda EVE">  | |    |                     |
+|  |  |  |          ↑            | |    |  |  |  |          ↑            | |    |                     |
+|  |  |  +------------------------+ |    |  |  |  +------------------------+ |    |                     |
+|  |  |                             |    |  |  |                             |    |                     |
+|  |  |  +------------------------+ |    |  |  |  +------------------------+ |    |                     |
+|  |  |  |    Public Subnet       | |    |  |  |  |    Public Subnet       | |    |                     |
+|  |  |  |                        | |    |  |  |  |                        | |    |                     |
+|  |  |  |  <img src="images/Amazon-API-Gateway.svg" width="30" height="30" alt="API Gateway">  | |    |  |  |  <img src="images/Amazon-API-Gateway.svg" width="30" height="30" alt="API Gateway">  | |    |                     |
+|  |  |  |          ↑            | |    |  |  |  |          ↑            | |    |                     |
+|  |  |  +------------------------+ |    |  |  |  +------------------------+ |    |                     |
+|  |  |                             |    |  |  |                             |    |                     |
+|  |  +-----------------------------+    |  |  +-----------------------------+    |                     |
+|  |                                      |  |                                      |                     |
+|  +--------------------------------------+  +--------------------------------------+                     |
+|                                                                                                          |
+|  +--------------------------------------+  +--------------------------------------+                     |
+|  |           AWS Services               |  |         Monitoring & Management       |                     |
+|  |                                      |  |                                      |                     |
+|  |  <img src="images/Amazon-Simple-Storage-Service-S3.svg" width="30" height="30" alt="S3">  S3 Website      |  |  <img src="images/Amazon-CloudWatch.svg" width="30" height="30" alt="CloudWatch">  CloudWatch          |    |
+|  |  <img src="images/Amazon-Simple-Storage-Service-S3.svg" width="30" height="30" alt="S3">  S3 Certificates  |  |  <img src="images/AWS-Systems-Manager_Parameter-Store.svg" width="30" height="30" alt="SSM">  Parameter Store      |    |
+|  |  <img src="images/Amazon-DynamoDB.svg" width="30" height="30" alt="DynamoDB">  DynamoDB        |  |  <img src="images/AWS-Identity-and-Access-Management-IAM.svg" width="30" height="30" alt="IAM">  IAM                  |    |
+|  |  <img src="images/Amazon-Bedrock.svg" width="30" height="30" alt="Bedrock">  Bedrock         |  |                                      |                     |
+|  |                                      |  |                                      |                     |
+|  +--------------------------------------+  +--------------------------------------+                     |
+|                                                                                                          |
++----------------------------------------------------------------------------------------------------------+
+                                               ↑
+                                               |
++----------------------------------------------------------------------------------------------------------+
+|                                       CI/CD PIPELINE                                                     |
+|                                                                                                          |
+|  <img src="images/GitHub-Icon.svg" width="30" height="30" alt="GitHub">  →  GitHub Actions  →  <img src="images/Terraform-Icon.svg" width="30" height="30" alt="Terraform">  →  AWS Resources                       |
+|                                                                                                          |
++----------------------------------------------------------------------------------------------------------+
+```
 
 The architecture diagram illustrates the serverless design of CloudForgeX using AWS Architecture Icons. The system is organized into logical layers:
 
-- **User Layer**: End users accessing the portfolio website
-- **Edge Layer**: CloudFront, Route 53, and ACM for content delivery and security
-- **Application Layer**: API Gateway and Lambda functions for application logic
-- **Data Layer**: S3, DynamoDB, and AWS Bedrock for storage and AI capabilities
-- **Management Layer**: SSM Parameter Store and CloudWatch for configuration and monitoring
+- **User Layer**: End users accessing the portfolio website through web browsers
+- **AWS Global**: CloudFront, Route 53, and ACM for global content delivery and security
+- **AWS Region (eu-west-2)**: Regional services organized by availability zones and VPC structure
+  - **VPC with Public/Private Subnets**: API Gateway in public subnets, Lambda functions in private subnets
+  - **AWS Services**: S3 for static website and certificates, DynamoDB for data storage, Bedrock for AI capabilities
+  - **Monitoring & Management**: CloudWatch, SSM Parameter Store, and IAM for security and monitoring
+- **CI/CD Pipeline**: GitHub, GitHub Actions, and Terraform for infrastructure deployment
 
-The diagram shows the key data flows through the system, including user requests, API calls, and the deployment pipeline using GitHub Actions and Terraform.
+The diagram shows the key data flows through the system, including user requests, API calls, and the deployment pipeline.
 
 ## Component Breakdown
 
