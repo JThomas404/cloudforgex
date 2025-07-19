@@ -26,64 +26,134 @@ CloudForgeX is a serverless AI-powered portfolio hosted on AWS, showcasing cloud
 ## Architecture Diagram
 
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#232f3e',
+    'primaryTextColor': '#ffffff',
+    'primaryBorderColor': '#232f3e',
+    'lineColor': '#f58536',
+    'secondaryColor': '#f58536',
+    'tertiaryColor': '#ffffff'
+  }
+}}%%
 flowchart TD
-    subgraph "User Layer"
-        User([User])
-        Browser[Web Browser]
+    %% Styling to match CloudForgeX website
+    classDef userLayer fill:#232f3e,stroke:#f58536,color:#ffffff,stroke-width:2px
+    classDef edgeLayer fill:#146eb4,stroke:#f58536,color:#ffffff,stroke-width:2px
+    classDef appLayer fill:#3b873a,stroke:#f58536,color:#ffffff,stroke-width:2px
+    classDef dataLayer fill:#c94f17,stroke:#f58536,color:#ffffff,stroke-width:2px
+    classDef mgmtLayer fill:#b0084d,stroke:#f58536,color:#ffffff,stroke-width:2px
+    classDef deployLayer fill:#4d27aa,stroke:#f58536,color:#ffffff,stroke-width:2px
+    
+    %% IAM Roles
+    LambdaRole["Lambda Execution Role"]:::mgmtLayer
+    S3Role["S3 Access Role"]:::mgmtLayer
+    
+    %% Components with labels
+    User(["👤 User"])
+    Browser["🌐 Web Browser"]
+    
+    CloudFront["☁️ CloudFront<br>Distribution"]
+    Route53["🔄 Route 53<br>DNS"]
+    ACM["🔒 ACM<br>SSL/TLS"]
+    
+    APIGateway["🔌 API Gateway<br>REST API"]
+    LambdaMain["λ Lambda Main<br>Node.js"]
+    LambdaAI["λ Lambda AI<br>Python"]
+    
+    S3[("📁 S3 Bucket<br>Static Website")]
+    DynamoDB[("🗄️ DynamoDB<br>NoSQL")]
+    Bedrock["🧠 AWS Bedrock<br>Claude Instant"]
+    
+    SSM["⚙️ SSM<br>Parameter Store"]
+    CloudWatch["📊 CloudWatch<br>Monitoring"]
+    
+    GitHub["📂 GitHub<br>Repository"]
+    GitHubActions["🔄 GitHub Actions<br>CI/CD"]
+    Terraform["🏗️ Terraform<br>IaC"]
+    
+    %% Apply classes
+    class User,Browser userLayer
+    class CloudFront,Route53,ACM edgeLayer
+    class APIGateway,LambdaMain,LambdaAI appLayer
+    class S3,DynamoDB,Bedrock dataLayer
+    class SSM,CloudWatch,LambdaRole,S3Role mgmtLayer
+    class GitHub,GitHubActions,Terraform deployLayer
+    
+    %% Connections with labels
+    User -->|"Visits"| Browser
+    Browser -->|"HTTPS Request"| CloudFront
+    CloudFront -->|"Static Content"| S3
+    CloudFront -->|"API Requests"| APIGateway
+    Route53 -->|"DNS Resolution"| CloudFront
+    ACM -->|"SSL Certificate"| CloudFront
+    
+    APIGateway -->|"Invoke"| LambdaMain
+    LambdaMain -->|"AI Request"| LambdaAI
+    LambdaMain -->|"Read/Write"| DynamoDB
+    LambdaMain -->|"Get Config"| SSM
+    LambdaAI -->|"Generate Response"| Bedrock
+    LambdaMain -->|"Logs"| CloudWatch
+    LambdaRole -->|"Assumes"| LambdaMain
+    S3Role -->|"Assumes"| S3
+    
+    GitHub -->|"Push"| GitHubActions
+    GitHubActions -->|"Run"| Terraform
+    Terraform -->|"Provision"| S3
+    Terraform -->|"Provision"| CloudFront
+    Terraform -->|"Provision"| APIGateway
+    Terraform -->|"Provision"| LambdaMain
+    Terraform -->|"Provision"| DynamoDB
+    Terraform -->|"Provision"| SSM
+    
+    %% Subgraphs with styled borders
+    subgraph User_Layer["User Layer"]
+        User
+        Browser
     end
-
-    subgraph "Edge Layer"
-        CloudFront[CloudFront]
-        Route53[Route 53]
-        ACM[ACM]
+    
+    subgraph Edge_Layer["Edge Layer"]
+        CloudFront
+        Route53
+        ACM
     end
-
-    subgraph "Application Layer"
-        APIGateway[API Gateway]
-        LambdaMain[Lambda Main]
-        LambdaAI[Lambda AI]
+    
+    subgraph App_Layer["Application Layer"]
+        APIGateway
+        LambdaMain
+        LambdaAI
     end
-
-    subgraph "Data Layer"
-        S3[(S3 Bucket)]
-        DynamoDB[(DynamoDB)]
-        Bedrock[AWS Bedrock]
+    
+    subgraph Data_Layer["Data Layer"]
+        S3
+        DynamoDB
+        Bedrock
     end
-
-    subgraph "Management Layer"
-        SSM[SSM Parameter Store]
-        CloudWatch[CloudWatch]
+    
+    subgraph Mgmt_Layer["Management Layer"]
+        SSM
+        CloudWatch
+        LambdaRole
+        S3Role
     end
-
-    subgraph "Deployment"
-        GitHub[GitHub]
-        GitHubActions[GitHub Actions]
-        Terraform[Terraform]
+    
+    subgraph Deploy_Layer["Deployment"]
+        GitHub
+        GitHubActions
+        Terraform
     end
-
-    User --> Browser
-    Browser --> CloudFront
-    CloudFront --> S3
-    CloudFront --> APIGateway
-    Route53 --> CloudFront
-    ACM --> CloudFront
-
-    APIGateway --> LambdaMain
-    LambdaMain --> LambdaAI
-    LambdaMain --> DynamoDB
-    LambdaMain --> SSM
-    LambdaAI --> Bedrock
-    LambdaMain --> CloudWatch
-
-    GitHub --> GitHubActions
-    GitHubActions --> Terraform
-    Terraform --> S3
-    Terraform --> CloudFront
-    Terraform --> APIGateway
-    Terraform --> LambdaMain
-    Terraform --> DynamoDB
-    Terraform --> SSM
+    
+    %% Style the subgraphs
+    style User_Layer fill:#232f3e20,stroke:#f58536,stroke-width:2px
+    style Edge_Layer fill:#146eb420,stroke:#f58536,stroke-width:2px
+    style App_Layer fill:#3b873a20,stroke:#f58536,stroke-width:2px
+    style Data_Layer fill:#c94f1720,stroke:#f58536,stroke-width:2px
+    style Mgmt_Layer fill:#b0084d20,stroke:#f58536,stroke-width:2px
+    style Deploy_Layer fill:#4d27aa20,stroke:#f58536,stroke-width:2px
 ```
+
+> **Note**: This diagram uses AWS-styled icons and colors. For a higher-resolution version with official AWS Architecture Icons, see the [high-resolution diagram](/docs/images/cloudforge-architecture.png).
 
 The architecture diagram illustrates the serverless design of CloudForgeX, showing the interaction between frontend components hosted on S3/CloudFront and backend services powered by AWS Lambda and API Gateway. The diagram highlights security boundaries, data flow paths, and integration points between services. The layered approach demonstrates the separation of concerns and security boundaries between different components of the system.
 
