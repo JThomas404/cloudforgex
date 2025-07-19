@@ -330,11 +330,11 @@ The architecture leverages the following AWS services:
 | **CloudFront**          | Content delivery network       | Edge locations worldwide, HTTPS required, custom domain             |
 | **Route 53**            | DNS management                 | A records pointing to CloudFront distribution                       |
 | **ACM**                 | SSL/TLS certificate management | Auto-renewal enabled, DNS validation                                |
-| **Lambda**              | Serverless compute             | Node.js 18.x runtime, 512MB memory, 30s timeout                     |
+| **Lambda**              | Serverless compute             | Python 3.9 runtime, 256MB memory, 30s timeout                       |
 | **API Gateway**         | API management                 | REST API, regional endpoint, API key authentication                 |
 | **DynamoDB**            | NoSQL database                 | On-demand capacity, TTL enabled for session data                    |
-| **Bedrock**             | AI service for EVE assistant   | Claude Instant model, temperature 0.7                               |
-| **SSM Parameter Store** | Secure configuration           | SecureString type with KMS encryption                               |
+| **Bedrock**             | AI service for EVE assistant   | Claude Instant model with InvokeModel and InvokeModelWithResponseStream permissions |
+| **SSM Parameter Store** | Secure configuration           | String and SecureString types with appropriate permissions          |
 | **IAM**                 | Access management              | Least privilege roles for each service                              |
 
 Each service is configured according to AWS best practices and optimised for the specific requirements of the CloudForgeX application.
