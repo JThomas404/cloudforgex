@@ -25,106 +25,49 @@ CloudForgeX is a serverless AI-powered portfolio hosted on AWS, showcasing cloud
 
 ## Architecture Diagram
 
-```mermaid
-graph TD
-    %% Define CloudForgeX brand colors
-    classDef userZone fill:#f5f5f5,stroke:#232f3e,color:#232f3e,stroke-width:2px
-    classDef edgeZone fill:#e6f2ff,stroke:#146eb4,color:#232f3e,stroke-width:2px
-    classDef appZone fill:#e6ffe6,stroke:#3b873a,color:#232f3e,stroke-width:2px
-    classDef dataZone fill:#fff2e6,stroke:#c94f17,color:#232f3e,stroke-width:2px
-    classDef mgmtZone fill:#ffe6f0,stroke:#b0084d,color:#232f3e,stroke-width:2px
-    classDef deployZone fill:#f0e6ff,stroke:#4d27aa,color:#232f3e,stroke-width:2px
-    
-    %% Security boundaries
-    subgraph Public["Public Zone (Internet-Facing)"]
-        User(["👤 User"]):::userZone
-        Browser["🌐 Web Browser"]:::userZone
-    end
-    
-    subgraph DMZ["DMZ Zone (Edge Services)"]
-        CloudFront["☁️ CloudFront"]:::edgeZone
-        Route53["🔄 Route 53"]:::edgeZone
-        ACM["🔒 ACM"]:::edgeZone
-    end
-    
-    subgraph Private["Private Zone (Application & Data)"]
-        subgraph AppLayer["Application Layer"]
-            APIGateway["🔌 API Gateway"]:::appZone
-            LambdaMain["λ Lambda Main"]:::appZone
-            LambdaAI["λ Lambda AI"]:::appZone
-        end
-        
-        subgraph DataLayer["Data Layer"]
-            S3[("📁 S3 Bucket")]:::dataZone
-            DynamoDB[("🗄️ DynamoDB")]:::dataZone
-            Bedrock["🧠 AWS Bedrock"]:::dataZone
-        end
-    end
-    
-    subgraph Management["Management Zone (Configuration & Monitoring)"]
-        SSM["⚙️ SSM Parameter Store"]:::mgmtZone
-        CloudWatch["📊 CloudWatch"]:::mgmtZone
-        IAMRoles["👤 IAM Roles"]:::mgmtZone
-    end
-    
-    subgraph Deployment["Deployment Pipeline"]
-        GitHub["📂 GitHub"]:::deployZone
-        GitHubActions["🔄 GitHub Actions"]:::deployZone
-        Terraform["🏗️ Terraform"]:::deployZone
-    end
-    
-    %% User flow connections (solid lines)
-    User -->|"Visits"|Browser
-    Browser -->|"HTTPS Request"|CloudFront
-    CloudFront -->|"Static Content"|S3
-    CloudFront -->|"API Requests"|APIGateway
-    Route53 -->|"DNS Resolution"|CloudFront
-    ACM -->|"SSL Certificate"|CloudFront
-    
-    %% Application flow connections
-    APIGateway -->|"Invoke"|LambdaMain
-    LambdaMain -->|"AI Request"|LambdaAI
-    LambdaMain -->|"Read/Write"|DynamoDB
-    LambdaMain -->|"Get Config"|SSM
-    LambdaAI -->|"Generate Response"|Bedrock
-    LambdaMain -->|"Logs"|CloudWatch
-    IAMRoles -->|"Assumes"|LambdaMain
-    IAMRoles -->|"Bucket Policy"|S3
-    
-    %% Deployment flow connections (dashed lines)
-    GitHub -.->|"Push"|GitHubActions
-    GitHubActions -.->|"Run"|Terraform
-    Terraform -.->|"Provision"|S3
-    Terraform -.->|"Provision"|CloudFront
-    Terraform -.->|"Provision"|APIGateway
-    Terraform -.->|"Provision"|LambdaMain
-    Terraform -.->|"Provision"|DynamoDB
-    Terraform -.->|"Provision"|SSM
-    
-    %% Certificate flow (dotted lines)
-    LambdaMain -->|"Generate Presigned URL"|S3
-    
-    %% Legend
-    UserFlow["User Flow"]:::userZone
-    InternalFlow["Internal Communication"]:::appZone
-    DeployFlow["Deployment Flow"]:::deployZone
-    UserFlow --- InternalFlow
-    InternalFlow --- DeployFlow
-```
+### User Layer
+<img src="images/User.svg" width="30" height="30" alt="User"> → <img src="images/Generic-Web-Browser.svg" width="30" height="30" alt="Web Browser"> → <img src="images/Amazon-CloudFront.svg" width="30" height="30" alt="CloudFront">
 
-The architecture diagram illustrates the serverless design of CloudForgeX using security zones and component relationships. The diagram is organized in layers with clear security boundaries:
+### Edge Layer
+<img src="images/Amazon-CloudFront.svg" width="30" height="30" alt="CloudFront"> → <img src="images/Amazon-Simple-Storage-Service-S3.svg" width="30" height="30" alt="S3">
 
-- **Public Zone**: Contains end users and web browsers (internet-facing components)
-- **DMZ Zone**: Edge services including CloudFront, Route 53, and ACM
-- **Private Zone**: Application and data services including Lambda functions, API Gateway, S3, DynamoDB, and Bedrock
-- **Management Zone**: Configuration and monitoring services including SSM Parameter Store, CloudWatch, and IAM roles
+<img src="images/Amazon-Route-53.svg" width="30" height="30" alt="Route 53"> → <img src="images/Amazon-CloudFront.svg" width="30" height="30" alt="CloudFront">
 
-The diagram shows three types of data flows:
-1. **User flows** (solid lines): How users interact with the system
-2. **Internal communication** (solid lines): How AWS services communicate with each other
-3. **Deployment flows** (dashed lines): How code is deployed through the CI/CD pipeline
+<img src="images/AWS-Certificate-Manager.svg" width="30" height="30" alt="ACM"> ⟳ <img src="images/Amazon-CloudFront.svg" width="30" height="30" alt="CloudFront">
 
-For a higher-resolution version with official AWS Architecture Icons in a true concentric layout, see the [architecture diagram instructions](/docs/architecture-instructions.md).
+### Application Layer
+<img src="images/Amazon-CloudFront.svg" width="30" height="30" alt="CloudFront"> → <img src="images/Amazon-API-Gateway.svg" width="30" height="30" alt="API Gateway"> → <img src="images/AWS-Lambda.svg" width="30" height="30" alt="Lambda EVE">
+
+### Data Layer
+<img src="images/AWS-Lambda.svg" width="30" height="30" alt="Lambda EVE"> → <img src="images/Amazon-DynamoDB.svg" width="30" height="30" alt="DynamoDB">
+
+<img src="images/AWS-Lambda.svg" width="30" height="30" alt="Lambda EVE"> → <img src="images/Amazon-Bedrock.svg" width="30" height="30" alt="AWS Bedrock">
+
+<img src="images/AWS-Lambda.svg" width="30" height="30" alt="Lambda EVE"> → <img src="images/Amazon-Simple-Storage-Service-S3.svg" width="30" height="30" alt="S3 Certificates">
+
+### Management Layer
+<img src="images/AWS-Lambda.svg" width="30" height="30" alt="Lambda EVE"> → <img src="images/AWS-Systems-Manager_Parameter-Store.svg" width="30" height="30" alt="SSM Parameter Store">
+
+<img src="images/Amazon-CloudWatch.svg" width="30" height="30" alt="CloudWatch"> ⟳ <img src="images/AWS-Lambda.svg" width="30" height="30" alt="Lambda EVE">
+
+<img src="images/Amazon-CloudWatch.svg" width="30" height="30" alt="CloudWatch"> ⟳ <img src="images/Amazon-API-Gateway.svg" width="30" height="30" alt="API Gateway">
+
+<img src="images/Amazon-CloudWatch.svg" width="30" height="30" alt="CloudWatch"> ⟳ <img src="images/Amazon-CloudFront.svg" width="30" height="30" alt="CloudFront">
+
+### CI/CD Pipeline
+<img src="images/GitHub-Icon.svg" width="30" height="30" alt="GitHub"> → GitHub Actions → <img src="images/Terraform-Icon.svg" width="30" height="30" alt="Terraform"> → AWS Resources
+
+---
+
+The architecture diagram illustrates the serverless design of CloudForgeX using AWS Architecture Icons. The system is organized into logical layers:
+
+- **User Layer**: End users accessing the portfolio website
+- **Edge Layer**: CloudFront, Route 53, and ACM for content delivery and security
+- **Application Layer**: API Gateway and Lambda functions for application logic
+- **Data Layer**: S3, DynamoDB, and AWS Bedrock for storage and AI capabilities
+- **Management Layer**: SSM Parameter Store and CloudWatch for configuration and monitoring
+
+The diagram shows the key data flows through the system, including user requests, API calls, and the deployment pipeline using GitHub Actions and Terraform.
 
 ## Component Breakdown
 
