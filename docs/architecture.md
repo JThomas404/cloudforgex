@@ -18,7 +18,6 @@
 - [Key Design Decisions and Trade-offs](#key-design-decisions-and-trade-offs)
 - [Future Enhancements](#future-enhancements)
 - [References and Resources](#references-and-resources)
-- [Glossary](#glossary)
 
 ## System Overview
 
@@ -528,22 +527,40 @@ Planned future enhancements to the architecture include:
 
 ## References and Resources
 
-- [AWS Well-Architected Framework](https://aws.amazon.com/architecture/well-architected/) - Core design principles used to guide architectural decisions for CloudForgeX, focusing on operational excellence, security, reliability, performance efficiency, and cost optimization.
+### [AWS Well-Architected Framework](https://aws.amazon.com/architecture/well-architected/)
 
-- [AWS Serverless Architecture Best Practices](https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html) - Guidelines followed for Lambda function design, API Gateway configuration, and event-driven architecture patterns.
+- Core design principles used to guide architectural decisions for CloudForgeX, focusing on operational excellence, security, reliability, performance efficiency, and cost optimization.
 
-- [Terraform Best Practices](https://www.terraform-best-practices.com/) - Resource for modular design patterns, state management, and variable handling implemented in the CloudForgeX IaC approach.
+### [AWS Serverless Architecture Best Practices](https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html)
 
-- [AWS Security Best Practices](https://aws.amazon.com/architecture/security-identity-compliance/) - Security standards implemented for IAM policies, encryption, and network security controls throughout the architecture.
+- Guidelines followed for Lambda function design, API Gateway configuration, and event-driven architecture patterns.
 
-- [CloudFront Developer Guide](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html) - Reference for CDN configuration, caching strategies, and origin access controls used in the frontend delivery system.
+### [Terraform Best Practices](https://www.terraform-best-practices.com/)
 
-- [Project README](https://github.com/JThomas404/cloudforgex/blob/main/README.md) - Overview of the CloudForgeX project, including setup instructions, features, and project structure.
+- Resource for modular design patterns, state management, and variable handling implemented in the CloudForgeX IaC approach.
 
-- [Frontend Implementation](https://github.com/JThomas404/cloudforgex/blob/main/frontend/) - Source code for the HTML5, CSS3, and JavaScript components that make up the user interface and EVE assistant integration.
+### [AWS Security Best Practices](https://aws.amazon.com/architecture/security-identity-compliance/)
 
-- [Lambda Functions](https://github.com/JThomas404/cloudforgex/blob/main/lambda/) - Backend code for the serverless functions that power the EVE AI assistant and certificate management functionality.
+- Security standards implemented for IAM policies, encryption, and network security controls throughout the architecture.
 
-- [Terraform Configuration](https://github.com/JThomas404/cloudforgex/blob/main/terraform/) - Infrastructure as Code modules and configurations that define and provision the entire AWS environment.
+### [CloudFront Developer Guide](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html)
+
+- Reference for CDN configuration, caching strategies, and origin access controls used in the frontend delivery system.
+
+### [Project README](https://github.com/JThomas404/cloudforgex/blob/main/README.md)
+
+- Overview of the CloudForgeX project, including setup instructions, features, and project structure.
+
+### [Frontend Implementation](https://github.com/JThomas404/cloudforgex/blob/main/frontend/)
+
+- Source code for the HTML5, CSS3, and JavaScript components that make up the user interface and EVE assistant integration.
+
+### [Lambda Functions](https://github.com/JThomas404/cloudforgex/blob/main/lambda/)
+
+- Backend code for the serverless functions that power the EVE AI assistant and certificate management functionality.
+
+### [Terraform Configuration](https://github.com/JThomas404/cloudforgex/blob/main/terraform/)
+
+- Infrastructure as Code modules and configurations that define and provision the entire AWS environment.
 
 ---
