@@ -29,14 +29,14 @@ CloudForgeX implements a defence-in-depth security strategy across all layers of
 
 A formal risk assessment was conducted using the NIST Risk Management Framework to identify and prioritise security controls. The assessment evaluated threats based on likelihood and potential impact to determine appropriate mitigations.
 
-| Risk | Likelihood | Impact | Risk Score | Primary Mitigation |
-|------|------------|--------|------------|--------------------|
-| Unauthorised API Access | High | High | Critical | API Gateway authentication, WAF rules |
-| Data Breach | Medium | High | High | Encryption, least privilege access |
-| DDoS Attack | Medium | Medium | Medium | CloudFront, WAF rate limiting |
-| Credential Exposure | Low | High | Medium | SSM Parameter Store, no hardcoded secrets |
-| Misconfiguration | Medium | Medium | Medium | IaC, automated compliance checks |
-| Insider Threat | Low | High | Medium | Least privilege, audit logging |
+| Risk                    | Likelihood | Impact | Risk Score | Primary Mitigation                        |
+| ----------------------- | ---------- | ------ | ---------- | ----------------------------------------- |
+| Unauthorised API Access | High       | High   | Critical   | API Gateway authentication, WAF rules     |
+| Data Breach             | Medium     | High   | High       | Encryption, least privilege access        |
+| DDoS Attack             | Medium     | Medium | Medium     | CloudFront, WAF rate limiting             |
+| Credential Exposure     | Low        | High   | Medium     | SSM Parameter Store, no hardcoded secrets |
+| Misconfiguration        | Medium     | Medium | Medium     | IaC, automated compliance checks          |
+| Insider Threat          | Low        | High   | Medium     | Least privilege, audit logging            |
 
 ### Security Design Principles
 
@@ -51,14 +51,14 @@ A formal risk assessment was conducted using the NIST Risk Management Framework 
 
 The CloudForgeX security architecture addresses the following primary threat vectors:
 
-| Threat Vector | Potential Impact | Mitigation Strategy |
-|---------------|-----------------|---------------------|
-| Unauthorised API Access | Data exposure, service abuse | API Gateway authentication, IAM roles, request validation |
-| Data Interception | Sensitive data exposure | TLS encryption, secure headers, CORS policies |
-| Credential Exposure | Account compromise | SSM Parameter Store, IAM roles, no hardcoded secrets |
-| Resource Abuse | Cost escalation, service degradation | Input validation, rate limiting, token waste prevention |
-| Infrastructure Tampering | Service disruption, data breach | IaC with version control, CI/CD pipeline security checks |
-| Cross-Site Scripting (XSS) | Client-side attacks | Content Security Policy, secure headers, input sanitisation |
+| Threat Vector              | Potential Impact                     | Mitigation Strategy                                         |
+| -------------------------- | ------------------------------------ | ----------------------------------------------------------- |
+| Unauthorised API Access    | Data exposure, service abuse         | API Gateway authentication, IAM roles, request validation   |
+| Data Interception          | Sensitive data exposure              | TLS encryption, secure headers, CORS policies               |
+| Credential Exposure        | Account compromise                   | SSM Parameter Store, IAM roles, no hardcoded secrets        |
+| Resource Abuse             | Cost escalation, service degradation | Input validation, rate limiting, token waste prevention     |
+| Infrastructure Tampering   | Service disruption, data breach      | IaC with version control, CI/CD pipeline security checks    |
+| Cross-Site Scripting (XSS) | Client-side attacks                  | Content Security Policy, secure headers, input sanitisation |
 
 ### Security Architecture Diagram
 
@@ -68,30 +68,30 @@ flowchart TD
     HTTPS --> CloudFront[CloudFront with OAC]
     CloudFront --> S3Web[S3 Website Bucket]
     CloudFront --> APIGateway[API Gateway with WAF]
-    
+
     APIGateway --> LambdaAuth[Lambda Authoriser]
     LambdaAuth --> LambdaFunc[Lambda Function]
-    
+
     LambdaFunc --> SSM[SSM Parameter Store]
     LambdaFunc --> S3Cert[S3 Certificate Bucket]
     LambdaFunc --> DynamoDB[DynamoDB with Encryption]
     LambdaFunc --> Bedrock[AWS Bedrock]
-    
+
     CloudTrail[CloudTrail] -.-> S3Web
     CloudTrail -.-> APIGateway
     CloudTrail -.-> LambdaFunc
     CloudTrail -.-> S3Cert
     CloudTrail -.-> DynamoDB
-    
+
     CloudWatch[CloudWatch Logs] -.-> LambdaFunc
     CloudWatch -.-> APIGateway
-    
+
     GuardDuty[GuardDuty] -.-> CloudTrail
-    
+
     SecurityHub[Security Hub] -.-> GuardDuty
     SecurityHub -.-> CloudTrail
     SecurityHub -.-> Config[AWS Config]
-    
+
     classDef security fill:#f96, stroke:#333, stroke-width:2px;
     class HTTPS,CloudFront,APIGateway,LambdaAuth,SSM,S3Web,S3Cert,DynamoDB,CloudTrail,CloudWatch,GuardDuty,SecurityHub,Config security
 ```
@@ -131,24 +131,17 @@ CloudForgeX implements the principle of least privilege through carefully scoped
     },
     {
       "Effect": "Allow",
-      "Action": [
-        "ssm:GetParameter"
-      ],
+      "Action": ["ssm:GetParameter"],
       "Resource": "arn:aws:ssm:${region}:${account_id}:parameter/cloudforge/*"
     },
     {
       "Effect": "Allow",
-      "Action": [
-        "s3:GetObject",
-        "s3:PutObject"
-      ],
+      "Action": ["s3:GetObject", "s3:PutObject"],
       "Resource": "arn:aws:s3:::cloudforge-certificates/*"
     },
     {
       "Effect": "Allow",
-      "Action": [
-        "bedrock:InvokeModel"
-      ],
+      "Action": ["bedrock:InvokeModel"],
       "Resource": "arn:aws:bedrock:${region}::foundation-model/anthropic.claude-instant-v1"
     }
   ]
@@ -206,11 +199,7 @@ CloudForgeX implements the principle of least privilege through carefully scoped
       "Principal": {
         "AWS": "arn:aws:iam::${account_id}:role/cloudforge-lambda-role"
       },
-      "Action": [
-        "s3:GetObject",
-        "s3:PutObject",
-        "s3:GetObjectTagging"
-      ],
+      "Action": ["s3:GetObject", "s3:PutObject", "s3:GetObjectTagging"],
       "Resource": "arn:aws:s3:::cloudforge-certificates/*"
     }
   ]
@@ -241,12 +230,7 @@ Permission boundaries are implemented to limit the maximum permissions that can 
     },
     {
       "Effect": "Deny",
-      "Action": [
-        "iam:*",
-        "organisations:*",
-        "ec2:*",
-        "rds:*"
-      ],
+      "Action": ["iam:*", "organisations:*", "ec2:*", "rds:*"],
       "Resource": "*"
     }
   ]
@@ -271,7 +255,7 @@ resource "aws_ssm_parameter" "bedrock_api_key" {
   type        = "SecureString"
   value       = var.bedrock_api_key
   key_id      = aws_kms_key.parameter_key.id
-  
+
   tags = {
     Environment = var.environment
     Application = "CloudForgeX"
@@ -310,13 +294,13 @@ def lambda_handler(event, context):
 
 All data stores in CloudForgeX implement encryption at rest:
 
-| Data Store | Encryption Method | Key Management |
-|------------|-------------------|---------------|
-| S3 Website Bucket | SSE-S3 (AES-256) | AWS Managed Keys |
-| S3 Certificate Bucket | SSE-KMS | Customer Managed KMS Key |
-| DynamoDB Tables | AWS Owned Keys | AWS Managed |
-| CloudWatch Logs | AWS Owned Keys | AWS Managed |
-| SSM Parameter Store | KMS | Customer Managed KMS Key |
+| Data Store            | Encryption Method | Key Management           |
+| --------------------- | ----------------- | ------------------------ |
+| S3 Website Bucket     | SSE-S3 (AES-256)  | AWS Managed Keys         |
+| S3 Certificate Bucket | SSE-KMS           | Customer Managed KMS Key |
+| DynamoDB Tables       | AWS Owned Keys    | AWS Managed              |
+| CloudWatch Logs       | AWS Owned Keys    | AWS Managed              |
+| SSM Parameter Store   | KMS               | Customer Managed KMS Key |
 
 #### KMS Key Configuration
 
@@ -325,7 +309,7 @@ resource "aws_kms_key" "cloudforge_key" {
   description             = "KMS key for CloudForgeX sensitive data"
   deletion_window_in_days = 30
   enable_key_rotation     = true
-  
+
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -352,7 +336,7 @@ resource "aws_kms_key" "cloudforge_key" {
       }
     ]
   })
-  
+
   tags = {
     Name = "cloudforge-kms-key"
     Environment = var.environment
@@ -376,34 +360,34 @@ CloudFront is configured with security headers to enhance transport security:
 ```terraform
 resource "aws_cloudfront_response_headers_policy" "security_headers" {
   name = "cloudforge-security-headers"
-  
+
   security_headers_config {
     content_security_policy {
       content_security_policy = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://*.execute-api.${var.region}.amazonaws.com;"
       override = true
     }
-    
+
     strict_transport_security {
       access_control_max_age_sec = 63072000
       include_subdomains         = true
       preload                    = true
       override                   = true
     }
-    
+
     content_type_options {
       override = true
     }
-    
+
     frame_options {
       frame_option = "DENY"
       override     = true
     }
-    
+
     referrer_policy {
       referrer_policy = "same-origin"
       override        = true
     }
-    
+
     xss_protection {
       mode_block = true
       protection = true
@@ -431,30 +415,30 @@ resource "aws_dynamodb_table" "conversations" {
   billing_mode   = "PAY_PER_REQUEST"
   hash_key       = "session_id"
   range_key      = "timestamp"
-  
+
   attribute {
     name = "session_id"
     type = "S"
   }
-  
+
   attribute {
     name = "timestamp"
     type = "N"
   }
-  
+
   ttl {
     attribute_name = "expiration_time"
     enabled        = true
   }
-  
+
   server_side_encryption {
     enabled = true
   }
-  
+
   point_in_time_recovery {
     enabled = true
   }
-  
+
   tags = {
     Name        = "cloudforge-conversations"
     Environment = var.environment
@@ -476,17 +460,17 @@ def lambda_handler(event, context):
     # Extract certificate name from request
     body = json.loads(event['body'])
     certificate_name = body.get('certificate')
-    
+
     # Validate certificate name against allowed list
     allowed_certificates = ['aws-saa', 'aws-terraform', 'kubernetes']
-    
+
     if not certificate_name or certificate_name not in allowed_certificates:
         logger.warning(f"Invalid certificate request: {certificate_name}")
         return {
             'statusCode': 403,
             'body': json.dumps({'error': 'Access denied'})
         }
-    
+
     # Generate presigned URL with short expiration
     try:
         url = s3_client.generate_presigned_url(
@@ -498,10 +482,10 @@ def lambda_handler(event, context):
             },
             ExpiresIn=300  # 5 minutes
         )
-        
+
         # Log successful access
         logger.info(f"Certificate access granted: {certificate_name}")
-        
+
         return {
             'statusCode': 200,
             'body': json.dumps({
@@ -531,7 +515,7 @@ resource "aws_vpc" "cloudforge_vpc" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
   enable_dns_hostnames = true
-  
+
   tags = {
     Name = "cloudforge-vpc"
   }
@@ -541,7 +525,7 @@ resource "aws_subnet" "private_subnet_a" {
   vpc_id            = aws_vpc.cloudforge_vpc.id
   cidr_block        = "10.0.1.0/24"
   availability_zone = "${var.region}a"
-  
+
   tags = {
     Name = "cloudforge-private-subnet-a"
   }
@@ -551,7 +535,7 @@ resource "aws_subnet" "private_subnet_b" {
   vpc_id            = aws_vpc.cloudforge_vpc.id
   cidr_block        = "10.0.2.0/24"
   availability_zone = "${var.region}b"
-  
+
   tags = {
     Name = "cloudforge-private-subnet-b"
   }
@@ -561,7 +545,7 @@ resource "aws_security_group" "lambda_sg" {
   name        = "cloudforge-lambda-sg"
   description = "Security group for CloudForgeX Lambda functions"
   vpc_id      = aws_vpc.cloudforge_vpc.id
-  
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -569,7 +553,7 @@ resource "aws_security_group" "lambda_sg" {
     cidr_blocks = ["0.0.0.0/0"]
     description = "Allow all outbound traffic"
   }
-  
+
   tags = {
     Name = "cloudforge-lambda-sg"
   }
@@ -579,9 +563,9 @@ resource "aws_vpc_endpoint" "dynamodb" {
   vpc_id            = aws_vpc.cloudforge_vpc.id
   service_name      = "com.amazonaws.${var.region}.dynamodb"
   vpc_endpoint_type = "Gateway"
-  
+
   route_table_ids = [aws_route_table.private_rt.id]
-  
+
   tags = {
     Name = "cloudforge-dynamodb-endpoint"
   }
@@ -591,9 +575,9 @@ resource "aws_vpc_endpoint" "s3" {
   vpc_id            = aws_vpc.cloudforge_vpc.id
   service_name      = "com.amazonaws.${var.region}.s3"
   vpc_endpoint_type = "Gateway"
-  
+
   route_table_ids = [aws_route_table.private_rt.id]
-  
+
   tags = {
     Name = "cloudforge-s3-endpoint"
   }
@@ -610,7 +594,7 @@ Network security is enforced through security groups and NACLs:
 resource "aws_network_acl" "private_nacl" {
   vpc_id     = aws_vpc.cloudforge_vpc.id
   subnet_ids = [aws_subnet.private_subnet_a.id, aws_subnet.private_subnet_b.id]
-  
+
   egress {
     protocol   = "-1"
     rule_no    = 100
@@ -619,7 +603,7 @@ resource "aws_network_acl" "private_nacl" {
     from_port  = 0
     to_port    = 0
   }
-  
+
   ingress {
     protocol   = "tcp"
     rule_no    = 100
@@ -628,7 +612,7 @@ resource "aws_network_acl" "private_nacl" {
     from_port  = 443
     to_port    = 443
   }
-  
+
   ingress {
     protocol   = "tcp"
     rule_no    = 110
@@ -637,7 +621,7 @@ resource "aws_network_acl" "private_nacl" {
     from_port  = 1024
     to_port    = 65535
   }
-  
+
   tags = {
     Name = "cloudforge-private-nacl"
   }
@@ -672,10 +656,7 @@ API Gateway is configured with multiple security controls:
       "Resource": "execute-api:/*/*/*",
       "Condition": {
         "NotIpAddress": {
-          "aws:SourceIp": [
-            "203.0.113.0/24",
-            "2001:DB8::/32"
-          ]
+          "aws:SourceIp": ["203.0.113.0/24", "2001:DB8::/32"]
         }
       }
     }
@@ -690,55 +671,55 @@ resource "aws_wafv2_web_acl" "cloudforge_waf" {
   name        = "cloudforge-web-acl"
   description = "WAF Web ACL for CloudForgeX API"
   scope       = "REGIONAL"
-  
+
   default_action {
     allow {}
   }
-  
+
   rule {
     name     = "AWSManagedRulesCommonRuleSet"
     priority = 0
-    
+
     override_action {
       none {}
     }
-    
+
     statement {
       managed_rule_group_statement {
         name        = "AWSManagedRulesCommonRuleSet"
         vendor_name = "AWS"
       }
     }
-    
+
     visibility_config {
       cloudwatch_metrics_enabled = true
       metric_name                = "AWSManagedRulesCommonRuleSetMetric"
       sampled_requests_enabled   = true
     }
   }
-  
+
   rule {
     name     = "RateBasedRule"
     priority = 1
-    
+
     action {
       block {}
     }
-    
+
     statement {
       rate_based_statement {
         limit              = 100
         aggregate_key_type = "IP"
       }
     }
-    
+
     visibility_config {
       cloudwatch_metrics_enabled = true
       metric_name                = "RateBasedRuleMetric"
       sampled_requests_enabled   = true
     }
   }
-  
+
   visibility_config {
     cloudwatch_metrics_enabled = true
     metric_name                = "cloudforge-web-acl-metric"
@@ -772,22 +753,22 @@ resource "aws_cloudtrail" "cloudforge_trail" {
   include_global_service_events = true
   is_multi_region_trail         = true
   enable_log_file_validation    = true
-  
+
   event_selector {
     read_write_type           = "All"
     include_management_events = true
-    
+
     data_resource {
       type   = "AWS::S3::Object"
       values = ["arn:aws:s3:::cloudforge-certificates/*"]
     }
-    
+
     data_resource {
       type   = "AWS::Lambda::Function"
       values = ["arn:aws:lambda:${var.region}:${data.aws_caller_identity.current.account_id}:function:cloudforge-*"]
     }
   }
-  
+
   tags = {
     Name = "cloudforge-trail"
   }
@@ -802,7 +783,7 @@ CloudWatch is configured with security-focused log groups and metrics:
 resource "aws_cloudwatch_log_group" "lambda_log_group" {
   name              = "/aws/lambda/cloudforge-eve-function"
   retention_in_days = 90
-  
+
   tags = {
     Application = "CloudForgeX"
     Environment = var.environment
@@ -813,7 +794,7 @@ resource "aws_cloudwatch_log_metric_filter" "unauthorized_access" {
   name           = "UnauthorizedAccessAttempts"
   pattern        = "{ $.statusCode = 403 || $.statusCode = 401 }"
   log_group_name = aws_cloudwatch_log_group.lambda_log_group.name
-  
+
   metric_transformation {
     name      = "UnauthorizedAccessCount"
     namespace = "CloudForgeX/Security"
@@ -832,7 +813,7 @@ resource "aws_cloudwatch_metric_alarm" "unauthorized_access_alarm" {
   threshold           = 5
   alarm_description   = "This alarm monitors for excessive unauthorised access attempts"
   alarm_actions       = [aws_sns_topic.security_alerts.arn]
-  
+
   tags = {
     Name = "cloudforge-unauthorized-access-alarm"
   }
@@ -846,9 +827,9 @@ AWS GuardDuty is enabled for threat detection:
 ```terraform
 resource "aws_guardduty_detector" "cloudforge_detector" {
   enable = true
-  
+
   finding_publishing_frequency = "FIFTEEN_MINUTES"
-  
+
   datasources {
     s3_logs {
       enable = true
@@ -883,7 +864,7 @@ Security alerts are configured to notify security personnel:
 ```terraform
 resource "aws_sns_topic" "security_alerts" {
   name = "cloudforge-security-alerts"
-  
+
   tags = {
     Name = "cloudforge-security-alerts"
   }
@@ -906,12 +887,12 @@ resource "aws_cloudwatch_metric_alarm" "api_errors" {
   threshold           = 5
   alarm_description   = "This alarm monitors for API Gateway 5XX errors"
   alarm_actions       = [aws_sns_topic.security_alerts.arn]
-  
+
   dimensions = {
     ApiName = aws_api_gateway_rest_api.cloudforge_api.name
     Stage   = aws_api_gateway_stage.prod.stage_name
   }
-  
+
   tags = {
     Name = "cloudforge-api-5xx-errors"
   }
@@ -925,7 +906,7 @@ A CloudWatch dashboard is configured for security monitoring:
 ```terraform
 resource "aws_cloudwatch_dashboard" "security_dashboard" {
   dashboard_name = "CloudForgeX-Security"
-  
+
   dashboard_body = jsonencode({
     widgets = [
       {
@@ -989,23 +970,23 @@ CloudForgeX is designed to align with the following compliance frameworks:
 
 ### GDPR Compliance
 
-| Requirement | Implementation |
-|-------------|---------------|
-| Data Minimisation | Only essential data collected and stored |
-| Right to Access | API endpoints for data retrieval |
-| Right to be Forgotten | Data deletion functionality |
-| Data Protection | Encryption at rest and in transit |
-| Breach Notification | Monitoring and alerting for security events |
+| Requirement           | Implementation                              |
+| --------------------- | ------------------------------------------- |
+| Data Minimisation     | Only essential data collected and stored    |
+| Right to Access       | API endpoints for data retrieval            |
+| Right to be Forgotten | Data deletion functionality                 |
+| Data Protection       | Encryption at rest and in transit           |
+| Breach Notification   | Monitoring and alerting for security events |
 
 ### SOC 2 Alignment
 
-| Trust Service Criteria | Implementation |
-|------------------------|---------------|
-| Security | Multi-layered security controls |
-| Availability | Multi-AZ deployment, fault tolerance |
-| Processing Integrity | Input validation, error handling |
-| Confidentiality | Encryption, access controls |
-| Privacy | Data minimisation, secure handling |
+| Trust Service Criteria | Implementation                       |
+| ---------------------- | ------------------------------------ |
+| Security               | Multi-layered security controls      |
+| Availability           | Multi-AZ deployment, fault tolerance |
+| Processing Integrity   | Input validation, error handling     |
+| Confidentiality        | Encryption, access controls          |
+| Privacy                | Data minimisation, secure handling   |
 
 ### AWS Well-Architected Security Pillar
 
@@ -1032,13 +1013,13 @@ CloudForgeX undergoes regular penetration testing:
 
 #### Sample Penetration Testing Results
 
-| Test Case | Result | Remediation |
-|-----------|--------|-------------|
-| API Injection | No vulnerabilities found | N/A |
-| Authentication Bypass | No vulnerabilities found | N/A |
-| CORS Misconfiguration | Initial finding - fixed | Added proper CORS headers |
-| Insecure Direct Object References | No vulnerabilities found | N/A |
-| Rate Limiting Bypass | Initial finding - fixed | Implemented WAF rate limiting |
+| Test Case                         | Result                   | Remediation                   |
+| --------------------------------- | ------------------------ | ----------------------------- |
+| API Injection                     | No vulnerabilities found | N/A                           |
+| Authentication Bypass             | No vulnerabilities found | N/A                           |
+| CORS Misconfiguration             | Initial finding - fixed  | Added proper CORS headers     |
+| Insecure Direct Object References | No vulnerabilities found | N/A                           |
+| Rate Limiting Bypass              | Initial finding - fixed  | Implemented WAF rate limiting |
 
 ### Automated Security Scanning
 
@@ -1049,40 +1030,40 @@ name: Security Scan
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   schedule:
-    - cron: '0 0 * * 0'  # Weekly scan
+    - cron: "0 0 * * 0" # Weekly scan
 
 jobs:
   security-scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      
+
       - name: Run tfsec
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
           working_directory: terraform/
-      
+
       - name: Run OWASP ZAP Scan
         uses: zaproxy/action-baseline@v0.7.0
         with:
-          target: 'https://www.jarredthomas.cloud'
-          rules_file_name: '.zap/rules.tsv'
-          cmd_options: '-a'
-      
+          target: "https://www.jarredthomas.cloud"
+          rules_file_name: ".zap/rules.tsv"
+          cmd_options: "-a"
+
       - name: Run npm audit
         run: |
           cd frontend
           npm audit --audit-level=high
-      
+
       - name: Run bandit (Python security linter)
         run: |
           pip install bandit
           bandit -r lambda/ -f json -o bandit-results.json
-      
+
       - name: Upload scan results
         uses: actions/upload-artifact@v2
         with:
@@ -1106,16 +1087,16 @@ terraform/s3.tf:1-15
     1 | resource "aws_s3_bucket" "website" {
     2 |   bucket = "cloudforge-website"
     3 |   acl    = "private"
-    4 | 
+    4 |
     5 |   website {
     6 |     index_document = "index.html"
     7 |     error_document = "error.html"
     8 |   }
-    9 | 
+    9 |
    10 |   versioning {
    11 |     enabled = true
    12 |   }
-   13 | 
+   13 |
    14 |   server_side_encryption_configuration {
    15 |     rule {
 
@@ -1148,31 +1129,35 @@ All code changes undergo security-focused code review:
 
 Security incidents are classified by severity:
 
-| Severity | Description | Response Time | Notification |
-|----------|-------------|---------------|-------------|
-| Critical | Service-wide impact, data breach | Immediate | All stakeholders |
-| High | Limited service impact, potential breach | < 1 hour | Security team, management |
-| Medium | Limited functionality impact | < 4 hours | Security team |
-| Low | Minor issues, no service impact | < 24 hours | Security team |
+| Severity | Description                              | Response Time | Notification              |
+| -------- | ---------------------------------------- | ------------- | ------------------------- |
+| Critical | Service-wide impact, data breach         | Immediate     | All stakeholders          |
+| High     | Limited service impact, potential breach | < 1 hour      | Security team, management |
+| Medium   | Limited functionality impact             | < 4 hours     | Security team             |
+| Low      | Minor issues, no service impact          | < 24 hours    | Security team             |
 
 ### Incident Response Procedures
 
 1. **Detection and Analysis**
+
    - Automated alerts from CloudWatch, GuardDuty
    - Manual reporting process
    - Initial triage and severity assessment
 
 2. **Containment**
+
    - Isolate affected systems
    - Block malicious IP addresses
    - Revoke compromised credentials
 
 3. **Eradication**
+
    - Remove unauthorised access
    - Patch vulnerabilities
    - Update security controls
 
 4. **Recovery**
+
    - Restore from clean backups if needed
    - Verify system integrity
    - Resume normal operations
@@ -1190,24 +1175,32 @@ Example runbook for unauthorised access:
 # Unauthorised Access Incident Response
 
 ## Detection
+
 - CloudWatch Alarm: UnauthorizedAccessAttempts > 5 in 5 minutes
 - GuardDuty Finding: UnauthorizedAccess:IAMUser/ConsoleLogin
 
 ## Immediate Actions
+
 1. Identify the affected user/role
-   ```
-   aws cloudtrail lookup-events --lookup-attributes AttributeKey=Username,AttributeValue=<username>
-   ```
+```
+
+aws cloudtrail lookup-events --lookup-attributes AttributeKey=Username,AttributeValue=<username>
+
+```
 
 2. Revoke active sessions
-   ```
-   aws iam revoke-sessions --role-name <role-name>
-   ```
+```
+
+aws iam revoke-sessions --role-name <role-name>
+
+```
 
 3. Apply restrictive policy
-   ```
-   aws iam attach-role-policy --role-name <role-name> --policy-arn arn:aws:iam::aws:policy/AWSDenyAll
-   ```
+```
+
+aws iam attach-role-policy --role-name <role-name> --policy-arn arn:aws:iam::aws:policy/AWSDenyAll
+
+```
 
 ## Investigation
 1. Review CloudTrail logs for all actions by the compromised identity
@@ -1233,18 +1226,19 @@ Example runbook for unauthorised access:
 
 The CloudForgeX security posture is continuously measured using the following key metrics:
 
-| Metric | Description | Target | Current | Monitoring Method |
-|--------|-------------|--------|---------|-------------------|
-| Security Findings | Number of GuardDuty findings | 0 | 0 | GuardDuty Dashboard |
-| Failed Login Attempts | Unauthorised access attempts | <5/day | 2/day | CloudWatch Metrics |
-| Compliance Score | AWS Config rule compliance | 100% | 98% | AWS Config Dashboard |
-| Vulnerability Count | Critical/High vulnerabilities | 0 | 0 | Security Hub |
-| Mean Time to Remediate | Average time to fix security issues | <48h | 24h | JIRA Metrics |
-| Security Test Coverage | % of infrastructure tested | >95% | 92% | CI/CD Reports |
+| Metric                 | Description                         | Target | Current | Monitoring Method    |
+| ---------------------- | ----------------------------------- | ------ | ------- | -------------------- |
+| Security Findings      | Number of GuardDuty findings        | 0      | 0       | GuardDuty Dashboard  |
+| Failed Login Attempts  | Unauthorised access attempts        | <5/day | 2/day   | CloudWatch Metrics   |
+| Compliance Score       | AWS Config rule compliance          | 100%   | 98%     | AWS Config Dashboard |
+| Vulnerability Count    | Critical/High vulnerabilities       | 0      | 0       | Security Hub         |
+| Mean Time to Remediate | Average time to fix security issues | <48h   | 24h     | JIRA Metrics         |
+| Security Test Coverage | % of infrastructure tested          | >95%   | 92%     | CI/CD Reports        |
 
 ### Security Control Effectiveness
 
 Security controls are evaluated quarterly using the following methodology:
+
 1. **Automated Testing**: Security scanning tools and compliance checks
 2. **Manual Review**: Security team assessment of configurations and policies
 3. **Penetration Testing**: Simulated attacks against infrastructure
@@ -1353,7 +1347,7 @@ AWS Config is used for continuous compliance monitoring:
 resource "aws_config_configuration_recorder" "cloudforge_recorder" {
   name     = "cloudforge-recorder"
   role_arn = aws_iam_role.config_role.arn
-  
+
   recording_group {
     all_supported                 = true
     include_global_resource_types = true
@@ -1362,7 +1356,7 @@ resource "aws_config_configuration_recorder" "cloudforge_recorder" {
 
 resource "aws_config_conformance_pack" "security_best_practices" {
   name = "security-best-practices"
-  
+
   template_body = <<EOT
 Resources:
   IAMPasswordPolicy:
@@ -1372,7 +1366,7 @@ Resources:
         Owner: AWS
         SourceIdentifier: IAM_PASSWORD_POLICY
     Type: AWS::Config::ConfigRule
-  
+
   EncryptedVolumes:
     Properties:
       ConfigRuleName: encrypted-volumes
@@ -1380,7 +1374,7 @@ Resources:
         Owner: AWS
         SourceIdentifier: ENCRYPTED_VOLUMES
     Type: AWS::Config::ConfigRule
-  
+
   S3BucketServerSideEncryptionEnabled:
     Properties:
       ConfigRuleName: s3-bucket-server-side-encryption-enabled
@@ -1388,7 +1382,7 @@ Resources:
         Owner: AWS
         SourceIdentifier: S3_BUCKET_SERVER_SIDE_ENCRYPTION_ENABLED
     Type: AWS::Config::ConfigRule
-  
+
   S3BucketPublicReadProhibited:
     Properties:
       ConfigRuleName: s3-bucket-public-read-prohibited
@@ -1396,7 +1390,7 @@ Resources:
         Owner: AWS
         SourceIdentifier: S3_BUCKET_PUBLIC_READ_PROHIBITED
     Type: AWS::Config::ConfigRule
-  
+
   S3BucketPublicWriteProhibited:
     Properties:
       ConfigRuleName: s3-bucket-public-write-prohibited
@@ -1421,15 +1415,15 @@ Security monitoring is integrated with incident response:
 
 Security controls were evaluated based on implementation cost, operational overhead, and security benefit:
 
-| Security Control | Implementation Effort | Annual Cost | Security Benefit | ROI |
-|------------------|------------------------|-------------|------------------|-----|
-| WAF & Rate Limiting | Medium | £1,200 | High | High |
-| GuardDuty | Low | £1,500 | High | High |
-| CloudTrail | Low | £900 | High | High |
-| VPC Security | High | £600 | High | Medium |
-| KMS Encryption | Medium | £800 | High | Medium |
-| AWS Config | Low | £600 | Medium | Medium |
-| Security Hub | Low | £300 | Medium | High |
+| Security Control    | Implementation Effort | Annual Cost | Security Benefit | ROI    |
+| ------------------- | --------------------- | ----------- | ---------------- | ------ |
+| WAF & Rate Limiting | Medium                | £1,200      | High             | High   |
+| GuardDuty           | Low                   | £1,500      | High             | High   |
+| CloudTrail          | Low                   | £900        | High             | High   |
+| VPC Security        | High                  | £600        | High             | Medium |
+| KMS Encryption      | Medium                | £800        | High             | Medium |
+| AWS Config          | Low                   | £600        | Medium           | Medium |
+| Security Hub        | Low                   | £300        | Medium           | High   |
 
 ### Implementation Priority
 
@@ -1463,5 +1457,3 @@ This approach ensured that the most critical security capabilities were establis
 - [S3 Security Best Practices](https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html) - Security controls implemented for S3 buckets in CloudForgeX.
 
 ---
-
-This document demonstrates the comprehensive security architecture and controls implemented in the CloudForgeX project. The security approach follows AWS best practices and industry standards, implementing defence-in-depth strategies across all layers of the application stack. The documentation provides technical details of security implementations, including actual configurations, policies, and code examples to demonstrate security-first thinking and practical security engineering.
