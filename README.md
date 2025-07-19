@@ -87,49 +87,49 @@ CloudForgeX addresses several real-world business challenges:
 
 ```
 cloudforgex/
-├── .github/workflows/      # GitHub Actions workflows
-│   ├── docker.yml          # Docker build and push workflow
-│   ├── lambda.yml          # Lambda deployment workflow
-│   └── terraform.yml       # Terraform infrastructure workflow
-├── docs/                   # Documentation
-│   ├── images/             # Architecture diagrams and images
-│   ├── architecture.md     # Detailed architecture documentation
-│   ├── challenges-and-learnings.md  # Technical challenges and solutions
-│   └── security.md         # Security architecture and controls
-├── frontend/               # Frontend web application
-│   ├── assets/             # Static assets (images, documents)
-│   ├── css/                # Stylesheets
-│   ├── js/                 # JavaScript files
-│   ├── data/               # JSON data files
-│   ├── index.html          # Main portfolio page
-│   └── resume.html         # Resume page
-├── k8s/                    # Kubernetes configuration
-│   ├── manifests/          # Kubernetes manifest files
-│   ├── app.py              # Python application for K8s
-│   └── Dockerfile          # Dockerfile for K8s deployment
-├── lambda/                 # Lambda function code
-│   ├── app.py              # Main Lambda handler
-│   ├── knowledge_base.py   # EVE knowledge base module
-│   ├── project_knowledge_base.json  # EVE knowledge data
-│   ├── Dockerfile          # Lambda container image
-│   └── requirements.txt    # Python dependencies
-├── terraform/              # Terraform IaC
-│   ├── modules/            # Reusable Terraform modules
-│   │   ├── acm/            # ACM certificate module
-│   │   ├── apigateway/     # API Gateway module
-│   │   ├── cloudfront/     # CloudFront distribution module
-│   │   ├── cloudwatch/     # CloudWatch monitoring module
-│   │   ├── dynamodb/       # DynamoDB table module
-│   │   ├── iam/            # IAM roles and policies module
-│   │   ├── lambda/         # Lambda function module
-│   │   ├── route53/        # Route 53 DNS module
-│   │   ├── s3/             # S3 bucket module
-│   │   └── ssm/            # SSM Parameter Store module
-│   ├── main.tf             # Main Terraform configuration
-│   ├── variables.tf        # Input variables
-│   ├── outputs.tf          # Output values
-│   └── providers.tf        # Provider configuration
-└── README.md               # Project documentation
+├── .github/workflows/              # GitHub Actions workflows
+│   ├── docker.yml                  # Docker build and push workflow
+│   ├── lambda.yml                  # Lambda deployment workflow
+│   └── terraform.yml               # Terraform infrastructure workflow
+├── docs/                           # Documentation
+│   ├── images/                     # Architecture diagrams and images
+│   ├── architecture.md             # Detailed architecture documentation
+│   ├── challenges-and-learnings.md # Technical challenges and solutions
+│   └── security.md                 # Security architecture and controls
+├── frontend/                       # Frontend web application
+│   ├── assets/                     # Static assets (images, documents)
+│   ├── css/                        # Stylesheets
+│   ├── js/                         # JavaScript files
+│   ├── data/                       # JSON data files
+│   ├── index.html                  # Main portfolio page
+│   └── resume.html                 # Resume page
+├── k8s/                            # Kubernetes configuration
+│   ├── manifests/                  # Kubernetes manifest files
+│   ├── app.py                      # Python application for K8s
+│   └── Dockerfile                  # Dockerfile for K8s deployment
+├── lambda/                         # Lambda function code
+│   ├── app.py                      # Main Lambda handler
+│   ├── knowledge_base.py           # EVE knowledge base module
+│   ├── project_knowledge_base.json # EVE knowledge data
+│   ├── Dockerfile                  # Lambda container image
+│   └── requirements.txt            # Python dependencies
+├── terraform/                      # Terraform IaC
+│   ├── modules/                    # Reusable Terraform modules
+│   │   ├── acm/                    # ACM certificate module
+│   │   ├── apigateway/             # API Gateway module
+│   │   ├── cloudfront/             # CloudFront distribution module
+│   │   ├── cloudwatch/             # CloudWatch monitoring module
+│   │   ├── dynamodb/               # DynamoDB table module
+│   │   ├── iam/                    # IAM roles and policies module
+│   │   ├── lambda/                 # Lambda function module
+│   │   ├── route53/                # Route 53 DNS module
+│   │   ├── s3/                     # S3 bucket module
+│   │   └── ssm/                    # SSM Parameter Store module
+│   ├── main.tf                     # Main Terraform configuration
+│   ├── variables.tf                # Input variables
+│   ├── outputs.tf                  # Output values
+│   └── providers.tf                # Provider configuration
+└── README.md                       # Project documentation
 ```
 
 ## Tasks and Implementation Steps
