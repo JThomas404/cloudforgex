@@ -18,7 +18,6 @@
 - [Errors Encountered and Resolved](#errors-encountered-and-resolved)
 - [Skills Demonstrated](#skills-demonstrated)
 - [Conclusion](#conclusion)
-- [Optional Enhancements](#optional-enhancements)
 
 ## Overview
 
@@ -697,12 +696,4 @@ Key achievements include:
 
 The project serves as a practical demonstration of cloud engineering capabilities, architectural thinking, and security awareness in a real-world application.
 
-## Optional Enhancements
-
-Future enhancements to consider:
-
-1. **Enhanced Monitoring**: Implementation of X-Ray for distributed tracing
-2. **Multi-Region Deployment**: Expansion to multiple AWS regions for global redundancy
-3. **Advanced AI Capabilities**: Integration with additional AWS AI services
-4. **Performance Optimisation**: Further optimisation of Lambda functions and frontend assets
-5. **Expanded Security Controls**: Implementation of WAF and additional security layers
+---
