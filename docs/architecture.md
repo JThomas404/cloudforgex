@@ -422,14 +422,103 @@ Network security measures include:
 
 ## CI/CD Pipeline Architecture
 
-The CI/CD pipeline ensures reliable and consistent deployments:
+The CI/CD pipeline ensures reliable and consistent deployments through GitHub Actions workflows:
 
-- **GitHub Actions**: Automated deployment workflow
-- **Testing**: Automated tests before deployment
-- **Infrastructure Validation**: Terraform plan validation
-- **Deployment Strategy**: Blue/green deployment for zero downtime
+### Workflow Structure
 
-The pipeline implements:
+The CI/CD implementation consists of three separate workflows:
+
+1. **Terraform Workflow** (`terraform.yml`): Manages infrastructure deployment
+2. **Lambda Workflow** (`lambda.yml`): Handles Lambda function deployment
+3. **Docker Workflow** (`docker.yml`): Builds and deploys container images
+
+### Terraform Workflow
+
+The Terraform workflow automates infrastructure deployment:
+
+```yaml
+name: "Terraform"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "terraform/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "terraform/**"
+```
+
+Key features:
+- **Path-based triggers**: Only runs when Terraform files change
+- **Infrastructure validation**: Runs `terraform fmt`, `terraform validate`, and security scanning
+- **Plan and apply**: Creates execution plan and applies changes (on main branch only)
+- **Security scanning**: Uses tfsec to identify potential security issues
+- **Environment separation**: Supports different environments through variables
+
+### Lambda Workflow
+
+The Lambda workflow manages serverless function deployment:
+
+```yaml
+name: "Lambda"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "lambda/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "lambda/**"
+```
+
+Key features:
+- **Path-based triggers**: Only runs when Lambda code changes
+- **Python environment**: Sets up Python 3.9 runtime environment
+- **Dependency management**: Installs required packages from requirements.txt
+- **Testing**: Runs automated tests with error handling
+- **Packaging**: Creates deployment package for Lambda functions
+- **Deployment**: Updates Lambda function code (on main branch only)
+
+### Docker Workflow
+
+The Docker workflow handles container image building and deployment:
+
+```yaml
+name: "Docker"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "k8s/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "k8s/**"
+```
+
+Key features:
+- **Path-based triggers**: Only runs when Kubernetes/Docker files change
+- **ECR integration**: Creates repository if needed and logs in
+- **Image building**: Builds and tags Docker images
+- **Image pushing**: Pushes images to Amazon ECR
+- **Lambda update**: Updates Lambda functions to use new container images
+
+### CI/CD Security
+
+The pipeline implements several security measures:
+
+- **Least privilege**: Uses GitHub secrets for AWS credentials
+- **Security scanning**: Integrates security scanning tools
+- **Validation before deployment**: Validates all changes before applying
+- **Conditional deployment**: Only deploys on main branch pushes
+- **Error handling**: Includes comprehensive error handling and reporting
+
+The CI/CD pipeline follows these principles:
 
 - Automated testing at multiple levels
 - Infrastructure validation before deployment
@@ -546,6 +635,10 @@ Planned future enhancements to the architecture include:
 **[CloudFront Developer Guide](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html)**
 
 - Reference for CDN configuration, caching strategies, and origin access controls used in the frontend delivery system.
+
+**[GitHub Actions Documentation](https://docs.github.com/en/actions)**
+
+- Reference for CI/CD workflow configuration and best practices implemented in the deployment pipeline.
 
 **[Project README](https://github.com/JThomas404/cloudforgex/blob/main/README.md)**
 

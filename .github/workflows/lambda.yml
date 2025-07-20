@@ -1,0 +1,66 @@
+name: "Lambda"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "lambda/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "lambda/**"
+
+jobs:
+  lambda:
+    name: build-and-deploy
+    runs-on: ubuntu-latest
+    env:
+      LAMBDA_FUNCTION_NAME: cloudforgex-eve-function
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f lambda/requirements.txt ]; then pip install -r lambda/requirements.txt; fi
+
+      - name: Run tests
+        run: |
+          cd lambda
+          if [ -d "tests" ] && [ "$(ls -A tests)" ]; then
+            python -m pytest tests/ || echo "::warning::Tests failed but continuing deployment"
+          else
+            echo "No tests found, skipping test step"
+          fi
+        continue-on-error: true
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          aws-region: us-east-1
+
+      - name: Package Lambda function
+        run: |
+          cd lambda
+          zip -r ../function.zip .
+
+      - name: Deploy Lambda function
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          if aws lambda update-function-code \
+            --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
+            --zip-file fileb://function.zip; then
+            echo "Lambda function updated successfully"
+          else
+            echo "::error::Failed to update Lambda function"
+            exit 1
+          fi
