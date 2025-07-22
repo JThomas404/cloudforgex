@@ -25,7 +25,17 @@ def get_ssm_parameter(parameter_name, default_value=None):
     Returns:
         Parameter value or default if not found
     """
-    # Check cache first
+    # Extract the parameter name without the path
+    param_parts = parameter_name.split('/')
+    env_var_name = param_parts[-1].upper() if len(param_parts) > 1 else parameter_name.upper()
+
+    # Check environment variables first
+    env_value = os.environ.get(env_var_name)
+    if env_value is not None:
+        logger.info(f"Using environment variable {env_var_name}")
+        return env_value
+    
+    # Check the cache
     if parameter_name in _parameter_cache:
         return _parameter_cache[parameter_name]
 

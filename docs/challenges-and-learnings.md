@@ -25,10 +25,17 @@
    - [Validation and Testing](#validation-and-testing-2)
    - [Key Learnings](#key-learnings-2)
    - [Business Impact](#business-impact-2)
-6. [Cross-Challenge Learnings and Knowledge Transfer](#cross-challenge-learnings-and-knowledge-transfer)
+6. [Containerization and Kubernetes Deployment: Lambda to Container Migration](#containerization-and-kubernetes-deployment-lambda-to-container-migration)
+   - [Problem Statement](#problem-statement-3)
+   - [Root Cause Analysis](#root-cause-analysis-3)
+   - [Solution Implementation](#solution-implementation-3)
+   - [Validation and Testing](#validation-and-testing-3)
+   - [Key Learnings](#key-learnings-3)
+   - [Business Impact](#business-impact-3)
+7. [Cross-Challenge Learnings and Knowledge Transfer](#cross-challenge-learnings-and-knowledge-transfer)
    - [Systematic Approach Evolution](#systematic-approach-evolution)
    - [Knowledge Documentation and Sharing](#knowledge-documentation-and-sharing)
-7. [Advanced Engineering Considerations](#advanced-engineering-considerations)
+8. [Advanced Engineering Considerations](#advanced-engineering-considerations)
    - [Security Implications and Mitigations](#security-implications-and-mitigations)
    - [Cost Optimisation Opportunities](#cost-optimisation-opportunities)
    - [Scalability Considerations](#scalability-considerations)
@@ -41,6 +48,7 @@
 - **Resolved critical CORS configuration issue** that was blocking all AI chatbot functionality through systematic troubleshooting and Terraform dependency management, restoring full service within 2 hours
 - **Implemented cost-saving input validation** reducing token waste by 60-80% while maintaining excellent user experience, projecting savings of up to £5/month at scale
 - **Developed secure certificate viewing system** using S3 presigned URLs with 5-minute expiration, balancing security requirements with seamless user experience
+- **Successfully containerised Lambda function** and deployed to Kubernetes, demonstrating versatility in deployment options and enhancing the portfolio with container orchestration skills
 - **Applied AWS Well-Architected principles** across all solutions, focusing on security, cost optimisation, operational excellence, and performance efficiency
 
 ## Overview
@@ -676,6 +684,369 @@ async function requestCertificateUrl(certificateName) {
 
 ---
 
+## Containerisation and Kubernetes Deployment: Lambda to Container Migration
+
+### Problem Statement
+
+After successfully implementing the serverless architecture for CloudForgeX, there was a need to demonstrate versatility in deployment options by containerising the Lambda function and deploying it to Kubernetes. This would showcase broader technical capabilities and provide an alternative deployment option for the EVE AI assistant.
+
+**Specific Challenges**:
+
+- **Architecture Adaptation**: Converting a serverless Lambda function to a containerised web service
+- **Configuration Management**: Replacing SSM Parameter Store with container environment variables
+- **Security Considerations**: Maintaining security posture in a containerised environment
+- **Kubernetes Deployment**: Creating appropriate Kubernetes manifests for deployment
+- **AWS Integration**: Ensuring the containerised application could still access AWS services
+
+### Root Cause Analysis
+
+#### Requirements Analysis
+
+- **Deployment Versatility**: Demonstrate ability to deploy both serverless and containerised applications
+- **Kubernetes Experience**: Showcase Kubernetes deployment skills for portfolio depth
+- **Code Reusability**: Minimise code changes while adapting to a different execution environment
+- **Security Maintenance**: Ensure security controls are preserved in the containerised version
+- **Local Testing**: Enable local testing without AWS dependencies
+
+#### Solution Options Evaluated
+
+1. **Complete Rewrite for Web Framework** (Rejected)
+
+   - **Pros**: Clean implementation specifically for web
+   - **Cons**: Duplicate code, maintenance overhead
+   - **Decision**: Rejected due to unnecessary duplication
+
+2. **Serverless Express/Flask Adapter** (Rejected)
+
+   - **Pros**: Minimal code changes, existing libraries
+   - **Cons**: Additional dependencies, potential performance overhead
+   - **Decision**: Rejected in favor of a more educational custom approach
+
+3. **Custom WSGI Adapter** (Selected)
+   - **Pros**: Educational value, minimal dependencies, full control
+   - **Cons**: Custom implementation requires more initial work
+   - **Decision**: Selected as best learning opportunity and portfolio showcase
+
+### Solution Implementation
+
+#### Multi-Stage Dockerfile
+
+```dockerfile
+FROM python:3.11.12-slim AS builder
+
+WORKDIR /app
+
+RUN python -m venv /opt/venv
+
+ENV PATH="/opt/venv/bin:$PATH"
+
+COPY lambda/requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt gunicorn
+
+COPY lambda/app.py lambda/knowledge_base.py lambda/project_knowledge_base.json k8s/wsgi.py /app/
+
+FROM python:3.11.12-slim AS build-image
+
+ENV PATH="/opt/venv/bin:$PATH"
+
+COPY --from=builder /opt/venv /opt/venv
+
+WORKDIR /app
+
+COPY --from=builder /app/ /app/
+
+# Install curl for healthcheck
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
+# Set environment variables to replace SSM parameters
+ENV ENVIRONMENT=dev
+ENV ALLOWED_ORIGIN=https://www.jarredthomas.cloud
+ENV AWS_REGION=us-east-1
+ENV DYNAMODB_TABLE=cfx-chatbot-logs
+ENV BEDROCK_MODEL=anthropic.claude-instant-v1
+
+RUN addgroup --system --gid 1001 pygroup && \
+    adduser --system --uid 1001 --gid 1001 pyuser && \
+    chown -R pyuser:pygroup /app
+
+USER pyuser
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost:8000/health || exit 1
+
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "wsgi:app"]
+```
+
+#### WSGI Adapter Implementation
+
+```python
+import os
+import json
+import sys
+sys.path.append('/app')
+from app import lambda_handler
+
+def app(environ, start_response):
+    # Handle health check endpoint
+    if environ['PATH_INFO'] == '/health':
+        status = '200 OK'
+        response_headers = [('Content-type', 'application/json')]
+        start_response(status, response_headers)
+        return [json.dumps({'status':'healthy'}).encode('utf-8')]
+    
+    # CORS support
+    if environ['REQUEST_METHOD'] =='OPTIONS' and environ['PATH_INFO'] == '/chat':
+        status = '200 OK'
+        allowed_origin = os.environ.get('ALLOWED_ORIGIN', '*')
+        response_headers = [
+            ('Content-type', 'application/json'),
+            ('Access-Control-Allow-Origin', allowed_origin),
+            ('Access-Control-Allow-Headers', 'Content-Type'),
+            ('Access-Control-Allow-Methods', 'OPTIONS, POST')
+        ]
+        start_response(status, response_headers)
+        return [b'']
+
+    # Handle chat endpoint
+    if environ['REQUEST_METHOD'] == 'POST' and environ['PATH_INFO'] == '/chat':
+        # Get request body
+        try:
+            request_body_size = int(environ.get('CONTENT_LENGTH', 0))
+            request_body = environ['wsgi.input'].read(request_body_size).decode('utf-8')
+
+            # Create a mock API Gateway event
+            event = {
+                'httpMethod': 'POST',
+                'path': '/chat',
+                'headers': {
+                    'Content-Type': 'application/json'
+                },
+                'body': request_body
+            }
+
+            # Call the lambda handler with the mock event
+            result = lambda_handler(event, None)
+
+            # Convert Lambda response to WSGI response format
+            status = f"{result['statusCode']} {'OK' if result['statusCode'] == 200 else 'Error'}"
+            response_headers = [(k, v) for k, v in result.get('headers', {}).items()]
+
+            start_response(status, response_headers)
+
+            # Return the response body as a list of bytes
+            return [result.get('body', '').encode('utf-8')]
+
+        except Exception as e:
+            # Handle any errors that occur during processing
+            status = '500 Internal Server Error'
+            response_headers = [('Content-type', 'application/json')]
+            start_response(status, response_headers)
+            return [json.dumps({'error': str(e)}).encode('utf-8')]
+        
+    # Handle 404 for all other paths
+    status = '404 Not Found'
+    response_headers = [('Content-type', 'application/json')]
+    start_response(status, response_headers)
+    return [json.dumps({'error': 'Not Found'}).encode('utf-8')]
+```
+
+#### Environment Variable Adaptation
+
+Modified the Lambda function's `get_ssm_parameter` function to check environment variables first:
+
+```python
+def get_ssm_parameter(parameter_name, default_value=None):
+    """
+    Get a parameter from environment variables first, then SSM Parameter Store
+    
+    Args:
+        parameter_name: Full SSM parameter path
+        default_value: Value to return if parameter cannot be retrieved
+        
+    Returns:
+        Parameter value or default if not found
+    """
+    # Extract the parameter name without the path
+    param_parts = parameter_name.split('/')
+    env_var_name = param_parts[-1].upper() if len(param_parts) > 1 else parameter_name.upper()
+
+    # Check environment variables first
+    env_value = os.environ.get(env_var_name)
+    if env_value is not None:
+        logger.info(f"Using environment variable {env_var_name}")
+        return env_value
+    
+    # Check cache next
+    if parameter_name in _parameter_cache:
+        return _parameter_cache[parameter_name]
+
+    # Get region from environment variable
+    region = os.environ.get('AWS_REGION', 'us-east-1')
+
+    try:
+        # Initialise SSM Client
+        ssm_client = boto3.client('ssm', region_name=region)
+
+        # Get parameter from SSM
+        response = ssm_client.get_parameter(Name=parameter_name)
+        value = response['Parameter']['Value']
+
+        # Cache the parameter
+        _parameter_cache[parameter_name] = value
+        logger.info(f"Retrieved parameter {parameter_name} from SSM")
+
+        return value
+    except Exception as e:
+        logger.warning(f"Failed to retrieve {parameter_name} from SSM: {str(e)}. Using default value.")
+        return default_value
+```
+
+#### Kubernetes Manifests
+
+1. **ConfigMap** (configmap.yaml)
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cfx-chatbot-config
+data:
+  ENVIRONMENT: "dev"
+  ALLOWED_ORIGIN: "https://www.jarredthomas.cloud"
+  AWS_REGION: "us-east-1"
+  DYNAMODB_TABLE: "cfx-chatbot-logs"
+  BEDROCK_MODEL: "anthropic.claude-instant-v1"
+```
+
+2. **Deployment** (deployment.yaml)
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cfx-chatbot-deployment
+  labels:
+    app: cfx-chatbot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cfx-chatbot
+  template:
+    metadata:
+      labels:
+        app: cfx-chatbot
+    spec:
+      containers:
+        - name: cfx-chatbot
+          image: cfx-chatbot:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: cfx-chatbot-config
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+```
+
+3. **Service** (service.yaml)
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: cfx-chatbot-service
+spec:
+  selector:
+    app: cfx-chatbot
+  ports:
+    - port: 80
+      targetPort: 8000
+  type: NodePort
+```
+
+### Validation and Testing
+
+**Comprehensive Testing Approach:**
+
+1. **Docker Container Testing**:
+
+   - Built and ran the container locally
+   - Verified health endpoint functionality
+   - Tested chat endpoint with curl commands
+   - Confirmed environment variable usage
+
+2. **Kubernetes Deployment Testing**:
+
+   - Deployed to Minikube
+   - Verified pod health and readiness
+   - Tested service accessibility
+   - Confirmed proper configuration via ConfigMap
+
+3. **AWS Integration Testing**:
+   - Verified AWS credentials mounting
+   - Tested DynamoDB logging functionality
+   - Confirmed Bedrock API integration
+
+### Key Learnings
+
+#### Technical Insights
+
+1. **Container Best Practices**: Multi-stage builds, security hardening, health checks
+2. **WSGI Protocol**: Understanding web server gateway interfaces and HTTP request handling
+3. **Kubernetes Deployment**: ConfigMaps, Services, and Deployments for containerized applications
+4. **Configuration Portability**: Designing for multiple deployment environments
+
+#### Architectural Insights
+
+1. **Adapter Pattern**: Using adapters to bridge different execution environments
+2. **Environment-Agnostic Code**: Writing code that works in multiple contexts
+3. **Security in Containers**: Non-root users, minimal dependencies, health checks
+4. **Configuration Management**: Environment variables vs. parameter stores
+
+#### Best Practices Established
+
+1. **Multi-Stage Docker Builds**: Smaller, more secure production images
+2. **Environment Variable Prioritization**: Check environment variables before external services
+3. **Health Check Implementation**: Proper health endpoints for container monitoring
+4. **Security Hardening**: Non-root users, minimal dependencies, read-only file systems
+
+#### Prevention Strategies
+
+1. **Container Security**:
+   - Run as non-root user
+   - Use minimal base images
+   - Implement health checks
+   - Scan for vulnerabilities
+
+2. **Configuration Management**:
+   - Use environment variables for containers
+   - Implement fallback mechanisms
+   - Separate configuration from code
+
+### Business Impact
+
+- **Deployment Versatility**: Demonstrated ability to deploy in multiple environments
+- **Technical Breadth**: Showcased both serverless and container orchestration skills
+- **Portfolio Enhancement**: Added Kubernetes deployment to skill demonstration
+- **Local Development**: Enabled local testing without AWS dependencies
+
+---
+
 ## Cross-Challenge Learnings and Knowledge Transfer
 
 ### Systematic Approach Evolution
@@ -693,14 +1064,20 @@ The challenges documented in this project demonstrate a clear evolution in probl
    - **Improved**: User experience focus carried through to all subsequent features
 
 3. **Certificate Viewing Security**: Balanced security with user experience
+
    - **Applied from**: Lessons from both previous challenges
    - **Improved**: Security-first mindset with pragmatic implementation
+
+4. **Containerization and Kubernetes**: Adapted existing code to new environment
+   - **Applied from**: All previous challenges
+   - **Improved**: Environment-agnostic design patterns
 
 ### Knowledge Documentation and Sharing
 
 - **Internal Documentation**: Created comprehensive Terraform best practices guide
 - **Reusable Components**: Developed modular validation library for future projects
 - **Architecture Patterns**: Documented the layered security approach for team reference
+- **Deployment Options**: Documented both serverless and containerized deployment approaches
 
 ---
 
@@ -712,6 +1089,7 @@ The challenges documented in this project demonstrate a clear evolution in probl
 - **Rate Limiting**: Basic protection against flooding (could be enhanced)
 - **Error Handling**: Non-revealing error messages prevent information disclosure
 - **Logging**: Security events tracked for potential abuse patterns
+- **Container Security**: Non-root user, minimal dependencies, health checks
 
 ### Cost Optimisation Opportunities
 
@@ -719,6 +1097,7 @@ The challenges documented in this project demonstrate a clear evolution in probl
 - **Lambda Optimisation**: Minimal dependencies reduce cold start times
 - **Caching Potential**: Frequently asked questions could be cached
 - **Budget Monitoring**: CloudWatch alarms for unusual usage patterns
+- **Container Right-sizing**: Resource limits and requests for optimal utilization
 
 ### Scalability Considerations
 
@@ -726,6 +1105,7 @@ The challenges documented in this project demonstrate a clear evolution in probl
 - **Performance Optimisation**: O(1) pattern matching for minimal latency
 - **Future Enhancements**: DynamoDB for distributed rate limiting
 - **Load Testing**: System designed to handle traffic spikes
+- **Kubernetes HPA**: Horizontal Pod Autoscaler for container scaling
 
 ### Operational Excellence Improvements
 
@@ -733,5 +1113,6 @@ The challenges documented in this project demonstrate a clear evolution in probl
 - **Error Tracking**: Detailed error information for troubleshooting
 - **Monitoring**: CloudWatch integration for observability
 - **Documentation**: Well-documented code and architecture decisions
+- **Health Checks**: Proper health endpoints for monitoring and auto-healing
 
 ---

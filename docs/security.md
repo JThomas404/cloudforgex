@@ -10,14 +10,15 @@
 2. [Identity and Access Management](#identity-and-access-management)
 3. [Data Protection](#data-protection)
 4. [Network Security](#network-security)
-5. [Monitoring and Detection](#monitoring-and-detection)
-6. [Compliance Considerations](#compliance-considerations)
-7. [Security Testing and Validation](#security-testing-and-validation)
-8. [Incident Response Plan](#incident-response-plan)
-9. [Security Metrics and Measurement](#security-metrics-and-measurement)
-10. [Advanced Security Considerations](#advanced-security-considerations)
-11. [Cost-Benefit Analysis of Security Controls](#cost-benefit-analysis-of-security-controls)
-12. [References](#references)
+5. [Container and Kubernetes Security](#container-and-kubernetes-security)
+6. [Monitoring and Detection](#monitoring-and-detection)
+7. [Compliance Considerations](#compliance-considerations)
+8. [Security Testing and Validation](#security-testing-and-validation)
+9. [Incident Response Plan](#incident-response-plan)
+10. [Security Metrics and Measurement](#security-metrics-and-measurement)
+11. [Advanced Security Considerations](#advanced-security-considerations)
+12. [Cost-Benefit Analysis of Security Controls](#cost-benefit-analysis-of-security-controls)
+13. [References](#references)
 
 ---
 
@@ -493,6 +494,102 @@ CloudForgeX implements multiple layers of DDoS protection:
 
 ---
 
+## Container and Kubernetes Security
+
+### Container Security Controls
+
+The containerised version of CloudForgeX implements multiple security controls:
+
+1. **Multi-Stage Builds**: Minimises attack surface by excluding build tools from final image
+2. **Non-Root User**: Container runs as a non-privileged user to prevent privilege escalation
+3. **Minimal Base Image**: Uses slim variant to reduce attack surface
+4. **Health Checks**: Implements health endpoint for monitoring and auto-healing
+5. **Dependency Management**: Pinned dependency versions to prevent supply chain attacks
+6. **No Hardcoded Secrets**: Environment variables for configuration, mounted AWS credentials
+
+#### Dockerfile Security Configuration
+
+```dockerfile
+FROM python:3.11.12-slim AS builder
+# Build stage with development dependencies
+
+FROM python:3.11.12-slim AS build-image
+# Final stage with minimal components
+
+# Security hardening
+RUN addgroup --system --gid 1001 pygroup && \
+    adduser --system --uid 1001 --gid 1001 pyuser && \
+    chown -R pyuser:pygroup /app
+
+USER pyuser
+
+# Health check for monitoring
+HEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost:8000/health || exit 1
+```
+
+### Kubernetes Security Controls
+
+The Kubernetes deployment implements security best practices:
+
+1. **Resource Limits**: Prevents resource exhaustion attacks
+2. **ConfigMaps**: Separates configuration from code
+3. **Liveness Probes**: Ensures container health and enables auto-healing
+4. **Non-Root Containers**: Runs containers as non-privileged users
+
+#### Kubernetes Deployment Security Configuration
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cfx-chatbot-deployment
+spec:
+  # ...
+  template:
+    spec:
+      containers:
+        - name: cfx-chatbot
+          # Security controls
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          # Non-root user configured in Dockerfile
+          # Configuration from ConfigMap
+          envFrom:
+            - configMapRef:
+                name: cfx-chatbot-config
+```
+
+### AWS Credential Security
+
+For AWS credential management in containers:
+
+1. **Environment Variables**: Non-sensitive configuration via environment variables
+2. **Volume Mounting**: AWS credentials mounted as read-only volumes
+3. **Temporary Credentials**: Short-lived credentials for AWS service access
+4. **Least Privilege**: IAM roles with minimal permissions
+
+### Container Image Security
+
+Security practices for container images:
+
+1. **Regular Updates**: Base images updated regularly for security patches
+2. **Vulnerability Scanning**: Images scanned for vulnerabilities before deployment
+3. **Minimal Dependencies**: Only required packages installed
+4. **No Development Tools**: Build tools excluded from final image
+
+---
+
 ## Monitoring and Detection
 
 ### CloudWatch Logs and Metrics
@@ -772,5 +869,9 @@ Security controls were implemented in the following priority order based on the 
 - [AWS Lambda Security](https://docs.aws.amazon.com/lambda/latest/dg/lambda-security.html) - Security best practices for Lambda functions implemented in CloudForgeX.
 
 - [S3 Security Best Practices](https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html) - Security controls implemented for S3 buckets in CloudForgeX.
+
+- [Docker Security Best Practices](https://docs.docker.com/develop/security-best-practices/) - Security controls implemented for container images in CloudForgeX.
+
+- [Kubernetes Security Best Practices](https://kubernetes.io/docs/concepts/security/overview/) - Security controls implemented for Kubernetes deployments in CloudForgeX.
 
 ---

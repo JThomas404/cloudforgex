@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cfx-chatbot-deployment
+  labels:
+    app: cfx-chatbot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cfx-chatbot
+  template:
+    metadata:
+      labels:
+        app: cfx-chatbot
+    spec:
+      containers:
+        - name: cfx-chatbot
+          image: cfx-chatbot:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: cfx-chatbot-config
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
