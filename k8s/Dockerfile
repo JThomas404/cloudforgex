@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 ENV ENVIRONMENT=dev
 ENV ALLOWED_ORIGIN=https://www.jarredthomas.cloud
 ENV AWS_REGION=us-east-1
-ENV DYNAMODB_TABLE=cfx-chatbot-logs
+ENV DYNAMODB_TABLE=cloudforgex-eve-logs
 ENV BEDROCK_MODEL=anthropic.claude-instant-v1
 
 RUN addgroup --system --gid 1001 pygroup && \

@@ -61,9 +61,9 @@ def get_ssm_parameter(parameter_name, default_value=None):
 
 # Get environment from Lambda environment variable
 ENV = os.environ.get('ENVIRONMENT', 'dev')
-ALLOWED_ORIGIN = get_ssm_parameter(f"/cfx/{ENV}/allowed_origin", 'https://www.jarredthomas.cloud')
-AWS_REGION = get_ssm_parameter(f"/cfx/{ENV}/region", os.environ.get('AWS_REGION', 'us-east-1'))
-DYNAMODB_TABLE = get_ssm_parameter(f"/cfx/{ENV}/dynamodb_table", 'cfx-chatbot-logs')
+ALLOWED_ORIGIN = get_ssm_parameter(f"/cloudforgex/{ENV}/allowed_origin", 'https://www.jarredthomas.cloud')
+AWS_REGION = get_ssm_parameter(f"/cloudforgex/{ENV}/region", os.environ.get('AWS_REGION', 'us-east-1'))
+DYNAMODB_TABLE = get_ssm_parameter(f"/cloudforgex/{ENV}/dynamodb_table", 'cloudforgex-eve-logs')
 
 
 
@@ -148,7 +148,7 @@ def get_ai_response(user_message):
         full_prompt = f"{system_prompt}\n\nHuman: {user_message}\n\nAssistant:"
         
         # Get model ID from SSM
-        model_id = get_ssm_parameter(f"/cfx/{ENV}/bedrock_model", 'anthropic.claude-instant-v1')
+        model_id = get_ssm_parameter(f"/cloudforgex/{ENV}/bedrock_model", 'anthropic.claude-instant-v1')
         
         # Call Bedrock with model from SSM
         response = bedrock.invoke_model(

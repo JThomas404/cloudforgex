@@ -39,7 +39,7 @@ variable "sub_alt_names" {
 variable "lambda_function" {
   description = "Name of the Lambda Function"
   type        = string
-  default     = "cfx-chatbot-lambda"
+  default     = "cloudforgex-eve-function"
 }
 
 variable "runtime" {
@@ -83,7 +83,7 @@ variable "allowed_methods" {
 variable "api_name" {
   description = "Name of the API Gateway"
   type        = string
-  default     = "cfx-chatbot-api"
+  default     = "cloudforgex-eve-api"
 }
 
 variable "stage_name" {
@@ -95,7 +95,7 @@ variable "stage_name" {
 variable "table_name" {
   description = "Name for the DynamoDB table for the project"
   type        = string
-  default     = "cfx-chatbot-logs"
+  default     = "cloudforgex-eve-logs"
 }
 
 variable "ttl_attribute" {
