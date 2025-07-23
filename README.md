@@ -22,6 +22,8 @@
 
 CloudForgeX is a serverless AI-powered portfolio platform built on AWS that demonstrates advanced cloud engineering capabilities. The system implements a modern serverless architecture with an intelligent AI assistant named EVE powered by AWS Bedrock with Claude Instant. The architecture adheres to AWS Well-Architected Framework principles, emphasising security, cost optimisation, operational excellence, and performance efficiency.
 
+Visit the live site at [https://www.jarredthomas.cloud](https://www.jarredthomas.cloud) to interact with the EVE AI assistant and explore my portfolio website.
+
 ### Architecture Diagram
 
 ```
