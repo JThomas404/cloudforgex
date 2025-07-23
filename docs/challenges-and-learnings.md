@@ -2,8 +2,8 @@
 
 ## Table of Contents
 
-1. [Executive Summary](#executive-summary)
-2. [Overview](#overview)
+1. [Overview](#overview)
+2. [Executive Summary](#executive-summary)
 3. [API Gateway CORS Configuration: Cross-Origin Request Failure](#api-gateway-cors-configuration-cross-origin-request-failure)
    - [Problem Statement](#problem-statement)
    - [Root Cause Analysis](#root-cause-analysis)
@@ -24,14 +24,6 @@
 
 ---
 
-## Executive Summary
-
-- **Resolved critical CORS configuration issue** that was blocking all AI chatbot functionality through systematic troubleshooting and Terraform dependency management
-- **Implemented cost-saving input validation** reducing token waste while maintaining excellent user experience
-- **Applied AWS Well-Architected principles** across all solutions, focusing on security, cost optimisation, operational excellence, and performance efficiency
-- **Implemented secure S3 bucket policies** with CloudFront Origin Access Control to protect static content
-- **Created least privilege IAM policies** for Lambda functions and other AWS resources
-
 ## Overview
 
 This document details significant technical challenges encountered during the CloudForgeX project development, the systematic troubleshooting approaches used, and key learnings derived from these experiences. It demonstrates engineering maturity, problem-solving methodology, and technical depth through real-world examples of cloud engineering problem resolution.
@@ -42,6 +34,16 @@ The challenges documented here showcase:
 - Technical depth and engineering judgement in AWS environments
 - Decision-making processes and trade-off analyses
 - Production-level thinking and implementation of best practices
+
+---
+
+## Executive Summary
+
+- **Resolved critical CORS configuration issue** that was blocking all AI chatbot functionality through systematic troubleshooting and Terraform dependency management
+- **Implemented cost-saving input validation** reducing token waste while maintaining excellent user experience
+- **Applied AWS Well-Architected principles** across all solutions, focusing on security, cost optimisation, operational excellence, and performance efficiency
+- **Implemented secure S3 bucket policies** with CloudFront Origin Access Control to protect static content
+- **Created least privilege IAM policies** for Lambda functions and other AWS resources
 
 ---
 
@@ -149,7 +151,7 @@ This occurred because Terraform's dependency resolution created the deployment b
      < HTTP/2 200
      < access-control-allow-origin: https://www.jarredthomas.cloud
      < access-control-allow-methods: POST,OPTIONS
-     < access-control-allow-headers: Content-Type,Authorization
+     < access-control-allow-headers: Content-Type,Authorisation
      ```
 
 ### Validation and Testing
@@ -157,6 +159,7 @@ This occurred because Terraform's dependency resolution created the deployment b
 **Validation Process:**
 
 1. **Browser Testing**:
+
    - Tested in Chrome and Firefox
    - Verified no CORS errors in browser console
    - Confirmed successful AI responses through the frontend
@@ -237,7 +240,7 @@ After integrating Claude Instant via Amazon Bedrock into the CloudForgeX chatbot
 
 #### Requirements
 
-- **Cost Efficiency**: Minimize unnecessary AWS Bedrock API calls
+- **Cost Efficiency**: Minimise unnecessary AWS Bedrock API calls
 - **Security**: Provide basic protection against potential abuse
 - **User Experience**: Maintain good UX while implementing protections
 
@@ -293,15 +296,11 @@ if contains_wasteful_patterns(user_message):
     return "I'd love to help! Try asking something specific about Jarred's projects, skills, or experience."
 ```
 
-
-
-
-
 ### Key Learnings
 
 #### Technical Insights
 
-1. **AI Service Integration**: Understanding token economics and cost optimization
+1. **AI Service Integration**: Understanding token economics and cost optimisation
 2. **Input Validation**: Simple but effective validation checks
 3. **User Experience**: Balancing security with usability
 
@@ -337,7 +336,7 @@ if contains_wasteful_patterns(user_message):
 
 ### S3 Bucket Protection
 
-The CloudForgeX project implements comprehensive S3 bucket protection to prevent unauthorized access to static content. This is a critical security control as S3 bucket misconfigurations are a common source of data breaches.
+The CloudForgeX project implements comprehensive S3 bucket protection to prevent unauthorised access to static content. This is a critical security control as S3 bucket misconfigurations are a common source of data breaches.
 
 ```hcl
 resource "aws_s3_bucket_public_access_block" "web_access_block" {
@@ -416,10 +415,6 @@ CloudForgeX implements the principle of least privilege through carefully scoped
 }
 ```
 
-Each service component has a dedicated IAM role with only the permissions required for its specific function. This approach minimizes the potential impact of credential compromise and adheres to AWS security best practices.
-
----
-
-
+Each service component has a dedicated IAM role with only the permissions required for its specific function. This approach minimises the potential impact of credential compromise and adheres to AWS security best practices.
 
 ---
