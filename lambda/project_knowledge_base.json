@@ -253,7 +253,7 @@
       "summary": "ETL pipeline with currency conversion and secure DB insert using AWS Lambda, S3, Secrets Manager, and Aurora Serverless for automated billing data processing.",
       "highlights": [
         "Serverless ETL pipeline using AWS Lambda and S3 triggers",
-        "Currency conversion and data normalization",
+        "Currency conversion and data normalisation",
         "Secure database connections using AWS Secrets Manager",
         "Aurora Serverless MySQL for scalable data storage"
       ],
@@ -378,7 +378,7 @@
         "AWS SDK"
       ],
       "github": "https://github.com/JThomas404/AWS-Cost-Monitoring-Script",
-      "category": "Cost Optimization"
+      "category": "Cost Optimisation"
     },
     {
       "title": "AWS Cloud Resume Challenge",

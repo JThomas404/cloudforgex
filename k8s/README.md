@@ -48,7 +48,7 @@ minikube service cfx-chatbot-service
 
 ## Best Practices Implemented
 
-1. **Environment Variable Prioritization**: Modified code to check environment variables before SSM parameters
+1. **Environment Variable Prioritisation**: Modified code to check environment variables before SSM parameters
 2. **Multi-Stage Docker Build**: Reduced image size and improved security
 3. **Non-Root User**: Enhanced container security
 4. **Health Checks**: Added health endpoint for monitoring

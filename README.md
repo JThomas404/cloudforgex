@@ -102,9 +102,12 @@ cloudforgex/
 │   ├── index.html                  # Main portfolio page
 │   └── resume.html                 # Resume page
 ├── k8s/                            # Kubernetes configuration
-│   ├── manifests/                  # Kubernetes manifest files
-│   ├── app.py                      # Python application for K8s
-│   └── Dockerfile                  # Dockerfile for K8s deployment
+│   ├── configmap.yaml              # Environment configuration
+│   ├── deployment.yaml             # Kubernetes deployment manifest
+│   ├── Dockerfile                  # Multi-stage container build
+│   ├── README.md                   # Documentation for Docker and Kubernetes deployment
+│   ├── service.yaml                # Kubernetes service definition
+│   └── wsgi.py                     # WSGI adapter for running Lambda function in container
 ├── lambda/                         # Lambda function code
 │   ├── app.py                      # Main Lambda handler
 │   ├── knowledge_base.py           # EVE knowledge base module

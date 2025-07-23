@@ -146,11 +146,11 @@ Lambda functions retrieve these parameters at runtime using the AWS SDK:
 def get_ssm_parameter(parameter_name, default_value=None):
     """
     Get a parameter from SSM Parameter Store with caching
-    
+
     Args:
         parameter_name: Full SSM parameter path
         default_value: Value to return if parameter cannot be retrieved
-        
+
     Returns:
         Parameter value or default if not found
     """
@@ -271,7 +271,7 @@ resource "aws_cloudfront_origin_access_control" "cfx_oac" {
 
 ### CORS Configuration
 
-API Gateway is configured with CORS headers to control cross-origin requests. This implementation prevents unauthorized websites from making requests to our API while allowing our frontend application to communicate securely.
+API Gateway is configured with CORS headers to control cross-origin requests. This implementation prevents unauthorised websites from making requests to our API while allowing our frontend application to communicate securely.
 
 ```terraform
 resource "aws_api_gateway_method_response" "cors_method_response" {
