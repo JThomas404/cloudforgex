@@ -17,9 +17,7 @@
 - [Containerisation and Kubernetes Architecture](#containerisation-and-kubernetes-architecture)
 - [Cost Optimisation](#cost-optimisation)
 - [Key Design Decisions and Trade-offs](#key-design-decisions-and-trade-offs)
-- [Performance Benchmarks](#performance-benchmarks)
 - [Disaster Recovery and Business Continuity](#disaster-recovery-and-business-continuity)
-- [Architecture Evolution](#architecture-evolution)
 - [Future Enhancements](#future-enhancements)
 - [References and Resources](#references-and-resources)
 
@@ -31,15 +29,15 @@ This document details the architecture of CloudForgeX, a serverless AI-powered p
 
 ### Version Information
 
-| Component                | Version       | Release Date | Notes                                      |
-|--------------------------|---------------|--------------|-------------------------------------------|
-| AWS Lambda Runtime       | Python 3.9    | 2021-05-18   | Long-term support version                  |
-| Terraform                | 1.5.7         | 2023-09-13   | Includes provider lock functionality       |
-| AWS SDK for Python       | boto3 1.28.53 | 2023-09-15   | Compatible with all AWS services used      |
-| AWS Bedrock Claude Model | Claude Instant v1 | 2023-08-25 | Optimised for conversational AI           |
-| Docker                   | 24.0.5        | 2023-08-18   | Used for containerisation                  |
-| Kubernetes               | 1.27.3        | 2023-07-19   | Stable release for production workloads    |
-| Gunicorn                 | 21.2.0        | 2023-07-31   | WSGI HTTP Server for container deployment  |
+| Component                | Version           | Release Date | Notes                                     |
+| ------------------------ | ----------------- | ------------ | ----------------------------------------- |
+| AWS Lambda Runtime       | Python 3.9        | 2025-06-03   | Long-term support version                 |
+| Terraform                | v1.12.2           | 2025-06-11   | Includes provider lock functionality      |
+| AWS SDK for Python       | boto3 1.39.11     | 2025-07-22   | Compatible with all AWS services used     |
+| AWS Bedrock Claude Model | Claude Instant v1 | 2023-08-09   | Optimised for conversational AI           |
+| Docker                   | 28.1.1            | 2025-04-18   | Used for containerisation                 |
+| Kubernetes               | 1.27.3            | 2023-05-24   | Stable release for production workloads   |
+| Gunicorn                 | 21.2.0            | 2023-07-19   | WSGI HTTP Server for container deployment |
 
 ---
 
@@ -155,11 +153,11 @@ flowchart TD
     class GitHub,GHActions,Terraform pipeline
 ```
 
-The architecture diagram illustrates the serverless design of CloudForgeX using AWS Architecture Icons. The system is organized into logical layers:
+The architecture diagram illustrates the serverless design of CloudForgeX. The system is organised into logical layers:
 
 - **User Layer**: End users accessing the portfolio website through web browsers
 - **AWS Global**: CloudFront, Route 53, and ACM for global content delivery and security
-- **AWS Region (eu-west-2)**: Regional services organized by availability zones and VPC structure
+- **AWS Region (us-east-1)**: Regional services organised by availability zones and VPC structure
   - **VPC with Public/Private Subnets**: API Gateway in public subnets, Lambda functions in private subnets
   - **AWS Services**: S3 for static website and certificates, DynamoDB for data storage, Bedrock for AI capabilities
   - **Monitoring & Management**: CloudWatch, SSM Parameter Store, and IAM for security and monitoring
@@ -340,18 +338,18 @@ Fault tolerance mechanisms include:
 
 The architecture leverages the following AWS services:
 
-| Service                 | Usage                          | Configuration Details                                               |
-| ----------------------- | ------------------------------ | ------------------------------------------------------------------- |
-| **S3**                  | Static website hosting         | Standard storage class, website hosting enabled, versioning enabled |
-| **CloudFront**          | Content delivery network       | Edge locations worldwide, HTTPS required, custom domain             |
-| **Route 53**            | DNS management                 | A records pointing to CloudFront distribution                       |
-| **ACM**                 | SSL/TLS certificate management | Auto-renewal enabled, DNS validation                                |
-| **Lambda**              | Serverless compute             | Python 3.9 runtime, 256MB memory, 30s timeout                       |
-| **API Gateway**         | API management                 | REST API, regional endpoint, API key authentication                 |
-| **DynamoDB**            | NoSQL database                 | On-demand capacity, TTL enabled for session data                    |
+| Service                 | Usage                          | Configuration Details                                                               |
+| ----------------------- | ------------------------------ | ----------------------------------------------------------------------------------- |
+| **S3**                  | Static website hosting         | Standard storage class, website hosting enabled, versioning enabled                 |
+| **CloudFront**          | Content delivery network       | Edge locations worldwide, HTTPS required, custom domain                             |
+| **Route 53**            | DNS management                 | A records pointing to CloudFront distribution                                       |
+| **ACM**                 | SSL/TLS certificate management | Auto-renewal enabled, DNS validation                                                |
+| **Lambda**              | Serverless compute             | Python 3.9 runtime, 256MB memory, 30s timeout                                       |
+| **API Gateway**         | API management                 | REST API, regional endpoint, API key authentication                                 |
+| **DynamoDB**            | NoSQL database                 | On-demand capacity, TTL enabled for session data                                    |
 | **Bedrock**             | AI service for EVE assistant   | Claude Instant model with InvokeModel and InvokeModelWithResponseStream permissions |
-| **SSM Parameter Store** | Secure configuration           | String and SecureString types with appropriate permissions          |
-| **IAM**                 | Access management              | Least privilege roles for each service                              |
+| **SSM Parameter Store** | Secure configuration           | String and SecureString types with appropriate permissions                          |
+| **IAM**                 | Access management              | Least privilege roles for each service                                              |
 
 Each service is configured according to AWS best practices and optimised for the specific requirements of the CloudForgeX application.
 
@@ -385,23 +383,21 @@ The IaC implementation follows these principles:
 The monitoring strategy provides comprehensive visibility into system health:
 
 - **CloudWatch**: Metrics, logs, and alarms
-- **X-Ray**: Distributed tracing (planned)
 - **Error Tracking**: Client and server-side error logging
 
 ### CloudWatch Metrics and Alarms
 
-| Metric              | Threshold        | Alarm Action     | Purpose                     |
-| ------------------- | ---------------- | ---------------- | --------------------------- |
-| Lambda Duration     | > 3000ms         | SNS Notification | Identify performance issues |
-| Lambda Errors       | > 1% error rate  | SNS Notification | Detect functional problems  |
-| API Gateway 4xx     | > 5% of requests | SNS Notification | Identify client errors      |
-| API Gateway 5xx     | > 1% of requests | SNS Notification | Detect server errors        |
-| DynamoDB Throttling | > 0 events       | SNS Notification | Capacity planning           |
+| Metric              | Threshold        | Purpose                     |
+| ------------------- | ---------------- | --------------------------- |
+| Lambda Duration     | > 3000ms         | Identify performance issues |
+| Lambda Errors       | > 1% error rate  | Detect functional problems  |
+| API Gateway 4xx     | > 5% of requests | Identify client errors      |
+| API Gateway 5xx     | > 1% of requests | Detect server errors        |
+| DynamoDB Throttling | > 0 events       | Capacity planning           |
 
 Observability features include:
 
 - Real-time monitoring of application performance
-- Automated alerting for critical issues
 - Centralised logging for troubleshooting
 - Performance metrics collection and analysis
 - Custom dashboards for system health visualisation
@@ -467,6 +463,7 @@ on:
 ```
 
 Key features:
+
 - **Path-based triggers**: Only runs when Terraform files change
 - **Infrastructure validation**: Runs `terraform fmt`, `terraform validate`, and security scanning
 - **Plan and apply**: Creates execution plan and applies changes (on main branch only)
@@ -492,6 +489,7 @@ on:
 ```
 
 Key features:
+
 - **Path-based triggers**: Only runs when Lambda code changes
 - **Python environment**: Sets up Python 3.9 runtime environment
 - **Dependency management**: Installs required packages from requirements.txt
@@ -518,6 +516,7 @@ on:
 ```
 
 Key features:
+
 - **Path-based triggers**: Only runs when Kubernetes/Docker files change
 - **ECR integration**: Creates repository if needed and logs in
 - **Image building**: Builds and tags Docker images
@@ -562,10 +561,10 @@ flowchart TD
     Pod2 --> Service
     Service --> Ingress[Ingress/NodePort]
     Ingress --> User[User]
-    
+
     ConfigMap[ConfigMap] --> Pod1
     ConfigMap --> Pod2
-    
+
     classDef k8s fill:#326CE5,stroke:#fff,color:#fff
     class K8sDeploy,Pod1,Pod2,Service,Ingress,ConfigMap k8s
 ```
@@ -593,6 +592,7 @@ FROM python:3.11.12-slim AS build-image
 The Kubernetes deployment consists of three main components:
 
 1. **ConfigMap**: Stores environment variables for configuration
+
    ```yaml
    apiVersion: v1
    kind: ConfigMap
@@ -607,6 +607,7 @@ The Kubernetes deployment consists of three main components:
    ```
 
 2. **Deployment**: Manages pod lifecycle and scaling
+
    ```yaml
    apiVersion: apps/v1
    kind: Deployment
@@ -653,12 +654,71 @@ To bridge the Lambda function to a web server, a WSGI adapter was implemented:
 
 ```python
 def app(environ, start_response):
-    # Convert HTTP request to Lambda event
-    # Call Lambda handler
-    # Convert Lambda response to HTTP response
+    # Handle health check endpoint
+    if environ['PATH_INFO'] == '/health':
+        status = '200 OK'
+        response_headers = [('Content-type', 'application/json')]
+        start_response(status, response_headers)
+        return [json.dumps({'status':'healthy'}).encode('utf-8')]
+
+    # CORS support
+    if environ['REQUEST_METHOD'] =='OPTIONS' and environ['PATH_INFO'] == '/chat':
+        status = '200 OK'
+        allowed_origin = os.environ.get('ALLOWED_ORIGIN', '*')
+        response_headers = [
+            ('Content-type', 'application/json'),
+            ('Access-Control-Allow-Origin', allowed_origin),
+            ('Access-Control-Allow-Headers', 'Content-Type'),
+            ('Access-Control-Allow-Methods', 'OPTIONS, POST')
+        ]
+        start_response(status, response_headers)
+        return [b'']
+
+    # Handle chat endpoint
+    if environ['REQUEST_METHOD'] == 'POST' and environ['PATH_INFO'] == '/chat':
+        # Get request body
+        try:
+            request_body_size = int(environ.get('CONTENT_LENGTH', 0))
+            request_body = environ['wsgi.input'].read(request_body_size).decode('utf-8')
+
+            # Create a mock API Gateway event
+            event = {
+                'httpMethod': 'POST',
+                'path': '/chat',
+                'headers': {
+                    'Content-Type': 'application/json'
+                },
+                'body': request_body
+            }
+
+            # Call the lambda handler with the mock event
+            result = lambda_handler(event, None)
+
+            # Convert Lambda response to WSGI response format
+            status = f"{result['statusCode']} {'OK' if result['statusCode'] == 200 else 'Error'}"
+            response_headers = [(k, v) for k, v in result.get('headers', {}).items()]
+
+            start_response(status, response_headers)
+
+            # Return the response body as a list of bytes
+            return [result.get('body', '').encode('utf-8')]
+
+        except Exception as e:
+            # Handle any errors that occur during processing
+            status = '500 Internal Server Error'
+            response_headers = [('Content-type', 'application/json')]
+            start_response(status, response_headers)
+            return [json.dumps({'error': str(e)}).encode('utf-8')]
+
+    # Handle 404 for all other paths
+    status = '404 Not Found'
+    response_headers = [('Content-type', 'application/json')]
+    start_response(status, response_headers)
+    return [json.dumps({'error': 'Not Found'}).encode('utf-8')]
 ```
 
 The adapter implements:
+
 1. **Health Check Endpoint**: For container health monitoring
 2. **Chat Endpoint**: For AI assistant functionality
 3. **CORS Support**: For cross-origin requests
@@ -677,7 +737,7 @@ env_var_name = param_parts[-1].upper()
 env_value = os.environ.get(env_var_name)
 if env_value is not None:
     return env_value
-    
+
 # Fall back to SSM if needed
 ```
 
@@ -697,14 +757,14 @@ The architecture implements several cost optimisation strategies:
 
 ### Cost Analysis: Serverless vs Containerised Deployment
 
-| Component               | Serverless Monthly Cost | Containerised Monthly Cost | Notes                                      |
-|-------------------------|-------------------------|----------------------------|-------------------------------------------|
-| Compute                 | £12.50                  | £45.20                     | Lambda vs EKS + EC2 nodes                  |
-| Storage                 | £2.30                   | £4.75                      | S3 vs EBS volumes                          |
-| Data Transfer           | £5.40                   | £5.40                      | Similar for both architectures             |
-| API Management          | £8.20                   | £0.00                      | API Gateway vs direct K8s service          |
-| Monitoring              | £3.60                   | £5.80                      | CloudWatch for both, more metrics for K8s  |
-| **Total**               | **£32.00**              | **£61.15**                 | **91% higher cost for containerised**      |
+| Component      | Serverless Monthly Cost | Containerised Monthly Cost | Notes                                     |
+| -------------- | ----------------------- | -------------------------- | ----------------------------------------- |
+| Compute        | £12.50                  | £45.20                     | Lambda vs EKS + EC2 nodes                 |
+| Storage        | £2.30                   | £4.75                      | S3 vs EBS volumes                         |
+| Data Transfer  | £5.40                   | £5.40                      | Similar for both architectures            |
+| API Management | £8.20                   | £0.00                      | API Gateway vs direct K8s service         |
+| Monitoring     | £3.60                   | £5.80                      | CloudWatch for both, more metrics for K8s |
+| **Total**      | **£32.00**              | **£61.15**                 | **91% higher cost for containerised**     |
 
 Cost management practices include:
 
@@ -779,87 +839,44 @@ module "cloudfront" {
 
 ---
 
-## Performance Benchmarks
-
-The following performance metrics were collected from load testing and production monitoring to validate architectural decisions:
-
-### Lambda Function Performance
-
-| Metric                   | Average | P95    | P99    | Notes                                      |
-|--------------------------|---------|--------|--------|-------------------------------------------|
-| Cold Start Time          | 420ms   | 780ms  | 950ms  | First invocation after deployment          |
-| Warm Execution Time      | 145ms   | 320ms  | 450ms  | Subsequent invocations                     |
-| AI Response Generation   | 850ms   | 1200ms | 1500ms | Time to generate response from Bedrock     |
-| Memory Utilisation       | 128MB   | 180MB  | 210MB  | Out of 256MB allocated                     |
-| End-to-End Response Time | 1100ms  | 1650ms | 2100ms | Total time from request to response        |
-
-### API Gateway Performance
-
-| Metric                   | Average | P95    | P99    | Notes                                      |
-|--------------------------|---------|--------|--------|-------------------------------------------|
-| Request Latency          | 35ms    | 75ms   | 120ms  | Time to process API Gateway request        |
-| Integration Latency      | 1150ms  | 1700ms | 2200ms | Time for Lambda integration                |
-| Cache Hit Rate           | 92%     | N/A    | N/A    | For CloudFront cached responses            |
-
-### Containerised Deployment Performance
-
-| Metric                   | Average | P95    | P99    | Notes                                      |
-|--------------------------|---------|--------|--------|-------------------------------------------|
-| Container Startup Time   | 3.2s    | 4.5s   | 5.8s   | Time to start container and be ready       |
-| Request Processing Time  | 180ms   | 350ms  | 520ms  | Time to process request in container       |
-| AI Response Generation   | 880ms   | 1250ms | 1550ms | Time to generate response from Bedrock     |
-| Memory Utilisation       | 210MB   | 280MB  | 320MB  | Out of 512MB allocated                     |
-| End-to-End Response Time | 1250ms  | 1850ms | 2350ms | Total time from request to response        |
-
-### Load Testing Results
-
-| Concurrent Users | Serverless Response Time | Containerised Response Time | Notes                                      |
-|------------------|--------------------------|----------------------------|-------------------------------------------|
-| 10               | 1.2s                     | 1.3s                       | Minimal difference at low load             |
-| 50               | 1.4s                     | 1.5s                       | Both architectures handle well             |
-| 100              | 1.7s                     | 1.8s                       | Slight advantage to serverless             |
-| 500              | 2.3s                     | 3.2s                       | Serverless scales better at higher loads   |
-| 1000             | 3.1s                     | 5.8s                       | Significant advantage to serverless        |
-
-These benchmarks validate the architectural decision to use a serverless approach as the primary architecture, particularly for handling variable and potentially high loads.
-
----
-
 ## Disaster Recovery and Business Continuity
 
 The CloudForgeX architecture implements a comprehensive disaster recovery and business continuity strategy to ensure resilience against various failure scenarios.
 
 ### Recovery Time and Point Objectives
 
-| Component               | Recovery Time Objective (RTO) | Recovery Point Objective (RPO) | Strategy                                  |
-|-------------------------|-------------------------------|--------------------------------|-------------------------------------------|
-| Frontend (S3/CloudFront)| < 5 minutes                   | 0 (no data loss)               | S3 cross-region replication                |
-| Backend (Lambda)        | < 5 minutes                   | 0 (no data loss)               | Multi-AZ deployment                        |
-| Database (DynamoDB)     | < 5 minutes                   | < 5 minutes                    | Point-in-time recovery                     |
-| Configuration (SSM)     | < 10 minutes                  | 0 (no data loss)               | Parameter history                          |
+| Component                | Recovery Time Objective (RTO) | Recovery Point Objective (RPO) | Strategy                    |
+| ------------------------ | ----------------------------- | ------------------------------ | --------------------------- |
+| Frontend (S3/CloudFront) | < 5 minutes                   | 0 (no data loss)               | S3 cross-region replication |
+| Backend (Lambda)         | < 5 minutes                   | 0 (no data loss)               | Multi-AZ deployment         |
+| Database (DynamoDB)      | < 5 minutes                   | < 5 minutes                    | Point-in-time recovery      |
+| Configuration (SSM)      | < 10 minutes                  | 0 (no data loss)               | Parameter history           |
 
 ### Backup Strategy
 
-| Component               | Backup Method                | Frequency  | Retention Period | Validation Process                        |
-|-------------------------|------------------------------|------------|------------------|-------------------------------------------|
-| S3 Website              | Cross-region replication     | Real-time  | Indefinite       | Monthly restore test                       |
-| DynamoDB                | Point-in-time recovery       | Continuous | 35 days          | Quarterly restore test                     |
-| Lambda Functions        | Source control (GitHub)      | Every push | Indefinite       | CI/CD pipeline validation                  |
-| Infrastructure          | Terraform state in S3        | Every apply| 90 days          | Monthly terraform plan validation          |
+| Component        | Backup Method            | Frequency   | Retention Period | Validation Process                |
+| ---------------- | ------------------------ | ----------- | ---------------- | --------------------------------- |
+| S3 Website       | Cross-region replication | Real-time   | Indefinite       | Monthly restore test              |
+| DynamoDB         | Point-in-time recovery   | Continuous  | 35 days          | Quarterly restore test            |
+| Lambda Functions | Source control (GitHub)  | Every push  | Indefinite       | CI/CD pipeline validation         |
+| Infrastructure   | Terraform state in S3    | Every apply | 90 days          | Monthly terraform plan validation |
 
 ### Disaster Recovery Scenarios
 
 1. **Single AZ Failure**
+
    - **Impact**: Minimal to none
    - **Recovery**: Automatic failover to second AZ
    - **Action Required**: None, system self-heals
 
 2. **Region Failure**
+
    - **Impact**: Service disruption until manual failover
    - **Recovery**: Manual promotion of backup region
    - **Action Required**: Update Route 53 records, promote replicated resources
 
 3. **Data Corruption**
+
    - **Impact**: Potential data integrity issues
    - **Recovery**: Restore from point-in-time backup
    - **Action Required**: Identify corruption time, initiate restore
@@ -869,74 +886,7 @@ The CloudForgeX architecture implements a comprehensive disaster recovery and bu
    - **Recovery**: Restore from backups or redeploy from source
    - **Action Required**: Terraform apply or restore from backup
 
-### Business Continuity Testing
-
-The disaster recovery plan is tested quarterly through:
-
-1. **Tabletop Exercises**: Simulated disaster scenarios with response team
-2. **Failover Testing**: Controlled tests of failover mechanisms
-3. **Restore Testing**: Validation of backup restoration procedures
-4. **Documentation Review**: Regular updates to recovery procedures
-
-This comprehensive approach ensures the system can recover quickly from various failure scenarios while minimizing data loss and service disruption.
-
----
-
-## Architecture Evolution
-
-The CloudForgeX architecture has evolved through several iterations, with each phase addressing specific requirements and incorporating lessons learned.
-
-### Phase 1: Initial Serverless Implementation (July 2023)
-
-- **Core Components**: Basic Lambda function, API Gateway, S3 website
-- **Challenges**: Manual deployments, limited monitoring
-- **Lessons Learned**: Need for automated deployments and better observability
-
-### Phase 2: Infrastructure as Code Implementation (August 2023)
-
-- **Key Additions**: Terraform modules, CI/CD pipelines
-- **Improvements**: Consistent environments, repeatable deployments
-- **Architectural Decisions**:
-  - Selected Terraform over CloudFormation for multi-cloud potential
-  - Implemented modular approach for reusability
-  - Added remote state management for team collaboration
-
-### Phase 3: Enhanced Security and Monitoring (September 2023)
-
-- **Key Additions**: SSM Parameter Store, CloudWatch alarms, security headers
-- **Improvements**: Secure configuration management, proactive monitoring
-- **Architectural Decisions**:
-  - Replaced environment variables with SSM parameters
-  - Implemented defence-in-depth security strategy
-  - Added comprehensive logging and alerting
-
-### Phase 4: Containerisation and Kubernetes (October 2023)
-
-- **Key Additions**: Docker containers, Kubernetes deployment
-- **Improvements**: Deployment versatility, local development
-- **Architectural Decisions**:
-  - Maintained same codebase for both deployment options
-  - Implemented environment variable fallback for configuration
-  - Used multi-stage Docker builds for security and efficiency
-
-### Alternative Approaches Considered
-
-1. **Traditional EC2-Based Architecture**
-   - **Pros**: More control over runtime environment, potentially lower latency
-   - **Cons**: Higher operational overhead, fixed costs, manual scaling
-   - **Decision**: Rejected in favor of serverless for cost efficiency and auto-scaling
-
-2. **Managed Container Services (ECS/Fargate)**
-   - **Pros**: Simpler than Kubernetes, AWS-native integration
-   - **Cons**: Less portable, fewer orchestration features
-   - **Decision**: Implemented Kubernetes for broader industry relevance and learning
-
-3. **Third-Party AI Services**
-   - **Pros**: Potentially lower cost, specialized capabilities
-   - **Cons**: Data security concerns, integration complexity
-   - **Decision**: Selected AWS Bedrock for security and native AWS integration
-
-This evolutionary approach allowed the architecture to mature organically, incorporating lessons learned and adapting to changing requirements while maintaining core principles of security, scalability, and cost efficiency.
+This comprehensive approach ensures the system can recover quickly from various failure scenarios while minimising data loss and service disruption.
 
 ---
 
@@ -945,17 +895,16 @@ This evolutionary approach allowed the architecture to mature organically, incor
 Planned future enhancements to the architecture include:
 
 1. **Enhanced Monitoring**: Implementation of X-Ray for distributed tracing
-2. **Multi-Region Deployment**: Expansion to multiple AWS regions for global redundancy
-3. **Advanced AI Capabilities**: Integration with additional AWS AI services
-4. **Performance Optimisation**: Further optimisation of Lambda functions and frontend assets
-5. **Expanded Security Controls**: Implementation of WAF and additional security layers
-6. **Kubernetes Enhancements**: Horizontal Pod Autoscaling and Ingress Controller
+2. **Advanced AI Capabilities**: Integration with additional AWS AI services
+3. **Performance Optimisation**: Further optimisation of Lambda functions and frontend assets
+4. **Expanded Security Controls**: Implementation of WAF and additional security layers
+5. **Kubernetes Enhancements**: Horizontal Pod Autoscaling and Ingress Controller
 
 ## References and Resources
 
 **[AWS Well-Architected Framework](https://aws.amazon.com/architecture/well-architected/)**
 
-- Core design principles used to guide architectural decisions for CloudForgeX, focusing on operational excellence, security, reliability, performance efficiency, and cost optimization.
+- Core design principles used to guide architectural decisions for CloudForgeX, focusing on operational excellence, security, reliability, performance efficiency, and cost optimisation.
 
 **[AWS Serverless Architecture Best Practices](https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html)**
 

@@ -14,7 +14,6 @@
   - [Infrastructure as Code](#infrastructure-as-code)
 - [Local Testing and Debugging](#local-testing-and-debugging)
 - [IAM Roles and Permissions](#iam-roles-and-permissions)
-- [Design Decisions and Highlights](#design-decisions-and-highlights)
 - [Errors Encountered and Resolved](#errors-encountered-and-resolved)
 - [Skills Demonstrated](#skills-demonstrated)
 - [Conclusion](#conclusion)
@@ -439,10 +438,12 @@ terraform plan -var-file=dev.tfvars
 
 ### Debugging Techniques
 
-1. **CloudWatch Logs**: Real-time log analysis for Lambda functions
-2. **X-Ray Tracing**: Distributed tracing for request flow analysis
-3. **API Gateway Test Console**: Direct API testing without frontend
-4. **DynamoDB Query Explorer**: Data inspection and validation
+1. **CloudWatch Logs**: Used for monitoring Lambda function execution and troubleshooting issues
+2. **GitHub Actions Workflow Logs**: Used for CI/CD pipeline debugging and deployment troubleshooting
+3. **Terraform Plan and Validate**: Used for infrastructure code validation before deployment
+4. **Local Development Server**: Testing frontend components with Python's built-in HTTP server
+5. **Curl Commands**: Testing API endpoints directly from the command line
+6. **Security Scanning with tfsec**: Identifying security issues in Terraform configurations
 
 ## IAM Roles and Permissions
 
@@ -515,58 +516,6 @@ The project implements least privilege IAM policies for all components:
 ```
 
 For comprehensive security details, see the [Security Documentation](docs/security.md).
-
-## Design Decisions and Highlights
-
-### Serverless Architecture
-
-**Decision**: Implement a fully serverless architecture using Lambda, API Gateway, and S3.
-
-**Rationale**: Provides automatic scaling, reduced operational overhead, and pay-per-use cost model.
-
-**Trade-offs**: Accepts cold start latency for infrequently used functions in exchange for cost efficiency and simplified operations.
-
-**Alternatives Considered**: Traditional EC2-based architecture was evaluated but rejected due to higher operational complexity and fixed costs.
-
-### AWS Bedrock with Claude Instant
-
-**Decision**: Use AWS Bedrock with Claude Instant for the AI assistant capabilities.
-
-**Rationale**: Provides advanced natural language processing capabilities with AWS integration and security.
-
-**Trade-offs**: Higher cost compared to simpler rule-based systems, but delivers superior user experience and capabilities.
-
-**Alternatives Considered**: Custom-trained models and third-party AI services were evaluated but rejected due to integration complexity and data security concerns.
-
-### SSM Parameter Store
-
-**Decision**: Implement SSM Parameter Store for configuration management.
-
-**Rationale**: Provides secure, scalable parameter storage with versioning and encryption.
-
-**Trade-offs**: Adds slight complexity compared to environment variables but significantly improves security posture.
-
-**Alternatives Considered**: Environment variables and DynamoDB were evaluated but rejected due to security limitations and operational complexity.
-
-### Terraform Modules
-
-**Decision**: Adopt modular Terraform approach for infrastructure definition.
-
-**Rationale**: Enhances reusability, maintainability, and consistency across environments.
-
-**Trade-offs**: Requires initial investment in module design but pays dividends in long-term maintenance and scalability.
-
-**Alternatives Considered**: CloudFormation and AWS CDK were evaluated but rejected due to team expertise and cross-cloud potential.
-
-### Mobile-First Design
-
-**Decision**: Implement mobile-first responsive design.
-
-**Rationale**: Ensures optimal user experience across all devices, particularly important for portfolio accessibility.
-
-**Trade-offs**: Requires additional design and testing effort but delivers superior user experience.
-
-**Alternatives Considered**: Separate mobile site was evaluated but rejected due to maintenance overhead and SEO implications.
 
 ## Errors Encountered and Resolved
 
