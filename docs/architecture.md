@@ -31,7 +31,7 @@ This document details the architecture of CloudForgeX, a serverless AI-powered p
 
 | Component                | Version           | Release Date | Notes                                     |
 | ------------------------ | ----------------- | ------------ | ----------------------------------------- |
-| AWS Lambda Runtime       | Python 3.9        | 2025-06-03   | Long-term support version                 |
+| AWS Lambda Runtime       | Python 3.11       | 2025-06-03   | Long-term support version                 |
 | Terraform                | v1.12.2           | 2025-06-11   | Includes provider lock functionality      |
 | AWS SDK for Python       | boto3 1.39.11     | 2025-07-22   | Compatible with all AWS services used     |
 | AWS Bedrock Claude Model | Claude Instant v1 | 2023-08-09   | Optimised for conversational AI           |
@@ -344,7 +344,7 @@ The architecture leverages the following AWS services:
 | **CloudFront**          | Content delivery network       | Edge locations worldwide, HTTPS required, custom domain                             |
 | **Route 53**            | DNS management                 | A records pointing to CloudFront distribution                                       |
 | **ACM**                 | SSL/TLS certificate management | Auto-renewal enabled, DNS validation                                                |
-| **Lambda**              | Serverless compute             | Python 3.9 runtime, 256MB memory, 30s timeout                                       |
+| **Lambda**              | Serverless compute             | Python 3.11 runtime, 256MB memory, 30s timeout                                      |
 | **API Gateway**         | API management                 | REST API, regional endpoint, API key authentication                                 |
 | **DynamoDB**            | NoSQL database                 | On-demand capacity, TTL enabled for session data                                    |
 | **Bedrock**             | AI service for EVE assistant   | Claude Instant model with InvokeModel and InvokeModelWithResponseStream permissions |
@@ -408,7 +408,7 @@ Observability features include:
   "queryString": "filter @type = \"REPORT\" | filter @message like /Error/ | stats count() as errorCount by bin(30m)",
   "startTime": "-24h",
   "endTime": "now",
-  "logGroupNames": ["/aws/lambda/cloudforge-eve-function"]
+  "logGroupNames": ["/aws/lambda/cloudforgex-eve-function"]
 }
 ```
 
@@ -602,7 +602,7 @@ The Kubernetes deployment consists of three main components:
      ENVIRONMENT: "dev"
      ALLOWED_ORIGIN: "https://www.jarredthomas.cloud"
      AWS_REGION: "us-east-1"
-     DYNAMODB_TABLE: "cfx-chatbot-logs"
+     DYNAMODB_TABLE: "cloudforgex-eve-logs"
      BEDROCK_MODEL: "anthropic.claude-instant-v1"
    ```
 

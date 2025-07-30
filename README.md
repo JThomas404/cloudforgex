@@ -79,7 +79,7 @@ CloudForgeX addresses several real-world business challenges:
 - AWS Account with appropriate permissions
 - Terraform v1.5.7+
 - AWS CLI v2+
-- Python 3.9+
+- Python 3.11+
 - Docker 24.0+ (for container builds)
 - GitHub account (for CI/CD)
 
@@ -218,7 +218,7 @@ The frontend communicates with the backend through secure API calls to AWS API G
 
 ### Backend Architecture
 
-The backend uses AWS Lambda with Python 3.9 runtime for the EVE AI assistant:
+The backend uses AWS Lambda with Python 3.11 runtime for the EVE AI assistant:
 
 ```python
 def lambda_handler(event, context):
@@ -480,16 +480,16 @@ The project implements least privilege IAM policies for all components:
     {
       "Effect": "Allow",
       "Action": ["dynamodb:PutItem"],
-      "Resource": "arn:aws:dynamodb:${region}:${account_id}:table/cloudforge-conversations"
+      "Resource": "arn:aws:dynamodb:${region}:${account_id}:table/cloudforgex-eve-logs"
     },
     {
       "Effect": "Allow",
       "Action": ["ssm:GetParameter"],
       "Resource": [
-        "arn:aws:ssm:${region}:${account_id}:parameter/cfx/${env}/allowed_origin",
-        "arn:aws:ssm:${region}:${account_id}:parameter/cfx/${env}/region",
-        "arn:aws:ssm:${region}:${account_id}:parameter/cfx/${env}/dynamodb_table",
-        "arn:aws:ssm:${region}:${account_id}:parameter/cfx/${env}/bedrock_model"
+        "arn:aws:ssm:${region}:${account_id}:parameter/cfx/Dev/allowed_origin",
+        "arn:aws:ssm:${region}:${account_id}:parameter/cfx/Dev/region",
+        "arn:aws:ssm:${region}:${account_id}:parameter/cfx/Dev/dynamodb_table",
+        "arn:aws:ssm:${region}:${account_id}:parameter/cfx/Dev/bedrock_model"
       ]
     }
   ]
@@ -599,7 +599,7 @@ For more detailed information on challenges and solutions, see the [Challenges a
 
 ### AWS Services
 
-- **Lambda**: Implemented serverless functions with Python 3.9 for the EVE AI assistant, including custom error handling, logging, and integration with multiple AWS services
+- **Lambda**: Implemented serverless functions with Python 3.11 for the EVE AI assistant, including custom error handling, logging, and integration with multiple AWS services
 - **API Gateway**: Configured REST API with CORS headers, request validation, and integration with Lambda functions, resolving complex cross-origin issues
 - **S3**: Created secure static website hosting with CloudFront integration and implemented secure certificate access using presigned URLs with time-limited expiration
 - **CloudFront**: Set up content delivery with custom domain, SSL/TLS, security headers, and origin access control to prevent direct S3 access

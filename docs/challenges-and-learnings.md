@@ -151,7 +151,7 @@ This occurred because Terraform's dependency resolution created the deployment b
      < HTTP/2 200
      < access-control-allow-origin: https://www.jarredthomas.cloud
      < access-control-allow-methods: POST,OPTIONS
-     < access-control-allow-headers: Content-Type,Authorisation
+     < access-control-allow-headers: Content-Type,Authorization
      ```
 
 ### Validation and Testing

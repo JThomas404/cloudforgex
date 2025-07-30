@@ -91,12 +91,17 @@ CloudForgeX implements the principle of least privilege through carefully scoped
     {
       "Effect": "Allow",
       "Action": ["dynamodb:PutItem"],
-      "Resource": "${dynamodb_table_arn}"
+      "Resource": "arn:aws:dynamodb:${region}:${account_id}:table/cloudforgex-eve-logs"
     },
     {
       "Effect": "Allow",
       "Action": ["ssm:GetParameter"],
-      "Resource": "${ssm_parameter_arns}"
+      "Resource": [
+        "arn:aws:ssm:${region}:${account_id}:parameter/cfx/Dev/allowed_origin",
+        "arn:aws:ssm:${region}:${account_id}:parameter/cfx/Dev/region",
+        "arn:aws:ssm:${region}:${account_id}:parameter/cfx/Dev/dynamodb_table",
+        "arn:aws:ssm:${region}:${account_id}:parameter/cfx/Dev/bedrock_model"
+      ]
     }
   ]
 }
@@ -130,7 +135,7 @@ Configuration values are stored in AWS Systems Manager Parameter Store:
 
 ```terraform
 resource "aws_ssm_parameter" "cfx_allowed_origin" {
-  name        = "/cloudforgex/${var.environment}/allowed_origin"
+  name        = "/cfx/${var.environment}/allowed_origin"
   description = "CORS allowed origin for CloudForgeX API Gateway"
   type        = "String"
   value       = var.allowed_origin
