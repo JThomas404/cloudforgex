@@ -593,6 +593,40 @@ url = s3_client.generate_presigned_url(
 
 **Security Validation**: Confirmed direct access attempts were blocked and URL expiration functioned correctly.
 
+### EVE AI Assistant Link Functionality
+
+**Issue**: Multiple certificate links with identical text ("View Certificate") were only showing the first link as clickable, while subsequent identical links remained as plain text.
+
+**Root Cause**: The `enhanceLinksInPlace()` method used `String.replace()` which only replaces the first occurrence, causing multiple links with identical text to be incorrectly processed.
+
+**Solution**: Implemented DOM-based link restoration using `TreeWalker` and node manipulation:
+
+```javascript
+// DOM-based approach for precise link restoration
+enhanceLinksInPlace(element, originalHtml) {
+    const originalDiv = document.createElement('div');
+    originalDiv.innerHTML = originalHtml;
+    const originalLinks = originalDiv.querySelectorAll('a');
+    
+    // Use TreeWalker to traverse text nodes
+    const walker = document.createTreeWalker(
+        element,
+        NodeFilter.SHOW_TEXT,
+        null,
+        false
+    );
+    
+    // Process each original link and replace matching text with actual link elements
+    originalLinks.forEach(originalLink => {
+        // Find matching text in typed content and replace with cloned link element
+        const newLink = originalLink.cloneNode(true);
+        // ... node splitting and insertion logic
+    });
+}
+```
+
+**Results**: All certificate links now function correctly while preserving the typewriter animation effect.
+
 For more detailed information on challenges and solutions, see the [Challenges and Learnings Documentation](docs/challenges-and-learnings.md).
 
 ## Skills Demonstrated

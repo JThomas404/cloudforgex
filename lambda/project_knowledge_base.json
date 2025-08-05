@@ -52,7 +52,7 @@
       {
         "name": "Microsoft Certified: Power Platform Fundamentals (PL-900)",
         "date": "01/06/2024",
-        "url": "https://d1hcjp46h1clr8.cloudfront.net/assets/documents/Power%20Platform%20Fundamentals%20(PL-900).pdf"
+        "url": "https://d1hcjp46h1clr8.cloudfront.net/assets/documents/Power%20Platform%20Fundamentals%20%28PL-900%29.pdf"
       },
       {
         "name": "Mimecast Email Security Cloud Gateway Fundamentals",
@@ -67,7 +67,7 @@
       {
         "name": "Docker Mastery",
         "date": "20/04/2024",
-        "url": "https://d1hcjp46h1clr8.cloudfront.net/assets/documents/Docker%20Mastery%20%2B%20Adrian%20Cantrill's%20Docker%20Fundamentals.pdf"
+        "url": "https://d1hcjp46h1clr8.cloudfront.net/assets/documents/Docker%20Mastery.pdf"
       },
       {
         "name": "Terraform Associate Hands-On Labs",
@@ -465,7 +465,7 @@
     
     "What's Jarred's most impactful project?": "Jarred's most defining project is his **Serverless Web Application Project** — but what made it truly impactful wasn't just what he built, but how he rebuilt it.\n\nThe first two launches failed — not because the system didn't work, but because Jarred was focused on what worked... not on what worked best. That setback forced him to think like a real cloud engineer to build not just functional architecture, but resilient, scalable, and maintainable systems that would stand up in production environments.\n\nHe took on multiple roles:\n\n• **DevOps Engineer** – wrote the backend and deployed the frontend\n• **Solutions Architect** – designed the infrastructure using Terraform and GitHub Actions\n• **Cloud Engineer** – automated and secured the full deployment in AWS\n\nThat failure taught Jarred how to rebuild with clarity, humility, and discipline — and it became the project that shaped his mindset more than any certification ever could.",
     
-    "What certifications does Jarred hold?": "Jarred's certifications reflect his commitment to real-world expertise and platform fluency:\n\n• **AWS Certified Solutions Architect – Associate (SAA-C03)**\n• **AWS Certified Cloud Practitioner (CLF-C02)**\n• **Cisco Certified Network Associate (CCNA)**\n• **Microsoft Certified: Azure Fundamentals (AZ-900)**\n• **Power Platform Fundamentals (PL-900)**\n• **Mimecast Cloud Gateway Fundamentals**\n• **Python Programming for AWS (Boto3)**\n• **Docker Mastery**\n• **Terraform Associate Hands-On Labs**\n• **Linux Foundation Certified Systems Administrator** _(in progress)_\n\nThese show not just study — but _depth, breadth, and applied competence_.",
+    "What certifications does Jarred hold?": "Jarred's certifications reflect his commitment to real-world expertise and platform fluency:\n\n• **AWS Certified Solutions Architect – Associate (SAA-C03)** (15/01/2025) - [View Certificate](http://bit.ly/3UdpnzT)\n• **AWS Certified Cloud Practitioner (CLF-C02)** (20/08/2024) - [View Certificate](http://bit.ly/4eTpCtp)\n• **Cisco Certified Network Associate (CCNA)** (27/02/2024) - [View Certificate](http://bit.ly/4kCpoYT)\n• **Microsoft Certified: Azure Fundamentals (AZ-900)** (15/07/2024) - [View Certificate](http://bit.ly/3TEySbh)\n• **Power Platform Fundamentals (PL-900)** (01/06/2024) - [View Certificate](http://bit.ly/4kLFKyD)\n• **Python Programming for AWS (Boto3)** (15/05/2024) - [View Certificate](http://bit.ly/4nOrGqI)\n• **Docker Mastery** (20/04/2024) - [View Certificate](http://bit.ly/4lUPQ11)\n• **Terraform Associate Hands-On Labs** (10/03/2024) - [View Certificate](http://bit.ly/3UeY7RK)\n• **Mimecast Email Security Cloud Gateway Fundamentals** (10/07/2024) - [View Certificate](http://bit.ly/3THbTMI)\n• **Linux Foundation Certified Systems Administrator (LFCS)** _(in progress)_\n\nThese show not just study — but _depth, breadth, and applied competence_.",
     
     "What tools and technologies does Jarred use most?": "Jarred works with a toolset designed for **automation**, **security**, and **cloud scalability**. His strength lies in how he connects and automates across platforms.\n\n• **Cloud & Infrastructure:** AWS, Azure, Terraform, Docker, GitHub Actions, CI/CD\n• **Scripting & Automation:** Python, Boto3, Bash, PowerShell, JSON, YAML\n• **Key AWS Services:** Lambda, API Gateway, DynamoDB, Bedrock, S3, Route 53, CloudFront, IAM, SSM, CloudWatch\n• **Developer Tools:** VS Code, Git, Postman, Notion, Nginx\n\nHe doesn't just use tools — he _orchestrates_ them to build resilient, modular, and intelligent cloud-native systems.",
     

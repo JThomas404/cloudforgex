@@ -1,8 +1,13 @@
 import json
 import os
 
-# Cache optimisation for knowledge base data
+# Cache optimisation for knowledge base data - force reload
 _cached_data = None
+
+def clear_cache():
+    """Force clear the cache to reload fresh data"""
+    global _cached_data
+    _cached_data = None
 
 def load_project_data():
     global _cached_data
@@ -35,9 +40,20 @@ def load_project_data():
 
 def get_suggested_response(user_message):
     """Check for predefined suggested responses"""
+    import logging
+    logger = logging.getLogger()
+    
     knowledge_data = load_project_data()
     suggested_responses = knowledge_data.get('suggested_responses', {})
-    return suggested_responses.get(user_message.strip())
+    
+    # Debug logging
+    logger.info(f"Looking for suggested response for: '{user_message.strip()}'")
+    logger.info(f"Available suggested responses: {list(suggested_responses.keys())}")
+    
+    result = suggested_responses.get(user_message.strip())
+    logger.info(f"Found suggested response: {result is not None}")
+    
+    return result
 
 def get_enhanced_system_prompt():
     # Get complete knowledge base data
@@ -56,7 +72,7 @@ BACKGROUND:
 • Current Role: {personal_profile.get('career_timeline', [])[-1].get('role', 'Not specified') if personal_profile.get('career_timeline') else 'Not specified'}
 • Current Company: {personal_profile.get('career_timeline', [])[-1].get('company', 'Not specified') if personal_profile.get('career_timeline') else 'Not specified'}
 
-CERTIFICATIONS - MUST INCLUDE LINKS WHEN MENTIONED:
+CERTIFICATIONS - COPY THESE EXACT LINES WITH HTML LINKS:
 • AWS Solutions Architect Associate (15/01/2025): <a href="http://bit.ly/3UdpnzT" target="_blank" rel="noopener noreferrer">View Certificate</a>
 • AWS Cloud Practitioner (20/08/2024): <a href="http://bit.ly/4eTpCtp" target="_blank" rel="noopener noreferrer">View Certificate</a>
 • CCNA (27/02/2024): <a href="http://bit.ly/4kCpoYT" target="_blank" rel="noopener noreferrer">View Certificate</a>
@@ -64,7 +80,7 @@ CERTIFICATIONS - MUST INCLUDE LINKS WHEN MENTIONED:
 • Power Platform Fundamentals (01/06/2024): <a href="http://bit.ly/4kLFKyD" target="_blank" rel="noopener noreferrer">View Certificate</a>
 • Python Programming for AWS (15/05/2024): <a href="http://bit.ly/4nOrGqI" target="_blank" rel="noopener noreferrer">View Certificate</a>
 • Docker Mastery (20/04/2024): <a href="http://bit.ly/4lUPQ11" target="_blank" rel="noopener noreferrer">View Certificate</a>
-• Terraform Associate Labs (10/03/2024): <a href="http://bit.ly/44vI6wE" target="_blank" rel="noopener noreferrer">View Certificate</a>
+• Terraform Associate Hands-On Labs (10/03/2024): <a href="http://bit.ly/3UeY7RK" target="_blank" rel="noopener noreferrer">View Certificate</a>
 • Mimecast Email Security (10/07/2024): <a href="http://bit.ly/3THbTMI" target="_blank" rel="noopener noreferrer">View Certificate</a>
 
 SPECIALISATIONS:
@@ -119,9 +135,11 @@ RESPONSE GUIDELINES:
 • **CRITICAL: ALWAYS include relevant links** when discussing certifications, projects, or contact information
 • For certifications, MUST provide direct certificate links using format: <a href="CERT_URL" target="_blank" rel="noopener noreferrer">View Certificate</a>
 • For projects, MUST include GitHub repository links using format: <a href="GITHUB_URL" target="_blank" rel="noopener noreferrer">View on GitHub</a>
-• **WHEN DISCUSSING CERTIFICATIONS**: Include as many certificate links as relevant to the question
+• **WHEN DISCUSSING CERTIFICATIONS**: ALWAYS copy the exact HTML link format from the CERTIFICATIONS section above
 • **NEVER mention a certification without its verification link**
 • **NEVER mention a project without including its GitHub link**
+• **FOR ALL CERTIFICATION QUESTIONS**: Use the exact HTML format: <a href="URL" target="_blank" rel="noopener noreferrer">View Certificate</a>
+• **TERRAFORM CERTIFICATE MUST ALWAYS INCLUDE**: <a href="http://bit.ly/3UeY7RK" target="_blank" rel="noopener noreferrer">View Certificate</a>
 
 CONTACT INFORMATION:
 • Email: <a href="mailto:jarredthomas101@gmail.com" target="_blank" rel="noopener noreferrer">jarredthomas101@gmail.com</a>

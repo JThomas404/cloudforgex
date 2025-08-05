@@ -332,6 +332,520 @@ if contains_wasteful_patterns(user_message):
 
 ---
 
+## EVE AI Assistant Link Enhancement: DOM-Based Link Restoration
+
+### Problem Statement
+
+The EVE AI assistant's certificate links were not functioning correctly despite the typing effect working properly. Multiple certificate links with identical text ("View Certificate") were only showing the first link as clickable, while subsequent identical links remained as plain text.
+
+**Specific Symptoms:**
+
+- Only the first "View Certificate" link in the certifications response was clickable
+- All other certificate links with identical text appeared as plain text
+- Users could only access the first certificate (AWS Solutions Architect) regardless of which certificate they intended to view
+- The typing effect worked correctly, but link enhancement failed for duplicate link text
+
+### Root Cause Analysis
+
+A systematic investigation revealed the fundamental flaw in the link enhancement logic:
+
+1. **Text-Based Replacement Logic**
+
+   The original `enhanceLinksInPlace()` method used simple string replacement:
+
+   ```javascript
+   // Problematic approach
+   currentHtml = currentHtml.replace(linkText, linkHtml);
+   ```
+
+   - `String.replace()` only replaces the **first occurrence** by default
+   - Multiple links with identical text ("View Certificate") were not all converted
+   - Only the first match was replaced with a clickable link
+
+2. **Map-Based Deduplication Issue**
+
+   The method correctly built a Map of unique links:
+
+   ```javascript
+   const key = `${linkText}|${href}`;
+   if (!linkMap.has(key)) {
+     linkMap.set(key, { linkText, href, target, rel });
+   }
+   ```
+
+   - The Map correctly identified unique text+href combinations
+   - However, the replacement logic ignored the href information
+   - All "View Certificate" text was treated identically regardless of destination URL
+
+3. **Architectural Flaw Identified**
+
+   The core issue was **text-based replacement cannot distinguish between identical text with different URLs**:
+
+   ```
+   Original Links:
+   - "View Certificate" → aws-cert.pdf
+   - "View Certificate" → azure-cert.pdf
+   - "View Certificate" → ccna-cert.pdf
+
+   Result with String.replace():
+   - "View Certificate" → aws-cert.pdf (✓ works)
+   - "View Certificate" → plain text (✗ broken)
+   - "View Certificate" → plain text (✗ broken)
+   ```
+
+**Root Cause Confirmed:**
+The `enhanceLinksInPlace()` method had a fundamental architectural flaw where it collected unique link data correctly but applied replacements based only on text content, ignoring the URL differences that made each link unique.
+
+### Solution Evaluation
+
+#### Option 1: Use `replaceAll()` Method
+
+**Approach**: Replace `String.replace()` with `String.replaceAll()`
+
+**Pros:**
+
+- Simple one-line change
+- Would replace all occurrences of link text
+- Minimal code modification required
+
+**Cons:**
+
+- **Critical flaw**: Would map all identical text to the same URL
+- All "View Certificate" links would point to the first URL processed
+- Creates incorrect link references (worse than the original problem)
+- Browser compatibility concerns (ES2021 feature)
+
+**Verdict**: Rejected due to incorrect link mapping
+
+#### Option 2: DOM-Based Link Restoration (Selected)
+
+**Approach**: Replace text-based replacement with DOM-based node manipulation
+
+**Pros:**
+
+- **Correct link mapping**: Each link maintains its proper URL
+- **Precise replacement**: Targets actual DOM nodes, not text strings
+- **Attribute preservation**: All link attributes maintained perfectly
+- **No text collision**: Only processes actual link elements
+- **Scalable**: Works with any number of identical link texts
+
+**Cons:**
+
+- More complex implementation
+- Higher performance overhead (DOM operations vs string operations)
+- Requires careful node traversal and replacement logic
+
+**Verdict**: Selected for functional correctness and robust architecture
+
+### Solution Implementation
+
+Implemented a DOM-based link restoration system using `TreeWalker` and node manipulation:
+
+```javascript
+// Restore links from original HTML structure
+enhanceLinksInPlace(element, originalHtml) {
+    const originalDiv = document.createElement('div');
+    originalDiv.innerHTML = originalHtml;
+    const originalLinks = originalDiv.querySelectorAll('a');
+
+    if (originalLinks.length === 0) return;
+
+    // Create a walker to traverse text nodes in typed content
+    const walker = document.createTreeWalker(
+        element,
+        NodeFilter.SHOW_TEXT,
+        null,
+        false
+    );
+
+    const textNodes = [];
+    let node;
+    while (node = walker.nextNode()) {
+        textNodes.push(node);
+    }
+
+    // Process each original link
+    originalLinks.forEach(originalLink => {
+        const linkText = originalLink.textContent;
+
+        // Find matching text in typed content
+        for (let i = 0; i < textNodes.length; i++) {
+            const textNode = textNodes[i];
+            const nodeText = textNode.textContent;
+            const linkIndex = nodeText.indexOf(linkText);
+
+            if (linkIndex !== -1) {
+                // Split text node and insert link
+                const beforeText = nodeText.substring(0, linkIndex);
+                const afterText = nodeText.substring(linkIndex + linkText.length);
+
+                const parent = textNode.parentNode;
+
+                // Create new link element with all attributes
+                const newLink = originalLink.cloneNode(true);
+
+                // Replace text node with before text, link, and after text
+                if (beforeText) {
+                    parent.insertBefore(document.createTextNode(beforeText), textNode);
+                }
+                parent.insertBefore(newLink, textNode);
+                if (afterText) {
+                    parent.insertBefore(document.createTextNode(afterText), textNode);
+                }
+                parent.removeChild(textNode);
+
+                // Update textNodes array to reflect changes
+                textNodes.splice(i, 1);
+                if (afterText) {
+                    textNodes.splice(i, 0, parent.childNodes[parent.childNodes.length - 1]);
+                }
+
+                break; // Move to next link
+            }
+        }
+    });
+}
+```
+
+#### Key Implementation Features
+
+1. **TreeWalker for Text Node Traversal**
+
+   - Efficiently finds all text nodes in the typed content
+   - Avoids processing non-text elements
+   - Provides clean separation between text and DOM elements
+
+2. **Node Splitting and Insertion**
+
+   - Splits text nodes at exact link positions
+   - Inserts actual link elements (not HTML strings)
+   - Preserves surrounding text content
+
+3. **Attribute Preservation**
+
+   - Uses `cloneNode(true)` to copy all link attributes
+   - Maintains `href`, `target`, `rel`, and other attributes perfectly
+   - No manual attribute reconstruction required
+
+4. **Array Management**
+   - Updates text node array after each modification
+   - Ensures continued processing after DOM changes
+   - Prevents stale node references
+
+### Key Learnings
+
+#### Technical Insights
+
+1. **String replacement limitations**: `String.replace()` and `replaceAll()` cannot handle complex mapping scenarios where identical text maps to different targets
+2. **DOM manipulation precision**: Direct DOM node manipulation provides exact control over element placement and attributes
+3. **TreeWalker efficiency**: `TreeWalker` is the optimal way to traverse specific node types in DOM structures
+4. **Node lifecycle management**: DOM modifications require careful array management to prevent stale references
+
+#### Architectural Insights
+
+1. **Separation of concerns**: Typing effect and link restoration are distinct operations that should be handled separately
+2. **Data preservation**: Original HTML structure contains all necessary link information and should be preserved
+3. **Progressive enhancement**: Links can be added after content is displayed without disrupting user experience
+4. **Functional correctness over performance**: Correct functionality is more important than micro-optimisations
+
+#### Best Practices Established
+
+1. **DOM-based processing for complex replacements**:
+
+   ```javascript
+   // Use DOM manipulation for complex scenarios
+   const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+   // Process actual DOM nodes, not text strings
+   ```
+
+2. **Preserve original data structures**:
+
+   ```javascript
+   // Keep original HTML as source of truth
+   const originalDiv = document.createElement("div");
+   originalDiv.innerHTML = originalHtml;
+   const originalLinks = originalDiv.querySelectorAll("a");
+   ```
+
+3. **Handle edge cases gracefully**:
+
+   ```javascript
+   // Early return for edge cases
+   if (originalLinks.length === 0) return;
+   ```
+
+4. **Maintain typing effect integration**:
+   ```javascript
+   // Call link enhancement after typing completes
+   this.typeFormattedText(contentDiv, formattedText, () => {
+     this.enhanceLinksInPlace(contentDiv, sanitizedHtml);
+   });
+   ```
+
+### Business Impact
+
+**Implementation Results**:
+
+- **Functional Correctness**: All certificate links now work correctly
+
+  - AWS Solutions Architect certificate → correct PDF
+  - Azure Fundamentals certificate → correct PDF
+  - CCNA certificate → correct PDF
+  - All other certificates → their respective PDFs
+
+- **User Experience**: Maintained typing effect while fixing link functionality
+
+  - Typewriter animation works as expected
+  - Links appear after typing completes
+  - No visual disruption to the user interface
+
+- **Code Quality**: Improved architecture and maintainability
+  - Clean separation between typing and link enhancement
+  - Robust handling of edge cases
+  - Scalable solution for any number of links
+
+#### Business Value
+
+- **User Accessibility**: Users can now access all certificates as intended
+- **Professional Presentation**: Portfolio demonstrates attention to detail and quality
+- **Technical Credibility**: Shows ability to identify and resolve complex frontend issues
+- **Maintainability**: Solution is robust and handles future content changes
+
+---
+
+## EVE AI Assistant Link Enhancement: DOM-Based Link Restoration
+
+### Problem Statement
+
+The EVE AI assistant's certificate links were not functioning correctly despite the typing effect working properly. Multiple certificate links with identical text ("View Certificate") were only showing the first link as clickable, while subsequent identical links remained as plain text.
+
+**Specific Symptoms:**
+
+- Only the first "View Certificate" link in the certifications response was clickable
+- All other certificate links with identical text appeared as plain text
+- Users could only access the first certificate (AWS Solutions Architect) regardless of which certificate they intended to view
+- The typing effect worked correctly, but link enhancement failed for duplicate link text
+
+### Root Cause Analysis
+
+A systematic investigation revealed the fundamental flaw in the link enhancement logic:
+
+1. **Text-Based Replacement Logic**
+
+   The original `enhanceLinksInPlace()` method used simple string replacement:
+
+   ```javascript
+   // Problematic approach
+   currentHtml = currentHtml.replace(linkText, linkHtml);
+   ```
+
+   - `String.replace()` only replaces the **first occurrence** by default
+   - Multiple links with identical text ("View Certificate") were not all converted
+   - Only the first match was replaced with a clickable link
+
+2. **Map-Based Deduplication Issue**
+
+   The method correctly built a Map of unique links:
+
+   ```javascript
+   const key = `${linkText}|${href}`;
+   if (!linkMap.has(key)) {
+     linkMap.set(key, { linkText, href, target, rel });
+   }
+   ```
+
+   - The Map correctly identified unique text+href combinations
+   - However, the replacement logic ignored the href information
+   - All "View Certificate" text was treated identically regardless of destination URL
+
+3. **Architectural Flaw Identified**
+
+   The core issue was **text-based replacement cannot distinguish between identical text with different URLs**:
+
+   ```
+   Original Links:
+   - "View Certificate" → aws-cert.pdf
+   - "View Certificate" → azure-cert.pdf
+   - "View Certificate" → ccna-cert.pdf
+
+   Result with String.replace():
+   - "View Certificate" → aws-cert.pdf (✓ works)
+   - "View Certificate" → plain text (✗ broken)
+   - "View Certificate" → plain text (✗ broken)
+   ```
+
+**Root Cause Confirmed:**
+The `enhanceLinksInPlace()` method had a fundamental architectural flaw where it collected unique link data correctly but applied replacements based only on text content, ignoring the URL differences that made each link unique.
+
+### Solution Evaluation
+
+#### Option 1: Use `replaceAll()` Method
+
+**Approach**: Replace `String.replace()` with `String.replaceAll()`
+
+**Pros:**
+
+- Simple one-line change
+- Would replace all occurrences of link text
+- Minimal code modification required
+
+**Cons:**
+
+- **Critical flaw**: Would map all identical text to the same URL
+- All "View Certificate" links would point to the first URL processed
+- Creates incorrect link references (worse than the original problem)
+- Browser compatibility concerns (ES2021 feature)
+
+**Verdict**: Rejected due to incorrect link mapping
+
+#### Option 2: DOM-Based Link Restoration (Selected)
+
+**Approach**: Replace text-based replacement with DOM-based node manipulation
+
+**Pros:**
+
+- **Correct link mapping**: Each link maintains its proper URL
+- **Precise replacement**: Targets actual DOM nodes, not text strings
+- **Attribute preservation**: All link attributes maintained perfectly
+- **No text collision**: Only processes actual link elements
+- **Scalable**: Works with any number of identical link texts
+
+**Cons:**
+
+- More complex implementation
+- Higher performance overhead (DOM operations vs string operations)
+- Requires careful node traversal and replacement logic
+
+**Verdict**: Selected for functional correctness and robust architecture
+
+### Solution Implementation
+
+Implemented a DOM-based link restoration system using `TreeWalker` and node manipulation:
+
+```javascript
+// Restore links from original HTML structure
+enhanceLinksInPlace(element, originalHtml) {
+    const originalDiv = document.createElement('div');
+    originalDiv.innerHTML = originalHtml;
+    const originalLinks = originalDiv.querySelectorAll('a');
+
+    if (originalLinks.length === 0) return;
+
+    // Create a walker to traverse text nodes in typed content
+    const walker = document.createTreeWalker(
+        element,
+        NodeFilter.SHOW_TEXT,
+        null,
+        false
+    );
+
+    const textNodes = [];
+    let node;
+    while (node = walker.nextNode()) {
+        textNodes.push(node);
+    }
+
+    // Process each original link
+    originalLinks.forEach(originalLink => {
+        const linkText = originalLink.textContent;
+
+        // Find matching text in typed content
+        for (let i = 0; i < textNodes.length; i++) {
+            const textNode = textNodes[i];
+            const nodeText = textNode.textContent;
+            const linkIndex = nodeText.indexOf(linkText);
+
+            if (linkIndex !== -1) {
+                // Split text node and insert link
+                const beforeText = nodeText.substring(0, linkIndex);
+                const afterText = nodeText.substring(linkIndex + linkText.length);
+
+                const parent = textNode.parentNode;
+
+                // Create new link element with all attributes
+                const newLink = originalLink.cloneNode(true);
+
+                // Replace text node with before text, link, and after text
+                if (beforeText) {
+                    parent.insertBefore(document.createTextNode(beforeText), textNode);
+                }
+                parent.insertBefore(newLink, textNode);
+                if (afterText) {
+                    parent.insertBefore(document.createTextNode(afterText), textNode);
+                }
+                parent.removeChild(textNode);
+
+                // Update textNodes array to reflect changes
+                textNodes.splice(i, 1);
+                if (afterText) {
+                    textNodes.splice(i, 0, parent.childNodes[parent.childNodes.length - 1]);
+                }
+
+                break; // Move to next link
+            }
+        }
+    });
+}
+```
+
+### Key Learnings
+
+#### Technical Insights
+
+1. **String replacement limitations**: `String.replace()` and `replaceAll()` cannot handle complex mapping scenarios where identical text maps to different targets
+2. **DOM manipulation precision**: Direct DOM node manipulation provides exact control over element placement and attributes
+3. **TreeWalker efficiency**: `TreeWalker` is the optimal way to traverse specific node types in DOM structures
+4. **Node lifecycle management**: DOM modifications require careful array management to prevent stale references
+
+#### Architectural Insights
+
+1. **Separation of concerns**: Typing effect and link restoration are distinct operations that should be handled separately
+2. **Data preservation**: Original HTML structure contains all necessary link information and should be preserved
+3. **Progressive enhancement**: Links can be added after content is displayed without disrupting user experience
+4. **Functional correctness over performance**: Correct functionality is more important than micro-optimisations
+
+#### Best Practices Established
+
+1. **DOM-based processing for complex replacements**:
+
+   ```javascript
+   // Use DOM manipulation for complex scenarios
+   const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+   // Process actual DOM nodes, not text strings
+   ```
+
+2. **Preserve original data structures**:
+
+   ```javascript
+   // Keep original HTML as source of truth
+   const originalDiv = document.createElement("div");
+   originalDiv.innerHTML = originalHtml;
+   const originalLinks = originalDiv.querySelectorAll("a");
+   ```
+
+3. **Handle edge cases gracefully**:
+   ```javascript
+   // Early return for edge cases
+   if (originalLinks.length === 0) return;
+   ```
+
+### Business Impact
+
+**Implementation Results**:
+
+- **Functional Correctness**: All certificate links now work correctly
+- **User Experience**: Maintained typing effect while fixing link functionality
+- **Code Quality**: Improved architecture and maintainability
+
+#### Business Value
+
+- **User Accessibility**: Users can now access all certificates as intended
+- **Professional Presentation**: Portfolio demonstrates attention to detail and quality
+- **Technical Credibility**: Shows ability to identify and resolve complex frontend issues
+- **Maintainability**: Solution is robust and handles future content changes
+
+---
+
 ## Security Considerations
 
 ### S3 Bucket Protection
