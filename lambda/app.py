@@ -62,7 +62,13 @@ def get_ssm_parameter(parameter_name, default_value=None):
 # Get environment from Lambda environment variable
 ENV = os.environ.get('ENVIRONMENT', 'Dev')
 SSM_PREFIX = os.environ.get('SSM_PREFIX', 'cfx')
-ALLOWED_ORIGIN = get_ssm_parameter(f"/{SSM_PREFIX}/{ENV}/allowed_origin", 'https://www.jarredthomas.cloud')
+
+# Support multiple allowed origins for cross-browser compatibility
+ALLOWED_ORIGINS = [
+    'https://www.jarredthomas.cloud',
+    'https://jarredthomas.cloud'
+]
+
 AWS_REGION = get_ssm_parameter(f"/{SSM_PREFIX}/{ENV}/region", os.environ.get('AWS_REGION', 'us-east-1'))
 DYNAMODB_TABLE = get_ssm_parameter(f"/{SSM_PREFIX}/{ENV}/dynamodb_table", 'cloudforgex-eve-logs')
 
@@ -177,9 +183,18 @@ def lambda_handler(event, context):
     # Log incoming requests for monitoring
     logger.info(f"request received: {event.get('httpMethod')} from {event.get('sourceIp', 'unknown')}")
 
+    # Get the origin from the request and validate it
+    request_origin = event.get('headers', {}).get('origin', '')
+    if request_origin in ALLOWED_ORIGINS:
+        cors_origin = request_origin
+    else:
+        cors_origin = ALLOWED_ORIGINS[0]  # Default to first allowed origin
+    
+    logger.info(f"Request origin: {request_origin}, Using CORS origin: {cors_origin}")
+
     headers = {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
+        'Access-Control-Allow-Origin': cors_origin,
         'Access-Control-Allow-Headers': 'Content-Type',
         'Access-Control-Allow-Methods': 'OPTIONS, POST'
     }
