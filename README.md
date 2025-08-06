@@ -3,6 +3,7 @@
 ## Table of Contents
 
 - [Overview](#overview)
+- [Foundation Project: Cloud Resume Challenge (2023)](#foundation-project-cloud-resume-challenge-2023)
 - [Real-World Business Value](#real-world-business-value)
 - [Prerequisites](#prerequisites)
 - [Project Folder Structure](#project-folder-structure)
@@ -59,6 +60,51 @@ Visit the live site at [https://www.jarredthomas.cloud](https://www.jarredthomas
 The project showcases expertise in infrastructure as code (Terraform), serverless computing (Lambda), API design (API Gateway), content delivery (CloudFront), and AI integration (AWS Bedrock). All components are deployed through automated CI/CD pipelines using GitHub Actions, ensuring consistent and repeatable deployments.
 
 For a detailed architectural overview, see the [Architecture Documentation](docs/architecture.md).
+
+## Foundation Project: Cloud Resume Challenge (2023)
+
+CloudForgeX represents the evolution of my cloud engineering skills, building upon foundational work completed one year prior. This advanced implementation demonstrates significant professional growth and technical maturity gained through intensive cloud engineering practice.
+
+### Original Implementation Overview
+
+My cloud engineering journey began with the **[Cloud Resume Challenge](https://github.com/JThomas404/cloud-resume-challenge/tree/main)** - a foundational project that established core AWS competencies and serverless architecture understanding. This initial implementation served as the stepping stone for the advanced features and enterprise-grade architecture showcased in CloudForgeX.
+
+### Technical Evolution Comparison
+
+| Aspect               | Original Project (2023)          | CloudForgeX (2024)                                          | Growth Demonstrated                  |
+| -------------------- | -------------------------------- | ----------------------------------------------------------- | ------------------------------------ |
+| **AI Integration**   | None                             | AWS Bedrock with Claude Instant AI assistant (EVE)          | Advanced AI service integration      |
+| **Infrastructure**   | Manual AWS Console configuration | Modular Terraform with 15+ reusable modules                 | Infrastructure as Code mastery       |
+| **CI/CD Pipeline**   | Manual deployment process        | GitHub Actions with automated testing, security scanning    | DevOps automation proficiency        |
+| **Containerisation** | Not implemented                  | Docker + Kubernetes deployment alongside serverless         | Container orchestration skills       |
+| **Security**         | Basic S3 bucket policies         | SSM Parameter Store, comprehensive IAM, security scanning   | Enterprise security practices        |
+| **Monitoring**       | Basic CloudWatch logs            | Custom dashboards, distributed tracing, performance metrics | Advanced observability               |
+| **Architecture**     | Single-region deployment         | Multi-AZ with disaster recovery and business continuity     | Enterprise architecture design       |
+| **Documentation**    | Basic project documentation      | Enterprise-grade architecture documentation with diagrams   | Professional documentation standards |
+
+### Skills Progression Journey
+
+**Foundation Level (Original Project)**
+
+- Basic AWS service configuration (S3, CloudFront, Lambda, DynamoDB)
+- Simple serverless architecture implementation
+- Manual deployment and configuration processes
+- Fundamental security practices and IAM policies
+- Basic cost awareness and optimisation
+
+**Enterprise Level (CloudForgeX)**
+
+- Advanced AI service integration with AWS Bedrock
+- Infrastructure as Code with modular Terraform architecture
+- Enterprise CI/CD pipelines with automated testing and security scanning
+- Container orchestration with Kubernetes alongside serverless deployment
+- Comprehensive security architecture with SSM Parameter Store
+- Advanced monitoring, observability, and disaster recovery planning
+- Detailed cost analysis with optimisation strategies
+
+### Key Learning Outcomes
+
+The twelve-month journey really highlighted my progession made in the past year, I still recall the time i was scratching my head trying to make and lambda function thinking i have dished too much than i could eat. looking back and overcoming the adverse challenges shows that i can personally achieve any ardious challenge no matter the difficulty and my hope is that the CloudForgeX project is indicative of this.
 
 ## Real-World Business Value
 
