@@ -78,7 +78,7 @@ My cloud engineering journey began with the **[Cloud Resume Challenge](https://g
 | **CI/CD Pipeline**   | Manual deployment process        | GitHub Actions with automated testing, security scanning    | DevOps automation proficiency        |
 | **Containerisation** | Not implemented                  | Docker + Kubernetes deployment alongside serverless         | Container orchestration skills       |
 | **Security**         | Basic S3 bucket policies         | SSM Parameter Store, comprehensive IAM, security scanning   | Enterprise security practices        |
-| **Monitoring**       | Basic CloudWatch logs            | Custom dashboards, distributed tracing, performance metrics | Advanced observability               |
+| **Monitoring**       | Basic CloudWatch logs            | CloudWatch metrics and logs with structured logging         | Advanced observability               |
 | **Architecture**     | Single-region deployment         | Multi-AZ with disaster recovery and business continuity     | Enterprise architecture design       |
 | **Documentation**    | Basic project documentation      | Enterprise-grade architecture documentation with diagrams   | Professional documentation standards |
 
@@ -99,7 +99,7 @@ My cloud engineering journey began with the **[Cloud Resume Challenge](https://g
 - Enterprise CI/CD pipelines with automated testing and security scanning
 - Container orchestration with Kubernetes alongside serverless deployment
 - Comprehensive security architecture with SSM Parameter Store
-- Advanced monitoring, observability, and disaster recovery planning
+- Advanced monitoring and observability with structured logging
 - Detailed cost analysis with optimisation strategies
 
 ### Key Learning Outcomes
@@ -114,7 +114,7 @@ CloudForgeX addresses several real-world business challenges:
 
 2. **Security Posture**: Defence-in-depth security strategy with least privilege IAM policies, encryption at rest and in transit, and secure certificate viewing via time-limited S3 presigned URLs. Security controls are validated through automated scanning in the CI/CD pipeline. For comprehensive security details, see the [Security Documentation](docs/security.md).
 
-3. **Operational Excellence**: Comprehensive monitoring and observability through CloudWatch metrics, logs, and alarms. The system includes custom dashboards for system health, performance, and security events.
+3. **Operational Excellence**: Comprehensive monitoring and observability through CloudWatch metrics and logs. The system includes logging for security events and user interactions.
 
 4. **Scalability**: Auto-scaling capabilities handle traffic spikes without manual intervention. The architecture supports horizontal scaling across multiple availability zones for high availability.
 
@@ -216,9 +216,9 @@ The CloudForgeX project was implemented through the following key phases:
    - Configured deployment environments with appropriate safeguards
 
 6. **Monitoring and Observability**
-   - Set up CloudWatch metrics, logs, and alarms
-   - Created custom dashboards for system health monitoring
-   - Implemented logging for security events and user interactions
+   - Set up CloudWatch metrics and logs
+   - Implemented structured logging for troubleshooting and monitoring
+   - Created logging for security events and user interactions
 
 For a detailed account of challenges faced during implementation, see the [Challenges and Learnings Documentation](docs/challenges-and-learnings.md).
 
@@ -687,7 +687,7 @@ For more detailed information on challenges and solutions, see the [Challenges a
 - **Route 53**: Configured DNS records for custom domain with ACM validation and CloudFront distribution
 - **ACM**: Managed SSL/TLS certificates with automatic renewal and DNS validation
 - **IAM**: Implemented least privilege security policies for all service components with specific permissions scoped to required resources
-- **CloudWatch**: Created comprehensive logging, metrics, and alarms for system health monitoring and security event detection
+- **CloudWatch**: Implemented comprehensive logging and metrics for system monitoring and security event detection
 - **SSM Parameter Store**: Implemented secure configuration management with encrypted parameters and controlled access
 - **AWS Bedrock**: Integrated Claude Instant AI model with token optimisation techniques and context management
 

@@ -51,6 +51,7 @@ The challenges documented here showcase:
 - **Applied AWS Well-Architected principles** across all solutions, focusing on security, cost optimisation, operational excellence, and performance efficiency
 - **Implemented secure S3 bucket policies** with CloudFront Origin Access Control to protect static content
 - **Created least privilege IAM policies** for Lambda functions and other AWS resources
+- **Resolved cross-browser compatibility issues** enabling consistent chatbot functionality across Chrome, Safari, and Firefox
 
 ---
 
@@ -226,7 +227,7 @@ This occurred because Terraform's dependency resolution created the deployment b
 - **Resolution Time**: ~2 hours
 - **Service Impact**: Complete AI chatbot functionality failure resolved
 - **User Experience**: Restored full functionality for all users
-- **Knowledge Transfer**: Documented findings for team reference and future projects
+- **Knowledge Transfer**: Documented findings for future reference and projects
 
 ---
 
@@ -262,7 +263,7 @@ A systematic investigation revealed multiple interconnected issues:
      -H "Origin: https://www.jarredthomas.cloud" \
      -H "Content-Type: application/json" \
      -d '{"message":"test"}' -v
-   
+
    curl -X POST https://r7xn947zpk.execute-api.us-east-1.amazonaws.com/prod/chat \
      -H "Origin: https://jarredthomas.cloud" \
      -H "Content-Type: application/json" \
@@ -273,6 +274,7 @@ A systematic investigation revealed multiple interconnected issues:
    - **Impact**: Requests from `https://jarredthomas.cloud` were rejected
 
 2. **Browser Behavior Analysis**
+
    - **Chrome**: Consistently accessed `www.jarredthomas.cloud`
    - **Safari**: Defaulted to `jarredthomas.cloud` (without www)
    - **Firefox**: Varied based on user's bookmark/typing behavior
@@ -292,9 +294,9 @@ The Lambda function used a single hardcoded allowed origin from SSM Parameter St
 
    ```python
    # Before: Single origin from SSM
-   ALLOWED_ORIGIN = get_ssm_parameter(f"/{SSM_PREFIX}/{ENV}/allowed_origin", 
+   ALLOWED_ORIGIN = get_ssm_parameter(f"/{SSM_PREFIX}/{ENV}/allowed_origin",
                                       'https://www.jarredthomas.cloud')
-   
+
    # After: Multiple hardcoded origins for reliability
    ALLOWED_ORIGINS = [
        'https://www.jarredthomas.cloud',
@@ -312,9 +314,9 @@ The Lambda function used a single hardcoded allowed origin from SSM Parameter St
            cors_origin = request_origin
        else:
            cors_origin = ALLOWED_ORIGINS[0]  # Default to first allowed origin
-       
+
        logger.info(f"Request origin: {request_origin}, Using CORS origin: {cors_origin}")
-   
+
        headers = {
            'Content-Type': 'application/json',
            'Access-Control-Allow-Origin': cors_origin,  # Dynamic origin
@@ -324,6 +326,7 @@ The Lambda function used a single hardcoded allowed origin from SSM Parameter St
    ```
 
 3. **Enhanced Logging for Debugging**
+
    ```python
    logger.info(f"Request origin: {request_origin}, Using CORS origin: {cors_origin}")
    ```
@@ -341,11 +344,13 @@ The Lambda function used a single hardcoded allowed origin from SSM Parameter St
 **Cross-Browser Testing Process:**
 
 1. **Chrome Testing** (`https://www.jarredthomas.cloud`):
+
    - Request Origin: `https://www.jarredthomas.cloud`
    - Response Header: `Access-Control-Allow-Origin: https://www.jarredthomas.cloud`
    - Result: ✅ Full functionality
 
 2. **Safari Testing** (`https://jarredthomas.cloud`):
+
    - Request Origin: `https://jarredthomas.cloud`
    - Response Header: `Access-Control-Allow-Origin: https://jarredthomas.cloud`
    - Result: ✅ Full functionality
@@ -355,6 +360,7 @@ The Lambda function used a single hardcoded allowed origin from SSM Parameter St
    - Result: ✅ Consistent functionality
 
 **CloudWatch Logs Verification:**
+
 ```
 [INFO] Request origin: https://www.jarredthomas.cloud, Using CORS origin: https://www.jarredthomas.cloud
 [INFO] Request origin: https://jarredthomas.cloud, Using CORS origin: https://jarredthomas.cloud
@@ -378,19 +384,21 @@ The Lambda function used a single hardcoded allowed origin from SSM Parameter St
 #### Best Practices Established
 
 1. **Multi-Origin CORS Pattern**:
+
    ```python
    # Always support both www and non-www variants
    ALLOWED_ORIGINS = [
        'https://www.example.com',
        'https://example.com'
    ]
-   
+
    # Dynamic origin selection
    request_origin = event.get('headers', {}).get('origin', '')
    cors_origin = request_origin if request_origin in ALLOWED_ORIGINS else ALLOWED_ORIGINS[0]
    ```
 
 2. **Cross-Browser Testing Checklist**:
+
    - [ ] Test in Chrome with www domain
    - [ ] Test in Safari with non-www domain
    - [ ] Test in Firefox with both variants
@@ -792,239 +800,6 @@ enhanceLinksInPlace(element, originalHtml) {
   - Clean separation between typing and link enhancement
   - Robust handling of edge cases
   - Scalable solution for any number of links
-
-#### Business Value
-
-- **User Accessibility**: Users can now access all certificates as intended
-- **Professional Presentation**: Portfolio demonstrates attention to detail and quality
-- **Technical Credibility**: Shows ability to identify and resolve complex frontend issues
-- **Maintainability**: Solution is robust and handles future content changes
-
----
-
-## EVE AI Assistant Link Enhancement: DOM-Based Link Restoration
-
-### Problem Statement
-
-The EVE AI assistant's certificate links were not functioning correctly despite the typing effect working properly. Multiple certificate links with identical text ("View Certificate") were only showing the first link as clickable, while subsequent identical links remained as plain text.
-
-**Specific Symptoms:**
-
-- Only the first "View Certificate" link in the certifications response was clickable
-- All other certificate links with identical text appeared as plain text
-- Users could only access the first certificate (AWS Solutions Architect) regardless of which certificate they intended to view
-- The typing effect worked correctly, but link enhancement failed for duplicate link text
-
-### Root Cause Analysis
-
-A systematic investigation revealed the fundamental flaw in the link enhancement logic:
-
-1. **Text-Based Replacement Logic**
-
-   The original `enhanceLinksInPlace()` method used simple string replacement:
-
-   ```javascript
-   // Problematic approach
-   currentHtml = currentHtml.replace(linkText, linkHtml);
-   ```
-
-   - `String.replace()` only replaces the **first occurrence** by default
-   - Multiple links with identical text ("View Certificate") were not all converted
-   - Only the first match was replaced with a clickable link
-
-2. **Map-Based Deduplication Issue**
-
-   The method correctly built a Map of unique links:
-
-   ```javascript
-   const key = `${linkText}|${href}`;
-   if (!linkMap.has(key)) {
-     linkMap.set(key, { linkText, href, target, rel });
-   }
-   ```
-
-   - The Map correctly identified unique text+href combinations
-   - However, the replacement logic ignored the href information
-   - All "View Certificate" text was treated identically regardless of destination URL
-
-3. **Architectural Flaw Identified**
-
-   The core issue was **text-based replacement cannot distinguish between identical text with different URLs**:
-
-   ```
-   Original Links:
-   - "View Certificate" → aws-cert.pdf
-   - "View Certificate" → azure-cert.pdf
-   - "View Certificate" → ccna-cert.pdf
-
-   Result with String.replace():
-   - "View Certificate" → aws-cert.pdf (✓ works)
-   - "View Certificate" → plain text (✗ broken)
-   - "View Certificate" → plain text (✗ broken)
-   ```
-
-**Root Cause Confirmed:**
-The `enhanceLinksInPlace()` method had a fundamental architectural flaw where it collected unique link data correctly but applied replacements based only on text content, ignoring the URL differences that made each link unique.
-
-### Solution Evaluation
-
-#### Option 1: Use `replaceAll()` Method
-
-**Approach**: Replace `String.replace()` with `String.replaceAll()`
-
-**Pros:**
-
-- Simple one-line change
-- Would replace all occurrences of link text
-- Minimal code modification required
-
-**Cons:**
-
-- **Critical flaw**: Would map all identical text to the same URL
-- All "View Certificate" links would point to the first URL processed
-- Creates incorrect link references (worse than the original problem)
-- Browser compatibility concerns (ES2021 feature)
-
-**Verdict**: Rejected due to incorrect link mapping
-
-#### Option 2: DOM-Based Link Restoration (Selected)
-
-**Approach**: Replace text-based replacement with DOM-based node manipulation
-
-**Pros:**
-
-- **Correct link mapping**: Each link maintains its proper URL
-- **Precise replacement**: Targets actual DOM nodes, not text strings
-- **Attribute preservation**: All link attributes maintained perfectly
-- **No text collision**: Only processes actual link elements
-- **Scalable**: Works with any number of identical link texts
-
-**Cons:**
-
-- More complex implementation
-- Higher performance overhead (DOM operations vs string operations)
-- Requires careful node traversal and replacement logic
-
-**Verdict**: Selected for functional correctness and robust architecture
-
-### Solution Implementation
-
-Implemented a DOM-based link restoration system using `TreeWalker` and node manipulation:
-
-```javascript
-// Restore links from original HTML structure
-enhanceLinksInPlace(element, originalHtml) {
-    const originalDiv = document.createElement('div');
-    originalDiv.innerHTML = originalHtml;
-    const originalLinks = originalDiv.querySelectorAll('a');
-
-    if (originalLinks.length === 0) return;
-
-    // Create a walker to traverse text nodes in typed content
-    const walker = document.createTreeWalker(
-        element,
-        NodeFilter.SHOW_TEXT,
-        null,
-        false
-    );
-
-    const textNodes = [];
-    let node;
-    while (node = walker.nextNode()) {
-        textNodes.push(node);
-    }
-
-    // Process each original link
-    originalLinks.forEach(originalLink => {
-        const linkText = originalLink.textContent;
-
-        // Find matching text in typed content
-        for (let i = 0; i < textNodes.length; i++) {
-            const textNode = textNodes[i];
-            const nodeText = textNode.textContent;
-            const linkIndex = nodeText.indexOf(linkText);
-
-            if (linkIndex !== -1) {
-                // Split text node and insert link
-                const beforeText = nodeText.substring(0, linkIndex);
-                const afterText = nodeText.substring(linkIndex + linkText.length);
-
-                const parent = textNode.parentNode;
-
-                // Create new link element with all attributes
-                const newLink = originalLink.cloneNode(true);
-
-                // Replace text node with before text, link, and after text
-                if (beforeText) {
-                    parent.insertBefore(document.createTextNode(beforeText), textNode);
-                }
-                parent.insertBefore(newLink, textNode);
-                if (afterText) {
-                    parent.insertBefore(document.createTextNode(afterText), textNode);
-                }
-                parent.removeChild(textNode);
-
-                // Update textNodes array to reflect changes
-                textNodes.splice(i, 1);
-                if (afterText) {
-                    textNodes.splice(i, 0, parent.childNodes[parent.childNodes.length - 1]);
-                }
-
-                break; // Move to next link
-            }
-        }
-    });
-}
-```
-
-### Key Learnings
-
-#### Technical Insights
-
-1. **String replacement limitations**: `String.replace()` and `replaceAll()` cannot handle complex mapping scenarios where identical text maps to different targets
-2. **DOM manipulation precision**: Direct DOM node manipulation provides exact control over element placement and attributes
-3. **TreeWalker efficiency**: `TreeWalker` is the optimal way to traverse specific node types in DOM structures
-4. **Node lifecycle management**: DOM modifications require careful array management to prevent stale references
-
-#### Architectural Insights
-
-1. **Separation of concerns**: Typing effect and link restoration are distinct operations that should be handled separately
-2. **Data preservation**: Original HTML structure contains all necessary link information and should be preserved
-3. **Progressive enhancement**: Links can be added after content is displayed without disrupting user experience
-4. **Functional correctness over performance**: Correct functionality is more important than micro-optimisations
-
-#### Best Practices Established
-
-1. **DOM-based processing for complex replacements**:
-
-   ```javascript
-   // Use DOM manipulation for complex scenarios
-   const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
-   // Process actual DOM nodes, not text strings
-   ```
-
-2. **Preserve original data structures**:
-
-   ```javascript
-   // Keep original HTML as source of truth
-   const originalDiv = document.createElement("div");
-   originalDiv.innerHTML = originalHtml;
-   const originalLinks = originalDiv.querySelectorAll("a");
-   ```
-
-3. **Handle edge cases gracefully**:
-   ```javascript
-   // Early return for edge cases
-   if (originalLinks.length === 0) return;
-   ```
-
-### Business Impact
-
-**Implementation Results**:
-
-- **Functional Correctness**: All certificate links now work correctly
-- **User Experience**: Maintained typing effect while fixing link functionality
-- **Code Quality**: Improved architecture and maintainability
 
 #### Business Value
 

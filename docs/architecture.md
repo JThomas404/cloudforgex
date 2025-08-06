@@ -804,7 +804,7 @@ Cost management practices include:
 - **Decision**: Adopt modular Terraform approach for infrastructure definition.
 - **Rationale**: Enhances reusability, maintainability, and consistency across environments.
 - **Trade-offs**: Requires initial investment in module design but pays dividends in long-term maintenance and scalability.
-- **Alternatives Considered**: CloudFormation and AWS CDK were evaluated but rejected due to team expertise and cross-cloud potential.
+- **Alternatives Considered**: CloudFormation and AWS CDK were evaluated but rejected due to Terraform's multi-cloud capabilities.
 
 ```terraform
 # Example Terraform module structure for CloudForgeX
