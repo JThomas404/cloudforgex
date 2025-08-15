@@ -104,125 +104,28 @@ class EVEAssistant {
         }
     }
 
-    // Extract formatted text preserving structure
-    extractFormattedText(html) {
-        const temp = document.createElement('div');
-        temp.innerHTML = html;
-        
-        // Simple recursive approach for better performance
-        const extractText = (element) => {
-            let result = '';
-            for (const node of element.childNodes) {
-                if (node.nodeType === Node.TEXT_NODE) {
-                    result += node.textContent;
-                } else if (node.nodeType === Node.ELEMENT_NODE) {
-                    const tagName = node.tagName.toLowerCase();
-                    if (tagName === 'br' || tagName === 'p') {
-                        result += '\n';
-                    } else if (tagName === 'li') {
-                        result += '\n• ';
-                    } else if (tagName === 'blockquote') {
-                        result += '\n> ';
-                    }
-                    result += extractText(node);
-                }
-            }
-            return result;
-        };
-        
-        return extractText(temp).replace(/\n\s*\n/g, '\n\n').trim();
-    }
-    
-    // Type formatted text preserving line breaks
-    typeFormattedText(element, text, callback) {
+    // Professional content reveal like ChatGPT
+    revealContent(element, htmlContent) {
+        const sentences = htmlContent.split(/(?<=[.!?])\s+/);
+        let currentIndex = 0;
         element.innerHTML = '';
-        element.classList.add('typewriter-cursor');
-        let i = 0;
         
         const timer = setInterval(() => {
-            if (i < text.length) {
-                const char = text.charAt(i);
-                if (char === '\n') {
-                    element.innerHTML += '<br>';
-                } else {
-                    element.innerHTML += char;
-                }
-                i++;
+            if (currentIndex < sentences.length) {
+                const partialContent = sentences.slice(0, currentIndex + 1).join(' ');
+                element.innerHTML = DOMPurify.sanitize(partialContent);
+                currentIndex++;
                 this.scrollToBottom();
             } else {
                 clearInterval(timer);
                 this.activeTimers.delete(timer);
-                element.classList.remove('typewriter-cursor');
-                callback?.();
             }
-        }, EVEAssistant.TIMING.TYPEWRITER_SPEED);
+        }, 100);
         
         this.activeTimers.add(timer);
     }
-    
-    // Restore links from original HTML structure
-    enhanceLinksInPlace(element, originalHtml) {
-        const originalDiv = document.createElement('div');
-        originalDiv.innerHTML = originalHtml;
-        const originalLinks = originalDiv.querySelectorAll('a');
-        
-        if (originalLinks.length === 0) return;
-        
-        // Create a walker to traverse text nodes in typed content
-        const walker = document.createTreeWalker(
-            element,
-            NodeFilter.SHOW_TEXT,
-            null,
-            false
-        );
-        
-        const textNodes = [];
-        let node;
-        while (node = walker.nextNode()) {
-            textNodes.push(node);
-        }
-        
-        // Process each original link
-        originalLinks.forEach(originalLink => {
-            const linkText = originalLink.textContent;
-            
-            // Find matching text in typed content
-            for (let i = 0; i < textNodes.length; i++) {
-                const textNode = textNodes[i];
-                const nodeText = textNode.textContent;
-                const linkIndex = nodeText.indexOf(linkText);
-                
-                if (linkIndex !== -1) {
-                    // Split text node and insert link
-                    const beforeText = nodeText.substring(0, linkIndex);
-                    const afterText = nodeText.substring(linkIndex + linkText.length);
-                    
-                    const parent = textNode.parentNode;
-                    
-                    // Create new link element with all attributes
-                    const newLink = originalLink.cloneNode(true);
-                    
-                    // Replace text node with before text, link, and after text
-                    if (beforeText) {
-                        parent.insertBefore(document.createTextNode(beforeText), textNode);
-                    }
-                    parent.insertBefore(newLink, textNode);
-                    if (afterText) {
-                        parent.insertBefore(document.createTextNode(afterText), textNode);
-                    }
-                    parent.removeChild(textNode);
-                    
-                    // Update textNodes array to reflect changes
-                    textNodes.splice(i, 1);
-                    if (afterText) {
-                        textNodes.splice(i, 0, parent.childNodes[parent.childNodes.length - 1]);
-                    }
-                    
-                    break; // Move to next link
-                }
-            }
-        });
-    }
+
+
     
     typeText(element, text, callback) {
         element.textContent = '';
@@ -337,26 +240,11 @@ class EVEAssistant {
         
         // Handle different response types with enhanced formatting
         if (source === 'ai' || source === 'knowledge' || source === 'suggested') {
-            if (message.includes('<a href=')) {
-                // AI response with HTML
-                const sanitizedHtml = DOMPurify.sanitize(message);
-                const formattedText = this.extractFormattedText(sanitizedHtml);
-                
-                this.typeFormattedText(contentDiv, formattedText, () => {
-                    this.enhanceLinksInPlace(contentDiv, sanitizedHtml);
-                });
-            } else {
-                // Knowledge base with markdown
-                const htmlContent = marked.parse(message);
-                const sanitizedHtml = DOMPurify.sanitize(htmlContent);
-                const formattedText = this.extractFormattedText(sanitizedHtml);
-                
-                this.typeFormattedText(contentDiv, formattedText, () => {
-                    this.enhanceLinksInPlace(contentDiv, sanitizedHtml);
-                });
-            }
+            // Process all content through markdown for consistent formatting
+            const htmlContent = marked.parse(message);
+            this.revealContent(contentDiv, htmlContent);
         } else {
-            // Simple text with typing
+            // Simple text with typing for validation/error messages
             this.typeText(contentDiv, message);
         }
         
