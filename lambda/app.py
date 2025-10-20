@@ -150,27 +150,47 @@ def get_ai_response(user_message):
 
         # Get enhanced system prompt
         system_prompt = get_enhanced_system_prompt()
-
-        # Format prompt for Claude's conversation format
-        full_prompt = f"{system_prompt}\n\nHuman: {user_message}\n\nAssistant:"
         
         # Get model ID from SSM
-        model_id = get_ssm_parameter(f"/{SSM_PREFIX}/{ENV}/bedrock_model", 'anthropic.claude-instant-v1')
+        model_id = get_ssm_parameter(f"/{SSM_PREFIX}/{ENV}/bedrock_model", 'us.anthropic.claude-3-5-haiku-20241022-v1:0')
         
-        # Call Bedrock with model from SSM
-        response = bedrock.invoke_model(
-            modelId=model_id,
-            body=json.dumps({
-                'prompt': full_prompt,
-                'max_tokens_to_sample': 500,
-                'temperature': 0.7,
-                'top_p': 0.9
-            })
-        )
-
-        # Parse Bedrock response
-        response_body = json.loads(response['body'].read())
-        ai_response = response_body.get('completion', '').strip()
+        # Check if using Claude 3/3.5 model (new API format)
+        if 'claude-3' in model_id or 'claude-3-5' in model_id:
+            # Claude 3 API format
+            response = bedrock.invoke_model(
+                modelId=model_id,
+                body=json.dumps({
+                    'anthropic_version': 'bedrock-2023-05-31',
+                    'max_tokens': 500,
+                    'temperature': 0.7,
+                    'top_p': 0.9,
+                    'system': system_prompt,
+                    'messages': [
+                        {
+                            'role': 'user',
+                            'content': user_message
+                        }
+                    ]
+                })
+            )
+            # Parse Claude 3 response
+            response_body = json.loads(response['body'].read())
+            ai_response = response_body.get('content', [{}])[0].get('text', '').strip()
+        else:
+            # Legacy Claude format
+            full_prompt = f"{system_prompt}\n\nHuman: {user_message}\n\nAssistant:"
+            response = bedrock.invoke_model(
+                modelId=model_id,
+                body=json.dumps({
+                    'prompt': full_prompt,
+                    'max_tokens_to_sample': 500,
+                    'temperature': 0.7,
+                    'top_p': 0.9
+                })
+            )
+            # Parse legacy response
+            response_body = json.loads(response['body'].read())
+            ai_response = response_body.get('completion', '').strip()
 
         return ai_response, "ai"
 
