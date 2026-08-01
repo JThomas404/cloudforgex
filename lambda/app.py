@@ -118,8 +118,86 @@ def log_chat_interaction(user_input, ai_response, response_source, processing_ti
     except Exception as e:
         logger.error(f"Failed to log chat: {str(e)}")
 
+
+def _is_model_fallback_error(error_message):
+    """Return True when the Bedrock error suggests a deprecated or unavailable model."""
+    lowered = str(error_message).lower()
+    return any(marker in lowered for marker in [
+        'deprecated',
+        'not available',
+        'model is unavailable',
+        'model not found',
+        'does not exist',
+        'validationexception',
+        'unknown model',
+        'not supported',
+        'unrecognized',
+        'not found'
+    ])
+
+
+def get_model_candidates(configured_model_id):
+    """Build a Bedrock model candidate list starting from the configured value."""
+    candidates = []
+    seen_models = set()
+
+    if configured_model_id:
+        candidates.append(configured_model_id)
+        seen_models.add(configured_model_id)
+
+    fallback_models = [
+        'us.anthropic.claude-3-5-sonnet-20241022-v2:0',
+        'anthropic.claude-3-5-sonnet-20241022-v2:0',
+        'us.anthropic.claude-3-7-sonnet-20250219-v1:0',
+        'anthropic.claude-3-7-sonnet-20250219-v1:0',
+    ]
+
+    for model_id in fallback_models:
+        if model_id not in seen_models:
+            candidates.append(model_id)
+            seen_models.add(model_id)
+
+    return candidates
+
+
+def invoke_bedrock_model(bedrock, model_id, system_prompt, user_message):
+    """Invoke Bedrock with the appropriate Claude payload format."""
+    if 'claude-3' in model_id:
+        response = bedrock.invoke_model(
+            modelId=model_id,
+            body=json.dumps({
+                'anthropic_version': 'bedrock-2023-05-31',
+                'max_tokens': 500,
+                'temperature': 0.7,
+                'top_p': 0.9,
+                'system': system_prompt,
+                'messages': [
+                    {
+                        'role': 'user',
+                        'content': user_message
+                    }
+                ]
+            })
+        )
+        response_body = json.loads(response['body'].read())
+        return response_body.get('content', [{}])[0].get('text', '').strip()
+
+    full_prompt = f"{system_prompt}\n\nHuman: {user_message}\n\nAssistant:"
+    response = bedrock.invoke_model(
+        modelId=model_id,
+        body=json.dumps({
+            'prompt': full_prompt,
+            'max_tokens_to_sample': 500,
+            'temperature': 0.7,
+            'top_p': 0.9
+        })
+    )
+    response_body = json.loads(response['body'].read())
+    return response_body.get('completion', '').strip()
+
+
 def get_ai_response(user_message):
-    """Generate AI response using AWS Bedrock Claude Instant"""
+    """Generate AI response using AWS Bedrock with fallback support"""
     # Rate limit for user inputs 
     if len(user_message) > 1000:
         return "Sorry, that message is too long. Please keep it under 1000 characters.", "error"
@@ -151,48 +229,30 @@ def get_ai_response(user_message):
         # Get enhanced system prompt
         system_prompt = get_enhanced_system_prompt()
         
-        # Get model ID from SSM
-        model_id = get_ssm_parameter(f"/{SSM_PREFIX}/{ENV}/bedrock_model", 'us.anthropic.claude-3-5-haiku-20241022-v1:0')
-        
-        # Check if using Claude 3/3.5 model (new API format)
-        if 'claude-3' in model_id or 'claude-3-5' in model_id:
-            # Claude 3 API format
-            response = bedrock.invoke_model(
-                modelId=model_id,
-                body=json.dumps({
-                    'anthropic_version': 'bedrock-2023-05-31',
-                    'max_tokens': 500,
-                    'temperature': 0.7,
-                    'top_p': 0.9,
-                    'system': system_prompt,
-                    'messages': [
-                        {
-                            'role': 'user',
-                            'content': user_message
-                        }
-                    ]
-                })
-            )
-            # Parse Claude 3 response
-            response_body = json.loads(response['body'].read())
-            ai_response = response_body.get('content', [{}])[0].get('text', '').strip()
-        else:
-            # Legacy Claude format
-            full_prompt = f"{system_prompt}\n\nHuman: {user_message}\n\nAssistant:"
-            response = bedrock.invoke_model(
-                modelId=model_id,
-                body=json.dumps({
-                    'prompt': full_prompt,
-                    'max_tokens_to_sample': 500,
-                    'temperature': 0.7,
-                    'top_p': 0.9
-                })
-            )
-            # Parse legacy response
-            response_body = json.loads(response['body'].read())
-            ai_response = response_body.get('completion', '').strip()
+        # Get model ID from SSM and try a newer fallback chain if needed
+        configured_model_id = get_ssm_parameter(
+            f"/{SSM_PREFIX}/{ENV}/bedrock_model",
+            'us.anthropic.claude-3-5-haiku-20241022-v1:0'
+        )
+        model_candidates = get_model_candidates(configured_model_id)
+        last_error = None
 
-        return ai_response, "ai"
+        for model_id in model_candidates:
+            try:
+                logger.info(f"Trying Bedrock model: {model_id}")
+                ai_response = invoke_bedrock_model(bedrock, model_id, system_prompt, user_message)
+                if ai_response:
+                    logger.info(f"Bedrock request succeeded with model: {model_id}")
+                    return ai_response, "ai"
+                last_error = RuntimeError(f"Bedrock returned an empty response for {model_id}")
+            except Exception as exc:
+                last_error = exc
+                logger.warning(f"Bedrock request failed for model {model_id}: {str(exc)}")
+
+        if last_error is not None:
+            raise last_error
+
+        return "I'm having trouble connecting to my AI service right now. Please try again in a moment.", "error"
 
     except Exception as e:
         # Log error and return a fallback message

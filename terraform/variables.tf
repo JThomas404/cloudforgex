@@ -113,7 +113,7 @@ variable "environment" {
 variable "bedrock_model" {
   description = "Claude model to use for Bedrock"
   type        = string
-  default     = "us.anthropic.claude-3-5-haiku-20241022-v1:0"
+  default     = "us.anthropic.claude-3-5-sonnet-20241022-v2:0"
 }
 
 variable "parameter_tier" {
