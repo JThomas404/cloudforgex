@@ -146,8 +146,7 @@ def get_model_candidates(configured_model_id):
         seen_models.add(configured_model_id)
 
     fallback_models = [
-        'anthropic.claude-sonnet-4-20250514-v1:0',
-        'anthropic.claude-haiku-4-5-20251001-v1:0',
+        'arn:aws:bedrock:us-east-1:533267010082:inference-profile/us.anthropic.claude-3-sonnet-20240229-v1:0',
     ]
 
     for model_id in fallback_models:
